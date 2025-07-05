@@ -97,7 +97,7 @@ export class DatabaseStorage implements IStorage {
   async createProfile(profile: InsertProfile): Promise<Profile> {
     const [newProfile] = await db
       .insert(profiles)
-      .values([profile])
+      .values([profile as any])
       .returning();
     return newProfile;
   }
@@ -167,7 +167,7 @@ export class DatabaseStorage implements IStorage {
   async createOrderItem(orderItem: InsertOrderItem): Promise<OrderItem> {
     const [newOrderItem] = await db
       .insert(orderItems)
-      .values([orderItem])
+      .values([orderItem as any])
       .returning();
     return newOrderItem;
   }

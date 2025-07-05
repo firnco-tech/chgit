@@ -30,14 +30,7 @@ export const profiles = pgTable("profiles", {
   aboutMe: text("about_me"),
   interests: text("interests").array(),
   photos: text("photos").array(),
-  contactMethods: json("contact_methods").$type<{
-    whatsapp?: string;
-    instagram?: string;
-    email?: string;
-    telegram?: string;
-    facebook?: string;
-    tiktok?: string;
-  }>(),
+  contactMethods: json("contact_methods"),
   price: decimal("price", { precision: 10, scale: 2 }).notNull().default("2.00"),
   isApproved: boolean("is_approved").default(false),
   isFeatured: boolean("is_featured").default(false),
@@ -60,14 +53,7 @@ export const orderItems = pgTable("order_items", {
   orderId: integer("order_id").notNull(),
   profileId: integer("profile_id").notNull(),
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
-  contactInfo: json("contact_info").$type<{
-    whatsapp?: string;
-    instagram?: string;
-    email?: string;
-    telegram?: string;
-    facebook?: string;
-    tiktok?: string;
-  }>(),
+  contactInfo: json("contact_info"),
 });
 
 export const profilesRelations = relations(profiles, ({ many }) => ({
