@@ -13,6 +13,23 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
+      {/* Top Call-to-Action Banner */}
+      <section className="bg-gradient-to-r from-pink-500 to-purple-600 text-white py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between">
+            <div className="text-center sm:text-left mb-3 sm:mb-0">
+              <h3 className="text-lg font-semibold">Are you a beautiful Dominican woman?</h3>
+              <p className="text-sm opacity-90">Join our verified community and start earning money today!</p>
+            </div>
+            <Link href="/submit-profile">
+              <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100 font-semibold px-8">
+                Submit Your Profile
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Hero Section */}
       <section className="gradient-hero text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
