@@ -10,8 +10,8 @@ import type { Profile } from "@shared/schema";
 
 export default function Browse() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [ageFilter, setAgeFilter] = useState("");
-  const [locationFilter, setLocationFilter] = useState("");
+  const [ageFilter, setAgeFilter] = useState("all");
+  const [locationFilter, setLocationFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
 
   const { data: profiles, isLoading } = useQuery<Profile[]>({
@@ -19,8 +19,8 @@ export default function Browse() {
     queryFn: async () => {
       const params = new URLSearchParams();
       if (searchQuery) params.append('search', searchQuery);
-      if (ageFilter) params.append('ageMin', ageFilter.split('-')[0]);
-      if (locationFilter) params.append('location', locationFilter);
+      if (ageFilter && ageFilter !== 'all') params.append('ageMin', ageFilter.split('-')[0]);
+      if (locationFilter && locationFilter !== 'all') params.append('location', locationFilter);
       
       const response = await fetch(`/api/profiles?${params}`);
       if (!response.ok) throw new Error('Failed to fetch profiles');
@@ -74,7 +74,7 @@ export default function Browse() {
                         <SelectValue placeholder="All Ages" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Ages</SelectItem>
+                        <SelectItem value="all">All Ages</SelectItem>
                         <SelectItem value="18-25">18-25</SelectItem>
                         <SelectItem value="26-30">26-30</SelectItem>
                         <SelectItem value="31-35">31-35</SelectItem>
@@ -93,7 +93,7 @@ export default function Browse() {
                         <SelectValue placeholder="All Locations" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Locations</SelectItem>
+                        <SelectItem value="all">All Locations</SelectItem>
                         <SelectItem value="Santo Domingo">Santo Domingo</SelectItem>
                         <SelectItem value="Santiago">Santiago</SelectItem>
                         <SelectItem value="Puerto Plata">Puerto Plata</SelectItem>
