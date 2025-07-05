@@ -80,10 +80,7 @@ export default function AdminEditProfile() {
   // Update profile mutation
   const updateMutation = useMutation({
     mutationFn: async (data: Partial<Profile>) => {
-      return await apiRequest(`/api/admin/profiles/${profileId}`, {
-        method: "PATCH",
-        body: JSON.stringify(data),
-      });
+      return await apiRequest("PATCH", `/api/admin/profiles/${profileId}`, data);
     },
     onSuccess: () => {
       toast({

@@ -88,10 +88,7 @@ export default function SubmitProfile() {
 
   const submitProfileMutation = useMutation({
     mutationFn: async (data: SubmitProfileFormData) => {
-      return apiRequest("/api/profiles", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
+      return apiRequest("POST", "/api/profiles", data);
     },
     onSuccess: () => {
       toast({
