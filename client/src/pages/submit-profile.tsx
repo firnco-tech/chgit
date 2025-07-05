@@ -900,6 +900,112 @@ export default function SubmitProfile() {
               </CardContent>
             </Card>
 
+            {/* Photos and Media */}
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Photos and Media</h2>
+                <p className="text-sm text-gray-600 mb-4">
+                  Add photos and videos to make your profile more attractive. High-quality photos get more attention!
+                </p>
+                
+                <div className="space-y-6">
+                  {/* Photo Upload */}
+                  <div>
+                    <FormLabel className="text-base font-medium">Profile Photos</FormLabel>
+                    <p className="text-sm text-gray-500 mb-3">Upload up to 6 photos. First photo will be your main profile photo.</p>
+                    
+                    <FormField
+                      control={form.control}
+                      name="photos"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                max="6"
+                                onChange={(e) => {
+                                  const files = Array.from(e.target.files || []);
+                                  const fileNames = files.map(file => file.name);
+                                  field.onChange(fileNames);
+                                }}
+                                className="hidden"
+                                id="photo-upload"
+                              />
+                              <label 
+                                htmlFor="photo-upload" 
+                                className="cursor-pointer flex flex-col items-center"
+                              >
+                                <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-3">
+                                  <span className="text-2xl">📷</span>
+                                </div>
+                                <span className="text-sm font-medium text-gray-700">Click to upload photos</span>
+                                <span className="text-xs text-gray-500 mt-1">JPG, PNG up to 10MB each</span>
+                              </label>
+                              {field.value && field.value.length > 0 && (
+                                <div className="mt-3 text-sm text-green-600">
+                                  {field.value.length} photo(s) selected: {field.value.join(", ")}
+                                </div>
+                              )}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* Video Upload */}
+                  <div>
+                    <FormLabel className="text-base font-medium">Introduction Videos (Optional)</FormLabel>
+                    <p className="text-sm text-gray-500 mb-3">Upload a short video introducing yourself (max 2 minutes).</p>
+                    
+                    <FormField
+                      control={form.control}
+                      name="videos"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="border-2 border-dashed border-purple-300 rounded-lg p-6 text-center">
+                              <input
+                                type="file"
+                                accept="video/*"
+                                onChange={(e) => {
+                                  const files = Array.from(e.target.files || []);
+                                  const fileNames = files.map(file => file.name);
+                                  field.onChange(fileNames);
+                                }}
+                                className="hidden"
+                                id="video-upload"
+                              />
+                              <label 
+                                htmlFor="video-upload" 
+                                className="cursor-pointer flex flex-col items-center"
+                              >
+                                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-3">
+                                  <span className="text-2xl">🎥</span>
+                                </div>
+                                <span className="text-sm font-medium text-gray-700">Click to upload video</span>
+                                <span className="text-xs text-gray-500 mt-1">MP4, MOV up to 50MB</span>
+                              </label>
+                              {field.value && field.value.length > 0 && (
+                                <div className="mt-3 text-sm text-green-600">
+                                  Video selected: {field.value.join(", ")}
+                                </div>
+                              )}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Terms and Agreements */}
             <Card>
               <CardContent className="p-6">

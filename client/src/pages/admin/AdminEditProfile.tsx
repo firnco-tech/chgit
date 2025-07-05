@@ -66,7 +66,7 @@ export default function AdminEditProfile() {
 
   // Fetch profile data
   const { data: profile, isLoading } = useQuery<Profile>({
-    queryKey: [`/api/profiles/${profileId}`],
+    queryKey: [`/api/admin/profiles/${profileId}`],
     enabled: !!profileId,
   });
 

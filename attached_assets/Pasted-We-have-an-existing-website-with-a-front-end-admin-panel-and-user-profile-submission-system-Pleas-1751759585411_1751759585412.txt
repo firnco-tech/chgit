@@ -1,0 +1,75 @@
+We have an existing website with a front end, admin panel, and user profile submission system. Please complete the following tasks in order, ensuring that you do not break or modify the existing site structure or code outside the necessary changes. Each step should be implemented carefully and tested before moving to the next. All new code must be clearly commented.
+
+Tasks to Complete Sequentially:
+
+Profile Status Management
+
+Add the ability in the admin panel to change a profile’s status between:
+
+PENDING → ACTIVE
+
+ACTIVE → INACTIVE
+
+Implement this as a dropdown or toggle in the profile edit view.
+
+Terminology Update
+
+Change all instances of the word APPROVED to ACTIVE throughout the admin panel and related database/UI references.
+
+Submission Date Display
+
+In the main admin panel profiles list, display the date of submission to the right of each name.
+
+Also show the date of submission in the profile edit view.
+
+Profile Update Date
+
+When an admin edits a profile, add or update a field that records the date/time the profile was last updated.
+
+Display this "Last Updated" date in the profile edit view.
+
+Media Uploads in Admin Panel
+
+Enable photo and media uploads from the profile edit view in the admin panel.
+
+Allow the admin to select which photo is the primary one using a toggle or radio button.
+
+Ensure uploads are saved and linked to the correct profile, and that the primary photo is clearly indicated.
+
+Full Field Access in Admin Edit
+
+In the admin panel’s profile edit page, display every field exactly as it appears on the front-end "Submit Profile" page.
+
+Ensure all fields are connected to the database and update correctly.
+
+Favorites Feature
+
+Add a large heart icon next to each profile name in the admin panel, on the /browse profiles page, and on individual profile pages (see https://holacupid.com/browse for reference).
+
+The heart should be larger than on the sample pages.
+
+The "favorite" option must be available only to signed-in users.
+
+Integrate this feature with the backend database so that favorites are tracked per registered user.
+
+Critical Requirements:
+
+Do not break or alter any existing site structure or unrelated code.
+
+All features must be fully integrated and tested for both admin and regular user flows.
+
+Use clear comments and document any new or updated code.
+
+Ensure database integrity and backward compatibility.
+
+Confirm that all user-facing changes are reflected in both the admin and front-end interfaces as specified.
+
+Please implement these changes one at a time, testing after each step, and do not proceed to the next until the previous is confirmed working.
+
+Let me know if you want this tailored for a specific tech stack (React, Django, etc.) or with more technical detail!
+
+Related
+Specify how to change status labels from "APPROVED" to "ACTIVE" in all relevant parts of the admin panel and database
+Instruct Replit to add submission date next to profiles in both main list and edit views, ensuring proper data connection and display formatting
+Guide on adding an "updated at" date field for Andy ADMIN edits, including database schema updates and form modifications
+Emphasize in your instructions that existing site structure, codebase, styles, and features must remain unchanged during all modifications
