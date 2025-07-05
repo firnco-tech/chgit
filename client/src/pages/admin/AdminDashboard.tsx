@@ -1,206 +1,203 @@
 /**
- * ADMIN PANEL PAGE - Isolated from main site
+ * ADMIN PANEL COMPONENT - Isolated from main site
  * 
  * AdminDashboard.tsx - Main dashboard for admin panel
- * Provides overview of platform statistics and recent activity
+ * This component provides overview statistics and profile management
+ * Completely separate from user-facing site functionality
  */
 
-import { AdminNavbar } from "@/components/admin/AdminNavbar";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Users,
-  FileText,
-  ShoppingCart,
-  DollarSign,
-  TrendingUp,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  Eye
-} from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AdminNavbar } from "@/components/admin/AdminNavbar";
+import { Users, FileText, DollarSign, Eye, Calendar } from "lucide-react";
+
+interface DashboardStats {
+  totalUsers: number;
+  activeProfiles: number;
+  pendingProfiles: number;
+  totalOrders: number;
+  completedOrders: number;
+  totalRevenue: number;
+}
+
+interface Profile {
+  id: number;
+  firstName: string;
+  lastName: string;
+  age: number;
+  location: string;
+  photos: string[];
+  isApproved: boolean;
+  isFeatured: boolean;
+  createdAt: string;
+}
+
+// Helper function to determine profile status
+function getProfileStatus(profile: Profile): 'PENDING' | 'ACTIVE' | 'INACTIVE' {
+  if (!profile.isApproved) return 'PENDING';
+  if (profile.isApproved && profile.isFeatured) return 'ACTIVE';
+  return 'INACTIVE';
+}
+
+// Helper function to get status badge styles
+function getStatusBadgeClass(status: 'PENDING' | 'ACTIVE' | 'INACTIVE'): string {
+  switch (status) {
+    case 'PENDING':
+      return 'bg-yellow-100 text-yellow-800';
+    case 'ACTIVE':
+      return 'bg-green-100 text-green-800';
+    case 'INACTIVE':
+      return 'bg-gray-100 text-gray-800';
+    default:
+      return 'bg-gray-100 text-gray-800';
+  }
+}
 
 export default function AdminDashboard() {
   // Fetch dashboard statistics
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  const { data: stats = {} as DashboardStats, isLoading: statsLoading } = useQuery<DashboardStats>({
     queryKey: ["/api/admin/dashboard-stats"],
   });
 
-  const { data: recentProfiles, isLoading: profilesLoading } = useQuery({
+  // Fetch recent profiles
+  const { data: recentProfiles = [] as Profile[], isLoading: profilesLoading } = useQuery<Profile[]>({
     queryKey: ["/api/admin/recent-profiles"],
   });
-
-  const { data: recentOrders, isLoading: ordersLoading } = useQuery({
-    queryKey: ["/api/admin/recent-orders"],
-  });
-
-  if (statsLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <AdminNavbar />
-        <div className="max-w-7xl mx-auto py-6 px-4">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-300 rounded w-1/4 mb-6"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-32 bg-gray-300 rounded"></div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const statCards = [
-    {
-      title: "Total Users",
-      value: stats?.totalUsers || 0,
-      icon: Users,
-      description: "Registered users",
-      trend: "+12% from last month",
-      color: "text-blue-600"
-    },
-    {
-      title: "Active Profiles",
-      value: stats?.activeProfiles || 0,
-      icon: FileText,
-      description: "Approved profiles",
-      trend: `${stats?.pendingProfiles || 0} pending approval`,
-      color: "text-green-600"
-    },
-    {
-      title: "Total Orders",
-      value: stats?.totalOrders || 0,
-      icon: ShoppingCart,
-      description: "All time orders",
-      trend: `${stats?.completedOrders || 0} completed`,
-      color: "text-purple-600"
-    },
-    {
-      title: "Revenue",
-      value: `$${stats?.totalRevenue || 0}`,
-      icon: DollarSign,
-      description: "Total revenue",
-      trend: "+8% from last month",
-      color: "text-emerald-600"
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminNavbar />
       
-      <div className="max-w-7xl mx-auto py-6 px-4">
-        <div className="mb-6">
+      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        {/* Dashboard Header */}
+        <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-600">Platform overview and management tools</p>
+          <p className="mt-2 text-gray-600">Overview of platform activity and key metrics</p>
         </div>
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {statCards.map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                  <Icon className={`h-4 w-4 ${stat.color}`} />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stat.value}</div>
-                  <p className="text-xs text-muted-foreground">{stat.description}</p>
-                  <p className="text-xs text-green-600 mt-1">{stat.trend}</p>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Recent Profiles */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>Recent Profile Submissions</span>
-                <Button variant="outline" size="sm">View All</Button>
-              </CardTitle>
-              <CardDescription>Latest profiles awaiting approval</CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              {profilesLoading ? (
-                <div className="space-y-3">
-                  {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-16 bg-gray-200 rounded animate-pulse"></div>
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {recentProfiles?.map((profile: any) => (
-                    <div key={profile.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                          <Users className="h-5 w-5 text-gray-600" />
-                        </div>
-                        <div>
-                          <p className="font-medium">{profile.firstName} {profile.lastName}</p>
-                          <p className="text-sm text-gray-500">{profile.location}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Badge variant={profile.isApproved ? "default" : "secondary"}>
-                          {profile.isApproved ? "Approved" : "Pending"}
-                        </Badge>
-                        <Button variant="ghost" size="sm">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <div className="text-2xl font-bold">{stats.totalUsers || 0}</div>
+              <p className="text-xs text-muted-foreground">Platform registrations</p>
             </CardContent>
           </Card>
 
-          {/* Recent Orders */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>Recent Orders</span>
-                <Button variant="outline" size="sm">View All</Button>
-              </CardTitle>
-              <CardDescription>Latest customer purchases</CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Active Profiles</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              {ordersLoading ? (
-                <div className="space-y-3">
-                  {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-16 bg-gray-200 rounded animate-pulse"></div>
-                  ))}
-                </div>
+              <div className="text-2xl font-bold">{stats.activeProfiles || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                {stats.pendingProfiles || 0} pending approval
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.totalOrders || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                {stats.completedOrders || 0} completed
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">${stats.totalRevenue || 0}</div>
+              <p className="text-xs text-muted-foreground">Platform earnings</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* PROFILES Section */}
+        <div className="grid grid-cols-1 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                PROFILES
+              </CardTitle>
+              <CardDescription>Manage and review all platform profiles</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {profilesLoading ? (
+                <p className="text-sm text-gray-500">Loading profiles...</p>
+              ) : recentProfiles.length === 0 ? (
+                <p className="text-sm text-gray-500">No profiles found</p>
               ) : (
-                <div className="space-y-3">
-                  {recentOrders?.map((order: any) => (
-                    <div key={order.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                          <ShoppingCart className="h-5 w-5 text-gray-600" />
+                <div className="space-y-4">
+                  {recentProfiles.map((profile) => {
+                    const status = getProfileStatus(profile);
+                    const primaryPhoto = profile.photos && profile.photos.length > 0 ? profile.photos[0] : null;
+                    
+                    return (
+                      <div key={profile.id} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+                        <div className="flex items-center space-x-4">
+                          {/* Profile Picture */}
+                          <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                            {primaryPhoto ? (
+                              <img 
+                                src={primaryPhoto} 
+                                alt={`${profile.firstName} ${profile.lastName}`}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-pink-100 flex items-center justify-center">
+                                <span className="text-lg font-medium text-pink-600">
+                                  {profile.firstName?.[0] || 'U'}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* Profile Info - Clickable Name */}
+                          <div>
+                            <button 
+                              className="text-left hover:text-blue-600 transition-colors"
+                              onClick={() => window.open(`/profile/${profile.id}`, '_blank')}
+                            >
+                              <p className="text-base font-medium text-gray-900 hover:text-blue-600">
+                                {profile.firstName} {profile.lastName}
+                              </p>
+                            </button>
+                            <p className="text-sm text-gray-500">
+                              {profile.age} • {profile.location}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              Added {new Date(profile.createdAt).toLocaleDateString()}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium">Order #{order.id}</p>
-                          <p className="text-sm text-gray-500">{order.customerEmail}</p>
+                        
+                        {/* Status and Actions */}
+                        <div className="flex items-center space-x-3">
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(status)}`}>
+                            {status}
+                          </span>
+                          <button className="text-blue-600 hover:text-blue-800 p-1">
+                            <Eye className="h-4 w-4" />
+                          </button>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <span className="font-medium">${order.total}</span>
-                        <Badge variant={order.status === 'completed' ? "default" : "secondary"}>
-                          {order.status}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </CardContent>
@@ -208,32 +205,30 @@ export default function AdminDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <Card className="mt-6">
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Common administrative tasks</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2">
-                <CheckCircle className="h-6 w-6" />
-                <span>Approve Profiles</span>
-              </Button>
-              <Button variant="outline" className="h-20 flex flex-col items-center justify-center space-y-2">
-                <Users className="h-6 w-6" />
-                <span>Manage Users</span>
-              </Button>
-              <Button variant="outline" className="h-20 flex flex-col items-center justify-center space-y-2">
-                <TrendingUp className="h-6 w-6" />
-                <span>View Analytics</span>
-              </Button>
-              <Button variant="outline" className="h-20 flex flex-col items-center justify-center space-y-2">
-                <AlertCircle className="h-6 w-6" />
-                <span>System Alerts</span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="mt-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+              <CardDescription>Common administrative tasks</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button className="flex items-center justify-center space-x-2 bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                  <FileText className="h-4 w-4" />
+                  <span>Review Profiles</span>
+                </button>
+                <button className="flex items-center justify-center space-x-2 bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-colors">
+                  <Users className="h-4 w-4" />
+                  <span>Manage Users</span>
+                </button>
+                <button className="flex items-center justify-center space-x-2 bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 transition-colors">
+                  <Calendar className="h-4 w-4" />
+                  <span>View Reports</span>
+                </button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

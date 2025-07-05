@@ -363,10 +363,10 @@ export class DatabaseStorage implements IStorage {
     let query = db.select().from(profiles);
     
     if (filters?.approved !== undefined) {
-      query = query.where(eq(profiles.approved, filters.approved));
+      query = query.where(eq(profiles.isApproved, filters.approved));
     }
     if (filters?.featured !== undefined) {
-      query = query.where(eq(profiles.featured, filters.featured));
+      query = query.where(eq(profiles.isFeatured, filters.featured));
     }
     
     query = query.orderBy(desc(profiles.createdAt));
@@ -382,8 +382,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getProfileCountByStatus(): Promise<{ approved: number; pending: number; total: number }> {
-    const [approvedCount] = await db.select({ count: sql<number>`count(*)` }).from(profiles).where(eq(profiles.approved, true));
-    const [pendingCount] = await db.select({ count: sql<number>`count(*)` }).from(profiles).where(eq(profiles.approved, false));
+    const [approvedCount] = await db.select({ count: sql<number>`count(*)` }).from(profiles).where(eq(profiles.isApproved, true));
+    const [pendingCount] = await db.select({ count: sql<number>`count(*)` }).from(profiles).where(eq(profiles.isApproved, false));
     const [totalCount] = await db.select({ count: sql<number>`count(*)` }).from(profiles);
     
     return {
