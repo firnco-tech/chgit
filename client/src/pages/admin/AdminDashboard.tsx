@@ -9,7 +9,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
-import { Users, FileText, DollarSign, Eye, Calendar } from "lucide-react";
+import { Users, FileText, DollarSign, Edit, Calendar } from "lucide-react";
 
 interface DashboardStats {
   totalUsers: number;
@@ -63,6 +63,12 @@ export default function AdminDashboard() {
   const { data: recentProfiles = [] as Profile[], isLoading: profilesLoading } = useQuery<Profile[]>({
     queryKey: ["/api/admin/recent-profiles"],
   });
+
+  // Handle edit profile action
+  const handleEditProfile = (profileId: number) => {
+    // Navigate to admin edit page (we'll implement this route)
+    window.location.href = `/admin/edit-profile/${profileId}`;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -191,8 +197,12 @@ export default function AdminDashboard() {
                           <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(status)}`}>
                             {status}
                           </span>
-                          <button className="text-blue-600 hover:text-blue-800 p-1">
-                            <Eye className="h-4 w-4" />
+                          <button 
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors flex items-center gap-1"
+                            onClick={() => handleEditProfile(profile.id)}
+                          >
+                            <Edit className="h-3 w-3" />
+                            EDIT
                           </button>
                         </div>
                       </div>

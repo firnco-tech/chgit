@@ -17,6 +17,7 @@ import NotFound from "@/pages/not-found";
 
 // Admin Panel Components - Isolated from main site
 import AdminDashboard from "@/pages/admin/AdminDashboard";
+import AdminEditProfile from "@/pages/admin/AdminEditProfile";
 
 function Router() {
   return (
@@ -33,6 +34,7 @@ function Router() {
       
       {/* Admin Panel Routes - Isolated section */}
       <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin/edit-profile/:id" component={AdminEditProfile} />
       
       <Route component={NotFound} />
     </Switch>

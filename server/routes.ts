@@ -249,6 +249,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin get single profile for editing
+  app.get("/api/admin/profiles/:id", async (req, res) => {
+    try {
+      const profileId = parseInt(req.params.id);
+      const profile = await storage.getProfile(profileId);
+      
+      if (!profile) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      
+      res.json(profile);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching profile: " + error.message });
+    }
+  });
+
+  // Admin profile update
+  app.patch("/api/admin/profiles/:id", async (req, res) => {
+    try {
+      const profileId = parseInt(req.params.id);
+      const updateData = req.body;
+      
+      const updatedProfile = await storage.updateProfile(profileId, updateData);
+      
+      if (!updatedProfile) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      
+      res.json(updatedProfile);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error updating profile: " + error.message });
+    }
+  });
+
   // Admin recent orders
   app.get("/api/admin/recent-orders", async (req, res) => {
     try {
