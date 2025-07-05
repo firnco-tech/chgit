@@ -19,13 +19,15 @@ export default function Help() {
             </Card>
           </Link>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
-            <CardHeader className="text-center">
-              <Shield className="h-12 w-12 mx-auto text-green-600 group-hover:text-green-700" />
-              <CardTitle className="text-xl group-hover:text-green-700">Safety Tips</CardTitle>
-              <CardDescription>Learn how to stay safe online</CardDescription>
-            </CardHeader>
-          </Card>
+          <Link href="/safety">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
+              <CardHeader className="text-center">
+                <Shield className="h-12 w-12 mx-auto text-green-600 group-hover:text-green-700" />
+                <CardTitle className="text-xl group-hover:text-green-700">Safety Tips</CardTitle>
+                <CardDescription>Learn how to stay safe online</CardDescription>
+              </CardHeader>
+            </Card>
+          </Link>
 
           <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
             <CardHeader className="text-center">
