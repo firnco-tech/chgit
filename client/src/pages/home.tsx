@@ -40,15 +40,10 @@ export default function Home() {
             <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
               Connect with verified profiles from Dominican Republic. Browse, select, and get direct contact information instantly.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Link href="/browse">
                 <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
                   Browse Profiles
-                </Button>
-              </Link>
-              <Link href="/submit-profile">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary">
-                  Submit Your Profile
                 </Button>
               </Link>
             </div>
