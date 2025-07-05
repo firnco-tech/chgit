@@ -56,6 +56,13 @@ export function Navbar() {
                     Contact
                   </span>
                 </Link>
+                <Link href="/help">
+                  <span className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer ${
+                    isActive('/help') ? 'text-primary' : 'text-gray-500 hover:text-primary'
+                  }`}>
+                    Help
+                  </span>
+                </Link>
               </div>
             </div>
 
