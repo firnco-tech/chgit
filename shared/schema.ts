@@ -11,26 +11,43 @@ export const users = pgTable("users", {
 
 export const profiles = pgTable("profiles", {
   id: serial("id").primaryKey(),
+  // Personal Information
   firstName: text("first_name").notNull(),
   lastName: text("last_name"),
   age: integer("age").notNull(),
   gender: text("gender").notNull(),
   height: text("height"),
   location: text("location").notNull(),
+  
+  // Profile Details
   education: text("education"),
   occupation: text("occupation"),
-  relationshipStatus: text("relationship_status"),
+  occupationDetails: text("occupation_details"), // For specific occupation selection
   languages: text("languages").array(),
+  relationshipStatus: text("relationship_status"),
   children: text("children"),
   smoking: text("smoking"),
-  drinking: text("drinking"),
   bodyType: text("body_type"),
   appearance: text("appearance"),
+  drinking: text("drinking"),
   lookingFor: text("looking_for").array(),
   aboutMe: text("about_me"),
   interests: text("interests").array(),
+  
+  // Media
   photos: text("photos").array(),
+  videos: text("videos").array(),
+  
+  // Contact Methods - stored as JSON with all possible contact methods
   contactMethods: json("contact_methods"),
+  
+  // Terms and Agreements
+  ageConfirmation: boolean("age_confirmation").default(false),
+  termsAccepted: boolean("terms_accepted").default(false),
+  reviewConsent: boolean("review_consent").default(false),
+  contactSharingConsent: boolean("contact_sharing_consent").default(false),
+  
+  // System fields
   price: decimal("price", { precision: 10, scale: 2 }).notNull().default("2.00"),
   isApproved: boolean("is_approved").default(false),
   isFeatured: boolean("is_featured").default(false),
