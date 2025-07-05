@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, decimal, timestamp, json } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, decimal, timestamp, json, varchar } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -122,3 +122,79 @@ export type Order = typeof orders.$inferSelect;
 export type InsertOrder = z.infer<typeof insertOrderSchema>;
 export type OrderItem = typeof orderItems.$inferSelect;
 export type InsertOrderItem = z.infer<typeof insertOrderItemSchema>;
+
+// =============================================================================
+// ADMIN PANEL SCHEMA - Isolated admin functionality
+// =============================================================================
+
+// Admin users table - separate from regular users
+export const adminUsers = pgTable("admin_users", {
+  id: serial("id").primaryKey(),
+  username: text("username").unique().notNull(),
+  email: text("email").unique().notNull(),
+  passwordHash: text("password_hash").notNull(),
+  role: text("role").default("admin").notNull(), // admin, super_admin
+  isActive: boolean("is_active").default(true).notNull(),
+  lastLogin: timestamp("last_login"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Admin activity log for security and auditing
+export const adminActivityLog = pgTable("admin_activity_log", {
+  id: serial("id").primaryKey(),
+  adminId: integer("admin_id").references(() => adminUsers.id).notNull(),
+  action: text("action").notNull(), // profile_approved, profile_rejected, user_blocked, etc.
+  targetType: text("target_type").notNull(), // profile, user, order, etc.
+  targetId: integer("target_id").notNull(),
+  details: json("details"), // Additional context about the action
+  ipAddress: text("ip_address"),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+});
+
+// Admin settings for platform configuration
+export const adminSettings = pgTable("admin_settings", {
+  id: serial("id").primaryKey(),
+  key: text("key").unique().notNull(),
+  value: text("value").notNull(),
+  description: text("description"),
+  updatedBy: integer("updated_by").references(() => adminUsers.id),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Admin relations
+export const adminUsersRelations = relations(adminUsers, ({ many }) => ({
+  activityLogs: many(adminActivityLog),
+  settingsUpdates: many(adminSettings),
+}));
+
+export const adminActivityLogRelations = relations(adminActivityLog, ({ one }) => ({
+  admin: one(adminUsers, {
+    fields: [adminActivityLog.adminId],
+    references: [adminUsers.id],
+  }),
+}));
+
+// Admin schema types
+export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertAdminActivityLogSchema = createInsertSchema(adminActivityLog).omit({
+  id: true,
+  timestamp: true,
+});
+
+export const insertAdminSettingsSchema = createInsertSchema(adminSettings).omit({
+  id: true,
+  updatedAt: true,
+});
+
+export type AdminUser = typeof adminUsers.$inferSelect;
+export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
+export type AdminActivityLog = typeof adminActivityLog.$inferSelect;
+export type InsertAdminActivityLog = z.infer<typeof insertAdminActivityLogSchema>;
+export type AdminSettings = typeof adminSettings.$inferSelect;
+export type InsertAdminSettings = z.infer<typeof insertAdminSettingsSchema>;

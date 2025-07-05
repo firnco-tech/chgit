@@ -208,6 +208,118 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // =============================================================================
+  // ADMIN PANEL API ROUTES - Isolated admin functionality
+  // =============================================================================
+  
+  // Admin dashboard statistics
+  app.get("/api/admin/dashboard-stats", async (req, res) => {
+    try {
+      // Get profile counts
+      const profileStats = await storage.getProfileCountByStatus();
+      
+      // Get order stats
+      const orderStats = await storage.getOrderStats();
+      
+      // Get user count (using regular users table)
+      const userCount = await storage.getProfiles(); // Use profiles as user count proxy
+      
+      res.json({
+        totalUsers: userCount.length,
+        activeProfiles: profileStats.approved,
+        pendingProfiles: profileStats.pending,
+        totalOrders: orderStats.total,
+        completedOrders: orderStats.completed,
+        totalRevenue: orderStats.revenue
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching dashboard stats: " + error.message });
+    }
+  });
+
+  // Admin recent profiles
+  app.get("/api/admin/recent-profiles", async (req, res) => {
+    try {
+      const profiles = await storage.getProfilesForAdmin({
+        limit: 10
+      });
+      res.json(profiles);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching recent profiles: " + error.message });
+    }
+  });
+
+  // Admin recent orders
+  app.get("/api/admin/recent-orders", async (req, res) => {
+    try {
+      const orders = await storage.getOrdersForAdmin({
+        limit: 10
+      });
+      res.json(orders);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching recent orders: " + error.message });
+    }
+  });
+
+  // Admin profile management
+  app.get("/api/admin/profiles", async (req, res) => {
+    try {
+      const { status, limit = 50, offset = 0 } = req.query;
+      const approved = status === 'approved' ? true : status === 'pending' ? false : undefined;
+      
+      const profiles = await storage.getProfilesForAdmin({
+        approved,
+        limit: parseInt(limit as string),
+        offset: parseInt(offset as string)
+      });
+      
+      res.json(profiles);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching admin profiles: " + error.message });
+    }
+  });
+
+  // Admin approve profile
+  app.post("/api/admin/profiles/:id/approve", async (req, res) => {
+    try {
+      const profile = await storage.approveProfile(parseInt(req.params.id));
+      if (!profile) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      
+      // TODO: Log admin activity
+      // await storage.logAdminActivity({
+      //   adminId: req.adminUser.id,
+      //   action: "profile_approved",
+      //   targetType: "profile",
+      //   targetId: profile.id,
+      //   details: {},
+      //   ipAddress: req.ip
+      // });
+      
+      res.json(profile);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error approving profile: " + error.message });
+    }
+  });
+
+  // Admin orders management
+  app.get("/api/admin/orders", async (req, res) => {
+    try {
+      const { status, limit = 50, offset = 0 } = req.query;
+      
+      const orders = await storage.getOrdersForAdmin({
+        status: status as string,
+        limit: parseInt(limit as string),
+        offset: parseInt(offset as string)
+      });
+      
+      res.json(orders);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching admin orders: " + error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
