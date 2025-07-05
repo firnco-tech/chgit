@@ -49,6 +49,13 @@ export function Navbar() {
                     Submit Profile
                   </span>
                 </Link>
+                <Link href="/contact">
+                  <span className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer ${
+                    isActive('/contact') ? 'text-primary' : 'text-gray-500 hover:text-primary'
+                  }`}>
+                    Contact
+                  </span>
+                </Link>
               </div>
             </div>
 

@@ -8,6 +8,7 @@ import Home from "@/pages/home";
 import Browse from "@/pages/browse";
 import ProfilePage from "@/pages/profile";
 import SubmitProfile from "@/pages/submit-profile";
+import Contact from "@/pages/contact";
 import Checkout from "@/pages/checkout";
 import Cart from "@/pages/cart";
 import NotFound from "@/pages/not-found";
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/browse" component={Browse} />
       <Route path="/profile/:id" component={ProfilePage} />
       <Route path="/submit-profile" component={SubmitProfile} />
+      <Route path="/contact" component={Contact} />
       <Route path="/checkout" component={Checkout} />
       <Route path="/cart" component={Cart} />
       <Route component={NotFound} />
