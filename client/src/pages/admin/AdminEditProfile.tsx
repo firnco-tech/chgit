@@ -798,7 +798,51 @@ export default function AdminEditProfile() {
             </CardContent>
           </Card>
 
-          {/* Actions */}
+          {/* Quick Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-3">
+                <Button 
+                  type="button"
+                  variant={formData.isApproved ? "default" : "outline"}
+                  onClick={() => {
+                    handleInputChange('isApproved', !formData.isApproved);
+                    // Auto-save after approval change
+                    setTimeout(() => {
+                      const quickSaveData = { isApproved: !formData.isApproved };
+                      updateMutation.mutate(quickSaveData);
+                    }, 100);
+                  }}
+                  disabled={updateMutation.isPending}
+                  className={formData.isApproved ? "bg-green-600 hover:bg-green-700" : ""}
+                >
+                  {formData.isApproved ? 'Approved ✓' : 'Approve Profile'}
+                </Button>
+                
+                <Button 
+                  type="button"
+                  variant={formData.isFeatured ? "default" : "outline"}
+                  onClick={() => {
+                    handleInputChange('isFeatured', !formData.isFeatured);
+                    // Auto-save after featured change
+                    setTimeout(() => {
+                      const quickSaveData = { isFeatured: !formData.isFeatured };
+                      updateMutation.mutate(quickSaveData);
+                    }, 100);
+                  }}
+                  disabled={updateMutation.isPending}
+                  className={formData.isFeatured ? "bg-blue-600 hover:bg-blue-700" : ""}
+                >
+                  {formData.isFeatured ? 'Featured ⭐' : 'Make Featured'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Form Actions */}
           <div className="flex justify-end space-x-4">
             <Button type="button" variant="outline" onClick={handleBack}>
               <X className="h-4 w-4 mr-2" />
@@ -810,7 +854,7 @@ export default function AdminEditProfile() {
               className="bg-green-600 hover:bg-green-700"
             >
               <Save className="h-4 w-4 mr-2" />
-              {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
+              {updateMutation.isPending ? 'Saving...' : 'Save All Changes'}
             </Button>
           </div>
         </form>
