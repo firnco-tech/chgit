@@ -41,22 +41,28 @@ export default function AdminLogin() {
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginRequest): Promise<LoginResponse> => {
+      console.log('Sending login request:', data);
       const response = await apiRequest('/api/admin/login', {
         method: 'POST',
         body: data
       });
+      console.log('Login response received:', response);
       return response;
     },
     onSuccess: (response) => {
+      console.log('Login onSuccess called with:', response);
       if (response.success) {
+        console.log('Login successful, navigating to /admin');
         // Redirect to admin dashboard on successful login
         navigate('/admin');
       } else {
+        console.log('Login response indicates failure');
         setError('Login failed. Please check your credentials.');
       }
     },
     onError: (error: any) => {
       console.error('Login error:', error);
+      console.error('Error details:', JSON.stringify(error));
       setError(error.message || 'Login failed. Please try again.');
     }
   });
