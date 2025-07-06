@@ -66,6 +66,11 @@ export function requireAdminRole(
         
         if (superAdminSession && superAdminSession.expiresAt > new Date()) {
           const superAdmin = await storage.getAdminUser(superAdminSession.adminId);
+          console.log('👤 SUPER ADMIN USER LOOKUP:', {
+            userFound: !!superAdmin,
+            userRole: superAdmin?.role || 'N/A',
+            userId: superAdmin?.id || 'N/A'
+          });
           
           if (superAdmin && superAdmin.role === 'superadmin') {
             req.superAdmin = {
@@ -74,6 +79,8 @@ export function requireAdminRole(
               email: superAdmin.email,
               role: superAdmin.role
             };
+            
+            console.log('✅ SUPER ADMIN AUTHENTICATED - CALLING NEXT()');
             
             // Log super admin access
             await storage.logAdminActivity({
@@ -90,6 +97,12 @@ export function requireAdminRole(
             });
             
             return next();
+          } else {
+            console.log('❌ SUPER ADMIN VALIDATION FAILED:', {
+              userExists: !!superAdmin,
+              actualRole: superAdmin?.role || 'N/A',
+              expectedRole: 'superadmin'
+            });
           }
         }
       }
