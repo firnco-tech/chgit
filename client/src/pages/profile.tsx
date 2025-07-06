@@ -6,10 +6,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FavoriteHeart } from "@/components/FavoriteHeart";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
-import { ArrowLeft, MessageCircle, Instagram, Mail, Shield, Zap, Lock, Phone, Send, Facebook, Video } from "lucide-react";
+import { ArrowLeft, MessageCircle, Instagram, Mail, Shield, Zap, Lock, Phone, Send, Facebook, Video, Play } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { getMediaUrl } from "@/lib/mediaUtils";
 import type { Profile } from "@shared/schema";
 
 export default function ProfilePage() {
@@ -78,24 +79,78 @@ export default function ProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Profile Images Carousel */}
           <div className="space-y-4">
-            {profile.photos && profile.photos.length > 0 ? (
+            {/* Combined Media Carousel (Photos + Videos) */}
+            {((profile.photos && profile.photos.length > 0) || (profile.videos && profile.videos.length > 0)) ? (
               <Carousel className="w-full" setApi={setCarouselApi}>
                 <CarouselContent>
-                  {profile.photos.map((photo, index) => (
-                    <CarouselItem key={index}>
-                      <div className="aspect-[3/4] overflow-hidden rounded-xl shadow-lg">
+                  {/* Photos */}
+                  {profile.photos && profile.photos.map((photo, index) => (
+                    <CarouselItem key={`photo-${index}`}>
+                      <div className="aspect-[3/4] overflow-hidden rounded-xl shadow-lg relative">
                         <img 
-                          src={photo.startsWith('data:') || photo.startsWith('http') || photo.startsWith('/uploads/') 
-                            ? photo 
-                            : photo.match(/^[a-f0-9\-]{36}\.(jpg|jpeg|png|gif|webp)$/i)
-                              ? `/uploads/images/${photo}`
-                              : `https://picsum.photos/400/500?random=${profile.id + index}`}
+                          src={getMediaUrl(photo, 'image')}
                           alt={`${profile.firstName} photo ${index + 1}`}
                           className="w-full h-full object-cover"
                           onError={(e) => {
-                            e.currentTarget.src = `https://picsum.photos/400/500?random=${profile.id + index + 1000}`;
+                            e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
+                              <svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500">
+                                <rect width="400" height="500" fill="#f3f4f6"/>
+                                <circle cx="200" cy="200" r="50" fill="#d1d5db"/>
+                                <path d="M150 300 L250 300 L230 350 L170 350 Z" fill="#d1d5db"/>
+                                <text x="200" y="420" text-anchor="middle" font-family="Arial" font-size="16" fill="#6b7280">Photo Preview</text>
+                              </svg>
+                            `)}`;
                           }}
                         />
+                        <div className="absolute top-4 left-4 bg-blue-500 text-white text-sm px-2 py-1 rounded-full font-medium flex items-center gap-1">
+                          <span>📷</span>
+                          <span>Photo</span>
+                        </div>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                  
+                  {/* Videos */}
+                  {profile.videos && profile.videos.map((video, index) => (
+                    <CarouselItem key={`video-${index}`}>
+                      <div className="aspect-[3/4] overflow-hidden rounded-xl shadow-lg relative bg-black">
+                        <video 
+                          src={getMediaUrl(video, 'video')}
+                          className="w-full h-full object-cover"
+                          controls
+                          preload="metadata"
+                          poster={`data:image/svg+xml;base64,${btoa(`
+                            <svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500">
+                              <rect width="400" height="500" fill="#1f2937"/>
+                              <circle cx="200" cy="250" r="60" fill="#374151" stroke="#6b7280" stroke-width="3"/>
+                              <polygon points="175,220 175,280 235,250" fill="#9ca3af"/>
+                              <text x="200" y="350" text-anchor="middle" font-family="Arial" font-size="16" fill="#9ca3af">Video Preview</text>
+                            </svg>
+                          `)}`}
+                          onError={(e) => {
+                            const video = e.currentTarget;
+                            video.style.display = 'none';
+                            const fallback = video.nextElementSibling as HTMLElement;
+                            if (fallback) fallback.style.display = 'flex';
+                          }}
+                        />
+                        <div 
+                          className="w-full h-full bg-gray-800 flex flex-col items-center justify-center text-white" 
+                          style={{display: 'none'}}
+                        >
+                          <div className="text-center space-y-4">
+                            <div className="w-20 h-20 rounded-full bg-gray-600 flex items-center justify-center">
+                              <Play className="w-10 h-10 text-white ml-1" />
+                            </div>
+                            <div className="text-lg font-medium">Video Preview</div>
+                            <div className="text-sm text-gray-400 px-4 break-all">{video}</div>
+                          </div>
+                        </div>
+                        
+                        <div className="absolute top-4 left-4 bg-purple-500 text-white text-sm px-2 py-1 rounded-full font-medium flex items-center gap-1">
+                          <span>🎥</span>
+                          <span>Video</span>
+                        </div>
                       </div>
                     </CarouselItem>
                   ))}
@@ -105,40 +160,88 @@ export default function ProfilePage() {
               </Carousel>
             ) : (
               <div className="w-full h-96 bg-gray-200 rounded-xl flex items-center justify-center">
-                <p className="text-gray-500">No photos available</p>
+                <p className="text-gray-500">No media available</p>
               </div>
             )}
             
-            {/* Photo Thumbnails */}
-            {profile.photos && profile.photos.length > 1 && (
+            {/* Media Thumbnails (Photos + Videos) */}
+            {((profile.photos && profile.photos.length > 0) || (profile.videos && profile.videos.length > 0)) && 
+             (profile.photos?.length + profile.videos?.length) > 1 && (
               <div className="space-y-2">
-                <div className="text-center">
-                  <Badge variant="secondary" className="text-sm">
-                    {profile.photos.length} photos
-                  </Badge>
+                <div className="text-center flex gap-2 justify-center">
+                  {profile.photos && profile.photos.length > 0 && (
+                    <Badge variant="secondary" className="text-sm">
+                      {profile.photos.length} photo{profile.photos.length !== 1 ? 's' : ''}
+                    </Badge>
+                  )}
+                  {profile.videos && profile.videos.length > 0 && (
+                    <Badge variant="secondary" className="text-sm bg-purple-100 text-purple-800">
+                      {profile.videos.length} video{profile.videos.length !== 1 ? 's' : ''}
+                    </Badge>
+                  )}
                 </div>
                 <div className="grid grid-cols-4 gap-2">
-                  {profile.photos.slice(0, 8).map((photo, index) => (
-                    <img 
-                      key={index}
-                      src={photo.startsWith('data:') || photo.startsWith('http') || photo.startsWith('/uploads/') 
-                        ? photo 
-                        : photo.match(/^[a-f0-9\-]{36}\.(jpg|jpeg|png|gif|webp)$/i)
-                          ? `/uploads/images/${photo}`
-                          : `https://picsum.photos/150/150?random=${profile.id + index + 100}`}
-                      alt={`${profile.firstName} photo ${index + 1}`}
-                      className="w-full rounded-lg aspect-square object-cover hover:opacity-80 hover:ring-2 hover:ring-primary transition-all cursor-pointer"
-                      onClick={() => carouselApi?.scrollTo(index)}
-                      onError={(e) => {
-                        e.currentTarget.src = `https://picsum.photos/150/150?random=${profile.id + index + 2000}`;
-                      }}
-                    />
+                  {/* Photo Thumbnails */}
+                  {profile.photos && profile.photos.slice(0, 6).map((photo, index) => (
+                    <div key={`thumb-photo-${index}`} className="relative">
+                      <img 
+                        src={getMediaUrl(photo, 'image')}
+                        alt={`${profile.firstName} photo ${index + 1}`}
+                        className="w-full rounded-lg aspect-square object-cover hover:opacity-80 hover:ring-2 hover:ring-blue-400 transition-all cursor-pointer"
+                        onClick={() => carouselApi?.scrollTo(index)}
+                        onError={(e) => {
+                          e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
+                            <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150">
+                              <rect width="150" height="150" fill="#f3f4f6"/>
+                              <circle cx="75" cy="60" r="20" fill="#d1d5db"/>
+                              <path d="M55 90 L95 90 L90 105 L60 105 Z" fill="#d1d5db"/>
+                              <text x="75" y="130" text-anchor="middle" font-family="Arial" font-size="10" fill="#6b7280">Photo</text>
+                            </svg>
+                          `)}`;
+                        }}
+                      />
+                      <div className="absolute top-1 left-1 bg-blue-500 text-white text-xs px-1 py-0.5 rounded">
+                        📷
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {/* Video Thumbnails */}
+                  {profile.videos && profile.videos.slice(0, 8 - (profile.photos?.length || 0)).map((video, index) => (
+                    <div key={`thumb-video-${index}`} className="relative">
+                      <div 
+                        className="w-full rounded-lg aspect-square bg-gray-900 hover:opacity-80 hover:ring-2 hover:ring-purple-400 transition-all cursor-pointer overflow-hidden"
+                        onClick={() => carouselApi?.scrollTo((profile.photos?.length || 0) + index)}
+                      >
+                        <video 
+                          src={getMediaUrl(video, 'video')}
+                          className="w-full h-full object-cover"
+                          muted
+                          preload="metadata"
+                          poster={`data:image/svg+xml;base64,${btoa(`
+                            <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150">
+                              <rect width="150" height="150" fill="#1f2937"/>
+                              <circle cx="75" cy="75" r="25" fill="#374151" stroke="#6b7280" stroke-width="2"/>
+                              <polygon points="65,60 65,90 90,75" fill="#9ca3af"/>
+                            </svg>
+                          `)}`}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <div className="w-6 h-6 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
+                            <Play className="w-3 h-3 text-white ml-0.5" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="absolute top-1 left-1 bg-purple-500 text-white text-xs px-1 py-0.5 rounded">
+                        🎥
+                      </div>
+                    </div>
                   ))}
                 </div>
-                {profile.photos.length > 8 && (
+                {(profile.photos?.length + profile.videos?.length) > 8 && (
                   <div className="text-center">
                     <Badge variant="outline" className="text-xs">
-                      +{profile.photos.length - 8} more photos
+                      +{(profile.photos?.length + profile.videos?.length) - 8} more media
                     </Badge>
                   </div>
                 )}
