@@ -801,16 +801,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/admin/user", requireAdmin, async (req, res) => {
     try {
       const currentUser = getCurrentUser(req);
-      if (currentUser.admin) {
-        const { passwordHash, ...userResponse } = currentUser.admin;
-        res.json(userResponse);
-      } else if (currentUser.superAdmin) {
-        const { passwordHash, ...userResponse } = currentUser.superAdmin;
+      console.log('🔍 CURRENT USER DEBUG:', {
+        userExists: !!currentUser,
+        userType: currentUser?.type || 'N/A',
+        userId: currentUser?.id || 'N/A'
+      });
+      
+      if (currentUser) {
+        // Remove passwordHash from response if it exists
+        const { passwordHash, ...userResponse } = currentUser as any;
         res.json(userResponse);
       } else {
         res.status(401).json({ message: "Not authenticated" });
       }
     } catch (error: any) {
+      console.error('Error in /api/admin/user:', error);
       res.status(500).json({ message: "Error fetching user: " + error.message });
     }
   });
