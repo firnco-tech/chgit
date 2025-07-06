@@ -457,26 +457,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { email, password } = loginUserSchema.parse(req.body);
-      console.log('🔄 Login Debug - Attempting login for:', email);
       
       const user = await storage.getUserByEmail(email);
       if (!user || !user.isActive) {
-        console.log('❌ Login Debug - User not found or inactive');
         return res.status(401).json({ message: "Invalid credentials" });
       }
       
       const validPassword = await verifyPassword(password, user.passwordHash);
       if (!validPassword) {
-        console.log('❌ Login Debug - Invalid password');
         return res.status(401).json({ message: "Invalid credentials" });
       }
       
       // Create session
       const sessionId = await createUserSession(user.id);
       req.session.userId = sessionId;
-      
-      console.log('✅ Login Debug - Session created:', sessionId);
-      console.log('🔍 Login Debug - Session object:', JSON.stringify(req.session, null, 2));
       
       // Update last login
       await storage.updateUser(user.id, { lastLogin: new Date() });
@@ -492,7 +486,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         },
       });
     } catch (error: any) {
-      console.error('❌ Login Debug - Error:', error);
       res.status(400).json({ message: "Login failed: " + error.message });
     }
   });
@@ -530,6 +523,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // =============================================================================
   // USER FAVORITES API ROUTES - REQUIRES AUTHENTICATION (STEP 1 ENFORCEMENT)
   // =============================================================================
+  
+  // Get all user favorites - PROTECTED ROUTE
+  app.get("/api/favorites", requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.id; // From authenticated session
+      const favorites = await storage.getUserFavorites(userId);
+      res.json(favorites);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching favorites: " + error.message });
+    }
+  });
   
   // Add profile to favorites - PROTECTED ROUTE
   app.post("/api/favorites/:profileId", requireAuth, async (req, res) => {

@@ -13,6 +13,7 @@ import Help from "@/pages/help";
 import Safety from "@/pages/safety";
 import Checkout from "@/pages/checkout";
 import Cart from "@/pages/cart";
+import Favorites from "@/pages/favorites";
 import NotFound from "@/pages/not-found";
 
 // Admin Panel Components - Isolated from main site
@@ -32,6 +33,7 @@ function Router() {
       <Route path="/safety" component={Safety} />
       <Route path="/checkout" component={Checkout} />
       <Route path="/cart" component={Cart} />
+      <Route path="/favorites" component={Favorites} />
       
       {/* Admin Panel Routes - Isolated section */}
       <Route path="/admin" component={AdminDashboard} />
