@@ -20,6 +20,7 @@ import { AdminNavbar } from "@/components/admin/AdminNavbar";
 import { ArrowLeft, Save, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { getMediaUrl } from "@/lib/mediaUtils";
 
 interface Profile {
   id: number;
@@ -92,7 +93,7 @@ export default function AdminEditProfile() {
   // Update profile mutation
   const updateMutation = useMutation({
     mutationFn: async (data: Partial<Profile>) => {
-      return await apiRequest("PATCH", `/api/admin/profiles/${profileId}`, data);
+      return await apiRequest(`/api/admin/profiles/${profileId}`, { method: "PATCH", body: data });
     },
     onSuccess: () => {
       toast({
@@ -593,7 +594,7 @@ export default function AdminEditProfile() {
                             : 'border-gray-200'
                         }`}>
                           <img 
-                            src={photo.startsWith('data:') || photo.startsWith('http') ? photo : `https://picsum.photos/200/150?random=${index}`} 
+                            src={getMediaUrl(photo, 'image')} 
                             alt={`Photo ${index + 1}`}
                             className={`w-full h-40 object-cover ${
                               formData.inactivePhotos?.includes(photo) ? 'grayscale' : ''
@@ -742,7 +743,7 @@ export default function AdminEditProfile() {
                             : 'border-gray-200'
                         }`}>
                           <video 
-                            src={video.startsWith('data:') || video.startsWith('http') ? video : `https://sample-videos.com/zip/10/mp4/SampleVideo_360x240_1mb.mp4`}
+                            src={getMediaUrl(video, 'video')}
                             className="w-full h-48 object-cover"
                             controls
                             preload="metadata"

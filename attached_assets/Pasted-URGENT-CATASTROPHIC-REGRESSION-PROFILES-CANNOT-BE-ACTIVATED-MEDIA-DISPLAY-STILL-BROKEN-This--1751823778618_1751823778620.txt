@@ -1,0 +1,90 @@
+URGENT: CATASTROPHIC REGRESSION – PROFILES CANNOT BE ACTIVATED & MEDIA DISPLAY STILL BROKEN
+
+This is a severe, site-breaking regression. Two major issues must be fixed immediately, with NO further regressions, NO unrelated changes, and NO “no issue found” responses:
+
+1. Catastrophic Issue: Profiles Cannot Be Activated
+Current Situation:
+In the admin panel, attempting to change any profile from “PENDING” to “ACTIVE” does NOT work. Profiles remain in “PENDING” status, regardless of admin actions.
+
+Expected Behavior:
+When an admin sets a profile to “ACTIVE” and saves, the profile status must update in the database and the profile must become visible on the public website.
+
+Severity:
+This is catastrophic. It prevents any new profiles from being published and breaks core site functionality.
+
+2. Major Issue: Media Display Still Broken in Profile Edit
+Current Situation:
+In the admin panel’s profile edit view, uploaded media (photos/videos) for new profiles do NOT display correctly. Instead, sample images are shown, even though thumbnails are correct in the dashboard and files exist on the server.
+
+Expected Behavior:
+The profile edit view must show the actual uploaded media for each profile, not sample images.
+
+MANDATORY STEPS TO FIX (DO NOT SKIP OR MERGE STEPS):
+A. Profile Activation Bug
+Reproduce the Bug:
+
+Attempt to activate a pending profile (e.g., “ARLENY ZORILA”) in the admin panel.
+
+Confirm that the profile remains in “PENDING” status after saving.
+
+Trace the Data Flow:
+
+Check the admin panel’s request to update profile status.
+
+Verify the backend API receives the correct request and updates the database.
+
+Confirm the database status actually changes from “PENDING” to “ACTIVE.”
+
+Confirm the profile is visible on the public site after activation.
+
+Fix the Bug:
+
+Repair the admin panel, backend, or database logic so that status changes are saved and reflected on the front end.
+
+Do NOT change or break any other features.
+
+Demonstrate the Fix:
+
+Show a profile successfully changing from “PENDING” to “ACTIVE,” and appearing on the public site.
+
+Provide before/after screenshots or screencast.
+
+B. Media Display Bug
+Reproduce the Bug:
+
+Edit a profile with uploaded media in the admin panel.
+
+Confirm that the edit view does NOT show the actual uploaded media.
+
+Trace the Data Flow:
+
+Follow the media data from the database, through the backend, to the frontend component.
+
+Identify where the correct media references are lost or replaced by sample images.
+
+Fix the Bug:
+
+Repair the code so the profile edit view displays the actual uploaded media.
+
+Do NOT add, remove, or alter any other features or data.
+
+Demonstrate the Fix:
+
+Show the correct media displaying in the profile edit view for a recent profile.
+
+Provide before/after screenshots or screencast.
+
+CRITICAL INSTRUCTIONS:
+Do NOT respond with “no issue found” or “works as designed.”
+You must fix these user-facing, site-breaking bugs and provide proof.
+
+Do NOT introduce new features, sample data, or UI changes.
+
+Do NOT break or alter any other site functionality.
+
+Wait for my approval after each fix before proceeding.
+
+If you encounter a blocking issue, STOP and report immediately.
+
+Begin with Step A1: Reproduce and fix the profile activation bug. Provide proof before moving to the media display issue.
+
