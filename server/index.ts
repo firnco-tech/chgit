@@ -14,7 +14,9 @@ app.use(session({
     secure: false, // Set to true in production with HTTPS
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    sameSite: 'lax', // Important for session cookies
   },
+  name: 'sessionId', // Custom session name
 }));
 
 app.use(express.json());

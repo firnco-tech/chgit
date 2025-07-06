@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { Loader2, Heart, UserPlus, LogIn } from 'lucide-react';
 
@@ -19,6 +19,7 @@ interface AuthModalProps {
 export function AuthModal({ isOpen, onClose, onSuccess, trigger = 'general' }: AuthModalProps) {
   const [isLogin, setIsLogin] = useState(true);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Login mutation
   const loginMutation = useMutation({
@@ -29,6 +30,8 @@ export function AuthModal({ isOpen, onClose, onSuccess, trigger = 'general' }: A
       });
     },
     onSuccess: () => {
+      // Invalidate auth queries to refresh user state
+      queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
       toast({
         title: "Welcome back!",
         description: "You've successfully logged in.",
@@ -54,6 +57,8 @@ export function AuthModal({ isOpen, onClose, onSuccess, trigger = 'general' }: A
       });
     },
     onSuccess: () => {
+      // Invalidate auth queries to refresh user state
+      queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
       toast({
         title: "Account created!",
         description: "Welcome to HolaCupid! You can now save your favorite profiles.",

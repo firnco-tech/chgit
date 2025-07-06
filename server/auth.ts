@@ -89,7 +89,12 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
   try {
     const sessionId = req.session?.userId;
     
+    // Debug logging for session investigation
+    console.log('🔍 Auth Debug - Session ID:', sessionId);
+    console.log('🔍 Auth Debug - Session:', JSON.stringify(req.session, null, 2));
+    
     if (!sessionId) {
+      console.log('❌ Auth Debug - No session ID found');
       return res.status(401).json({ 
         message: 'Authentication required',
         requiresLogin: true 
@@ -97,8 +102,10 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
     }
     
     const user = await validateSession(sessionId);
+    console.log('🔍 Auth Debug - User from session:', user ? `${user.username} (${user.email})` : 'null');
     
     if (!user) {
+      console.log('❌ Auth Debug - Invalid session, destroying');
       // Clear invalid session
       req.session.destroy((err: any) => {
         if (err) console.error('Session destroy error:', err);
@@ -112,12 +119,14 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
     
     // CRITICAL: Ensure admin users cannot use front-end features
     if (user.isAdmin || user.role === 'admin') {
+      console.log('❌ Auth Debug - Admin user blocked from user features');
       return res.status(403).json({ 
         message: 'Admin users cannot access user features',
         error: 'ADMIN_ACCESS_DENIED'
       });
     }
     
+    console.log('✅ Auth Debug - User authenticated successfully');
     req.user = user;
     next();
   } catch (error) {
