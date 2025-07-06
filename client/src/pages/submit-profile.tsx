@@ -941,7 +941,94 @@ export default function SubmitProfile() {
                 
                 {/* Unified Media Upload Area */}
                 <div className="space-y-4">
-                  <div className="border-2 border-dashed border-blue-300 rounded-xl p-8 text-center bg-gradient-to-br from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 transition-all duration-300">
+                  <div 
+                    className="border-2 border-dashed border-blue-300 rounded-xl p-8 text-center bg-gradient-to-br from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 transition-all duration-300"
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      e.currentTarget.classList.add('border-blue-500', 'bg-blue-100');
+                    }}
+                    onDragLeave={(e) => {
+                      e.preventDefault();
+                      e.currentTarget.classList.remove('border-blue-500', 'bg-blue-100');
+                    }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      e.currentTarget.classList.remove('border-blue-500', 'bg-blue-100');
+                      
+                      const files = Array.from(e.dataTransfer.files);
+                      const totalFiles = (uploadedPhotos.length + uploadedVideos.length + files.length);
+                      
+                      if (totalFiles > 10) {
+                        toast({
+                          title: "Too many files",
+                          description: "Maximum 10 files allowed. Please remove some files first.",
+                          variant: "destructive",
+                        });
+                        return;
+                      }
+                      
+                      if (files.length > 0) {
+                        const validFiles = files.filter(file => 
+                          file.type.startsWith('image/') || file.type.startsWith('video/')
+                        );
+                        
+                        if (validFiles.length === 0) {
+                          toast({
+                            title: "Invalid file type",
+                            description: "Please upload only image or video files.",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        
+                        if (validFiles.length < files.length) {
+                          toast({
+                            title: "Some files skipped",
+                            description: `${files.length - validFiles.length} file(s) were skipped (invalid type).`,
+                            variant: "destructive",
+                          });
+                        }
+                        
+                        // Process valid files
+                        setUploadingFiles(true);
+                        uploadFiles(validFiles).then(uploadedUrls => {
+                          const newPhotos: string[] = [];
+                          const newVideos: string[] = [];
+                          
+                          uploadedUrls.forEach((url, index) => {
+                            const file = validFiles[index];
+                            if (file.type.startsWith('image/')) {
+                              newPhotos.push(url);
+                            } else if (file.type.startsWith('video/')) {
+                              newVideos.push(url);
+                            }
+                          });
+                          
+                          const allPhotos = [...uploadedPhotos, ...newPhotos];
+                          const allVideos = [...uploadedVideos, ...newVideos];
+                          
+                          setUploadedPhotos(allPhotos);
+                          setUploadedVideos(allVideos);
+                          
+                          form.setValue('photos', allPhotos);
+                          form.setValue('videos', allVideos);
+                          
+                          toast({
+                            title: "Media uploaded successfully!",
+                            description: `${newPhotos.length} photo(s) and ${newVideos.length} video(s) uploaded.`,
+                          });
+                        }).catch(error => {
+                          toast({
+                            title: "Upload failed",
+                            description: "Failed to upload media. Please try again.",
+                            variant: "destructive",
+                          });
+                        }).finally(() => {
+                          setUploadingFiles(false);
+                        });
+                      }
+                    }}
+                  >
                     <input
                       type="file"
                       accept="image/*,video/*"
@@ -1047,30 +1134,129 @@ export default function SubmitProfile() {
                     </label>
                   </div>
                   
-                  {/* Upload Summary */}
+                  {/* Visual Preview Gallery */}
                   {(uploadedPhotos.length > 0 || uploadedVideos.length > 0) && (
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                      <div className="flex items-center justify-between">
+                    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-medium text-gray-900">Your Media ({uploadedPhotos.length + uploadedVideos.length}/10)</h3>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUploadedPhotos([]);
+                            setUploadedVideos([]);
+                            form.setValue('photos', []);
+                            form.setValue('videos', []);
+                          }}
+                          className="text-xs text-red-600 hover:text-red-800 font-medium"
+                        >
+                          Clear All
+                        </button>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                        {/* Photo Previews */}
+                        {uploadedPhotos.map((photo, index) => (
+                          <div key={`photo-${index}`} className="relative group">
+                            <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 border-2 border-gray-200 group-hover:border-blue-300 transition-colors">
+                              <img
+                                src={photo}
+                                alt={`Photo ${index + 1}`}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  const target = e.currentTarget;
+                                  target.src = `data:image/svg+xml;base64,${btoa(`
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+                                      <rect width="120" height="120" fill="#f3f4f6"/>
+                                      <circle cx="60" cy="45" r="12" fill="#d1d5db"/>
+                                      <path d="M40 70 L80 70 L75 85 L45 85 Z" fill="#d1d5db"/>
+                                      <text x="60" y="105" text-anchor="middle" font-family="Arial" font-size="10" fill="#6b7280">Photo</text>
+                                    </svg>
+                                  `)}`;
+                                }}
+                              />
+                            </div>
+                            <div className="absolute top-1 left-1 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full font-medium">
+                              📷
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newPhotos = uploadedPhotos.filter((_, i) => i !== index);
+                                setUploadedPhotos(newPhotos);
+                                form.setValue('photos', newPhotos);
+                              }}
+                              className="absolute top-1 right-1 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                        
+                        {/* Video Previews */}
+                        {uploadedVideos.map((video, index) => (
+                          <div key={`video-${index}`} className="relative group">
+                            <div className="aspect-square rounded-lg overflow-hidden bg-gray-900 border-2 border-gray-200 group-hover:border-purple-300 transition-colors">
+                              <video
+                                src={video}
+                                className="w-full h-full object-cover"
+                                muted
+                                preload="metadata"
+                                poster={`data:image/svg+xml;base64,${btoa(`
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+                                    <rect width="120" height="120" fill="#1f2937"/>
+                                    <circle cx="60" cy="60" r="20" fill="#374151" stroke="#6b7280" stroke-width="2"/>
+                                    <polygon points="52,48 52,72 76,60" fill="#9ca3af"/>
+                                  </svg>
+                                `)}`}
+                              />
+                            </div>
+                            <div className="absolute top-1 left-1 bg-purple-500 text-white text-xs px-1.5 py-0.5 rounded-full font-medium">
+                              🎥
+                            </div>
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                              <div className="w-8 h-8 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
+                                <svg className="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M8 5v14l11-7z"/>
+                                </svg>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newVideos = uploadedVideos.filter((_, i) => i !== index);
+                                setUploadedVideos(newVideos);
+                                form.setValue('videos', newVideos);
+                              }}
+                              className="absolute top-1 right-1 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      {/* Upload Summary Stats */}
+                      <div className="mt-4 flex items-center justify-between text-sm">
                         <div className="flex items-center space-x-4">
                           {uploadedPhotos.length > 0 && (
-                            <div className="flex items-center space-x-2">
-                              <span className="text-green-600">📷</span>
-                              <span className="text-sm font-medium text-green-800">
-                                {uploadedPhotos.length} photo{uploadedPhotos.length !== 1 ? 's' : ''}
-                              </span>
+                            <div className="flex items-center space-x-1 text-blue-600">
+                              <span>📷</span>
+                              <span>{uploadedPhotos.length} photo{uploadedPhotos.length !== 1 ? 's' : ''}</span>
                             </div>
                           )}
                           {uploadedVideos.length > 0 && (
-                            <div className="flex items-center space-x-2">
-                              <span className="text-green-600">🎥</span>
-                              <span className="text-sm font-medium text-green-800">
-                                {uploadedVideos.length} video{uploadedVideos.length !== 1 ? 's' : ''}
-                              </span>
+                            <div className="flex items-center space-x-1 text-purple-600">
+                              <span>🎥</span>
+                              <span>{uploadedVideos.length} video{uploadedVideos.length !== 1 ? 's' : ''}</span>
                             </div>
                           )}
                         </div>
-                        <div className="text-xs text-green-600">
-                          {uploadedPhotos.length + uploadedVideos.length}/10 files
+                        <div className="text-gray-500">
+                          {10 - (uploadedPhotos.length + uploadedVideos.length)} slots remaining
                         </div>
                       </div>
                     </div>
