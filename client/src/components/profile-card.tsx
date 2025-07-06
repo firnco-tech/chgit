@@ -11,10 +11,16 @@ interface ProfileCardProps {
 }
 
 export function ProfileCard({ profile }: ProfileCardProps) {
-  const { addItem } = useCart();
+  const { addItem, items } = useCart();
   const { toast } = useToast();
 
+  const isInCart = items.some(item => item.id === profile.id);
+
   const handleAddToCart = () => {
+    if (isInCart) {
+      return; // Don't add if already in cart
+    }
+    
     addItem({
       id: profile.id,
       name: `${profile.firstName}, ${profile.age}`,
@@ -65,15 +71,16 @@ export function ProfileCard({ profile }: ProfileCardProps) {
           {profile.aboutMe || 'No description available'}
         </p>
         
-        <div className="flex justify-between items-center">
-          <span className="text-primary font-semibold">
-            ${profile.price} Contact
-          </span>
+        <div className="flex justify-end items-center">
           <Button 
             onClick={handleAddToCart}
-            className="bg-primary hover:bg-primary/90"
+            disabled={isInCart}
+            className={isInCart 
+              ? "bg-green-500 hover:bg-green-600 text-white" 
+              : "bg-primary hover:bg-primary/90"
+            }
           >
-            Add to Cart
+            {isInCart ? "IN CART" : "Add to Cart"}
           </Button>
         </div>
       </CardContent>
