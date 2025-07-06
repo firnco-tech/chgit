@@ -1,0 +1,68 @@
+ENHANCEMENT REQUEST: MEDIA UPLOAD & DISPLAY – SEQUENTIAL, NON-DESTRUCTIVE IMPLEMENTATION
+
+The following enhancements and fixes are requested for the media upload and display system. These are NOT mission-critical. They must be implemented step-by-step, with thorough testing after each, and must NOT break, regress, or disrupt any existing site functionality.
+
+STEP 1: Redesign the "Submit Profile" Media Upload Section
+Replace the current three separate upload areas (photos, videos, introduction video) with one unified media upload section.
+
+This section should allow users to upload both photos (JPG, PNG) and videos (MP4), supporting multiple files of both types.
+
+Remove arbitrary limits (e.g., 6 photos, 1 video) and instead allow a reasonable total (e.g., 10 files, any mix of photo/video).
+
+The upload area should be modern and intuitive (drag-and-drop, clear buttons, responsive design).
+
+Do not proceed to the next step until this is implemented and verified, and no regressions are introduced.
+
+STEP 2: Modernize the Upload Preview Experience
+When a user selects files to upload, show visual previews (thumbnails for images, playable preview for videos) instead of file names.
+
+Do not display file names as the primary feedback. Users should see what they are uploading, similar to platforms like Facebook or Instagram.
+
+Ensure previews are responsive and update as files are added/removed.
+
+Use best practices for file validation and preview generation (see references for implementation ideas).
+
+Test thoroughly and confirm with screenshots before proceeding.
+
+STEP 3: Fix Video Display on Front End
+Investigate and repair the bug where videos do not appear on individual profile pages and/or browse profiles pages, even when uploaded and approved.
+
+Ensure uploaded videos are displayed alongside photos wherever user media is shown (including browse and individual profile pages).
+
+Use the appropriate HTML5 <video> tag for playback.
+
+Do not alter photo display or break any existing functionality.
+
+STEP 4: Fix Browse Profiles Page Media Display
+On the Browse Profiles page, ensure that new profiles display their actual uploaded photos and videos, not sample images.
+
+Confirm that the media shown matches what is visible on the individual profile page.
+
+Do not regress or break the display for existing profiles or other site sections.
+
+STEP 5: Regression Testing and Verification
+After each step, conduct full regression testing:
+
+Submit new profiles with a variety of media.
+
+Test on all major browsers and devices.
+
+Verify that no existing flows (profile submission, approval, browsing, favorites, admin panel) are broken.
+
+Provide before/after screenshots or screencasts for each step.
+
+Wait for my review and approval before proceeding to the next step.
+
+CRITICAL INSTRUCTIONS:
+
+Do not break or alter any existing site structure, user data, or user/admin experience outside these enhancements.
+
+Do not introduce new features or UI elements not specified here.
+
+All new or changed code must be clearly commented and documented.
+
+If you encounter a blocking issue or uncertainty, STOP and report before proceeding.
+
+These enhancements are helpful, not urgent. Site stability and user experience take priority over new features.
+
+Begin with Step 1 (Unified Media Upload Section), and wait for my review before moving to Step 2.

@@ -931,165 +931,190 @@ export default function SubmitProfile() {
               </CardContent>
             </Card>
 
-            {/* Photos and Media */}
+            {/* Unified Media Upload */}
             <Card>
               <CardContent className="p-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">Photos and Media</h2>
                 <p className="text-sm text-gray-600 mb-4">
-                  Add photos and videos to make your profile more attractive. High-quality photos get more attention!
+                  Upload your photos and videos to showcase your personality. Mix of both types recommended!
                 </p>
                 
-                <div className="space-y-6">
-                  {/* Photo Upload */}
-                  <div>
-                    <FormLabel className="text-base font-medium">Profile Photos</FormLabel>
-                    <p className="text-sm text-gray-500 mb-3">Upload up to 6 photos. First photo will be your main profile photo.</p>
-                    
-                    <FormField
-                      control={form.control}
-                      name="photos"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                              <input
-                                type="file"
-                                accept="image/*"
-                                multiple
-                                max="6"
-                                onChange={async (e) => {
-                                  const files = Array.from(e.target.files || []);
-                                  if (files.length > 0) {
-                                    setUploadingFiles(true);
-                                    try {
-                                      const uploadedUrls = await uploadFiles(files);
-                                      setUploadedPhotos(uploadedUrls);
-                                      field.onChange(uploadedUrls);
-                                      toast({
-                                        title: "Photos uploaded successfully!",
-                                        description: `${files.length} photo(s) uploaded.`,
-                                      });
-                                    } catch (error) {
-                                      toast({
-                                        title: "Upload failed",
-                                        description: "Failed to upload photos. Please try again.",
-                                        variant: "destructive",
-                                      });
-                                    } finally {
-                                      setUploadingFiles(false);
-                                    }
-                                  }
-                                }}
-                                className="hidden"
-                                id="photo-upload"
-                                disabled={uploadingFiles}
-                              />
-                              <label 
-                                htmlFor="photo-upload" 
-                                className="cursor-pointer flex flex-col items-center"
-                              >
-                                <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-3">
-                                  <span className="text-2xl">📷</span>
-                                </div>
-                                {uploadingFiles ? (
-                                  <>
-                                    <Loader2 className="h-6 w-6 animate-spin text-pink-600 mb-2" />
-                                    <span className="text-sm font-medium text-gray-700">Uploading photos...</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <span className="text-sm font-medium text-gray-700">Click to upload photos</span>
-                                    <span className="text-xs text-gray-500 mt-1">JPG, PNG up to 10MB each</span>
-                                  </>
-                                )}
-                              </label>
-                              {field.value && field.value.length > 0 && (
-                                <div className="mt-3 text-sm text-green-600">
-                                  {field.value.length} photo(s) selected: {field.value.join(", ")}
-                                </div>
-                              )}
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                {/* Unified Media Upload Area */}
+                <div className="space-y-4">
+                  <div className="border-2 border-dashed border-blue-300 rounded-xl p-8 text-center bg-gradient-to-br from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 transition-all duration-300">
+                    <input
+                      type="file"
+                      accept="image/*,video/*"
+                      multiple
+                      onChange={async (e) => {
+                        const files = Array.from(e.target.files || []);
+                        const totalFiles = (uploadedPhotos.length + uploadedVideos.length + files.length);
+                        
+                        if (totalFiles > 10) {
+                          toast({
+                            title: "Too many files",
+                            description: "Maximum 10 files allowed. Please remove some files first.",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        
+                        if (files.length > 0) {
+                          setUploadingFiles(true);
+                          try {
+                            const uploadedUrls = await uploadFiles(files);
+                            
+                            // Separate photos and videos
+                            const newPhotos: string[] = [];
+                            const newVideos: string[] = [];
+                            
+                            uploadedUrls.forEach((url, index) => {
+                              const file = files[index];
+                              if (file.type.startsWith('image/')) {
+                                newPhotos.push(url);
+                              } else if (file.type.startsWith('video/')) {
+                                newVideos.push(url);
+                              }
+                            });
+                            
+                            // Update state and form fields
+                            const allPhotos = [...uploadedPhotos, ...newPhotos];
+                            const allVideos = [...uploadedVideos, ...newVideos];
+                            
+                            setUploadedPhotos(allPhotos);
+                            setUploadedVideos(allVideos);
+                            
+                            // Update form fields
+                            form.setValue('photos', allPhotos);
+                            form.setValue('videos', allVideos);
+                            
+                            toast({
+                              title: "Media uploaded successfully!",
+                              description: `${newPhotos.length} photo(s) and ${newVideos.length} video(s) uploaded.`,
+                            });
+                          } catch (error) {
+                            toast({
+                              title: "Upload failed",
+                              description: "Failed to upload media. Please try again.",
+                              variant: "destructive",
+                            });
+                          } finally {
+                            setUploadingFiles(false);
+                          }
+                        }
+                      }}
+                      className="hidden"
+                      id="unified-media-upload"
+                      disabled={uploadingFiles}
                     />
+                    <label 
+                      htmlFor="unified-media-upload" 
+                      className="cursor-pointer block"
+                    >
+                      <div className="flex flex-col items-center">
+                        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                          </svg>
+                        </div>
+                        {uploadingFiles ? (
+                          <>
+                            <Loader2 className="h-8 w-8 animate-spin text-blue-600 mb-3" />
+                            <span className="text-lg font-medium text-gray-700">Uploading media...</span>
+                            <span className="text-sm text-gray-500">Please wait while your files are being processed</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-lg font-semibold text-gray-800 mb-2">Drop files here or click to upload</span>
+                            <span className="text-sm text-gray-600 mb-3">Upload photos and videos together</span>
+                            <div className="flex items-center space-x-6 text-xs text-gray-500">
+                              <div className="flex items-center space-x-1">
+                                <span>📷</span>
+                                <span>JPG, PNG</span>
+                              </div>
+                              <div className="flex items-center space-x-1">
+                                <span>🎥</span>
+                                <span>MP4, MOV</span>
+                              </div>
+                              <div className="flex items-center space-x-1">
+                                <span>📊</span>
+                                <span>Max 10 files</span>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </label>
                   </div>
-
-                  {/* Video Upload */}
-                  <div>
-                    <FormLabel className="text-base font-medium">Introduction Videos (Optional)</FormLabel>
-                    <p className="text-sm text-gray-500 mb-3">Upload a short video introducing yourself (max 2 minutes).</p>
-                    
-                    <FormField
-                      control={form.control}
-                      name="videos"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <div className="border-2 border-dashed border-purple-300 rounded-lg p-6 text-center">
-                              <input
-                                type="file"
-                                accept="video/*"
-                                onChange={async (e) => {
-                                  const files = Array.from(e.target.files || []);
-                                  if (files.length > 0) {
-                                    setUploadingFiles(true);
-                                    try {
-                                      const uploadedUrls = await uploadFiles(files);
-                                      setUploadedVideos(uploadedUrls);
-                                      field.onChange(uploadedUrls);
-                                      toast({
-                                        title: "Video uploaded successfully!",
-                                        description: `${files.length} video(s) uploaded.`,
-                                      });
-                                    } catch (error) {
-                                      toast({
-                                        title: "Upload failed",
-                                        description: "Failed to upload video. Please try again.",
-                                        variant: "destructive",
-                                      });
-                                    } finally {
-                                      setUploadingFiles(false);
-                                    }
-                                  }
-                                }}
-                                className="hidden"
-                                id="video-upload"
-                                disabled={uploadingFiles}
-                              />
-                              <label 
-                                htmlFor="video-upload" 
-                                className="cursor-pointer flex flex-col items-center"
-                              >
-                                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-3">
-                                  <span className="text-2xl">🎥</span>
-                                </div>
-                                {uploadingFiles ? (
-                                  <>
-                                    <Loader2 className="h-6 w-6 animate-spin text-purple-600 mb-2" />
-                                    <span className="text-sm font-medium text-gray-700">Uploading video...</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <span className="text-sm font-medium text-gray-700">Click to upload video</span>
-                                    <span className="text-xs text-gray-500 mt-1">MP4, MOV up to 50MB</span>
-                                  </>
-                                )}
-                              </label>
-                              {field.value && field.value.length > 0 && (
-                                <div className="mt-3 text-sm text-green-600">
-                                  Video selected: {field.value.join(", ")}
-                                </div>
-                              )}
+                  
+                  {/* Upload Summary */}
+                  {(uploadedPhotos.length > 0 || uploadedVideos.length > 0) && (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          {uploadedPhotos.length > 0 && (
+                            <div className="flex items-center space-x-2">
+                              <span className="text-green-600">📷</span>
+                              <span className="text-sm font-medium text-green-800">
+                                {uploadedPhotos.length} photo{uploadedPhotos.length !== 1 ? 's' : ''}
+                              </span>
                             </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                          )}
+                          {uploadedVideos.length > 0 && (
+                            <div className="flex items-center space-x-2">
+                              <span className="text-green-600">🎥</span>
+                              <span className="text-sm font-medium text-green-800">
+                                {uploadedVideos.length} video{uploadedVideos.length !== 1 ? 's' : ''}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="text-xs text-green-600">
+                          {uploadedPhotos.length + uploadedVideos.length}/10 files
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* File Requirements */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 className="font-medium text-blue-900 mb-2">Media Guidelines:</h4>
+                    <ul className="text-sm text-blue-800 space-y-1">
+                      <li>• Upload 3-10 high-quality photos and videos (any mix)</li>
+                      <li>• Include at least one clear face photo</li>
+                      <li>• Media should be recent (within 1 year)</li>
+                      <li>• No inappropriate or explicit content</li>
+                      <li>• You must be the only person in the media</li>
+                      <li>• Videos should be under 2 minutes for best experience</li>
+                    </ul>
                   </div>
                 </div>
+                
+                {/* Hidden form fields for validation */}
+                <FormField
+                  control={form.control}
+                  name="photos"
+                  render={({ field }) => (
+                    <FormItem className="hidden">
+                      <FormControl>
+                        <input type="hidden" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="videos"
+                  render={({ field }) => (
+                    <FormItem className="hidden">
+                      <FormControl>
+                        <input type="hidden" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </CardContent>
             </Card>
 
