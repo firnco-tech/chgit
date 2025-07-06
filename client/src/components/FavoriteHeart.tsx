@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Heart } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth, useAuthError } from "@/hooks/useAuth";
+import { AuthModal } from "@/components/auth/AuthModal";
 
 interface FavoriteHeartProps {
   profileId: number;
@@ -13,11 +15,16 @@ interface FavoriteHeartProps {
 export function FavoriteHeart({ profileId, size = "md", className = "" }: FavoriteHeartProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuth();
+  const { isAuthError } = useAuthError();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [pendingAction, setPendingAction] = useState<'add' | 'remove' | null>(null);
 
-  // Check if profile is favorited
+  // Check if profile is favorited (only if authenticated)
   const { data: favoriteStatus } = useQuery({
     queryKey: [`/api/favorites/${profileId}/status`],
     retry: false,
+    enabled: isAuthenticated, // Only fetch if authenticated
   });
 
   const isFavorited = favoriteStatus?.isFavorited || false;
@@ -48,20 +55,47 @@ export function FavoriteHeart({ profileId, size = "md", className = "" }: Favori
           ? "Profile has been added to your favorites" 
           : "Profile has been removed from your favorites",
       });
+      setPendingAction(null);
     },
     onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: "Failed to update favorites. Please try again.",
-        variant: "destructive",
-      });
+      if (isAuthError(error)) {
+        // Handle authentication error - show modal
+        setPendingAction(isFavorited ? 'remove' : 'add');
+        setShowAuthModal(true);
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to update favorites. Please try again.",
+          variant: "destructive",
+        });
+      }
     },
   });
 
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    if (!isAuthenticated) {
+      // Show authentication modal for guest users
+      setPendingAction(isFavorited ? 'remove' : 'add');
+      setShowAuthModal(true);
+      return;
+    }
+
     favoriteMutation.mutate();
+  };
+
+  const handleAuthSuccess = () => {
+    // After successful authentication, retry the pending action
+    if (pendingAction) {
+      favoriteMutation.mutate();
+    }
+  };
+
+  const handleAuthModalClose = () => {
+    setShowAuthModal(false);
+    setPendingAction(null);
   };
 
   // Size classes
@@ -72,28 +106,38 @@ export function FavoriteHeart({ profileId, size = "md", className = "" }: Favori
   };
 
   return (
-    <button
-      onClick={handleToggleFavorite}
-      disabled={favoriteMutation.isPending}
-      className={`
-        inline-flex items-center justify-center
-        transition-all duration-200
-        hover:scale-110 active:scale-95
-        ${favoriteMutation.isPending ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-        ${className}
-      `}
-      aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
-    >
-      <Heart
+    <>
+      <button
+        onClick={handleToggleFavorite}
+        disabled={favoriteMutation.isPending}
         className={`
-          ${sizeClasses[size]}
-          transition-colors duration-200
-          ${isFavorited 
-            ? 'fill-red-500 text-red-500' 
-            : 'text-gray-400 hover:text-red-400'
-          }
+          inline-flex items-center justify-center
+          transition-all duration-200
+          hover:scale-110 active:scale-95
+          ${favoriteMutation.isPending ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+          ${className}
         `}
+        aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+      >
+        <Heart
+          className={`
+            ${sizeClasses[size]}
+            transition-colors duration-200
+            ${isFavorited 
+              ? 'fill-red-500 text-red-500' 
+              : 'text-gray-400 hover:text-red-400'
+            }
+          `}
+        />
+      </button>
+
+      {/* Authentication Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={handleAuthModalClose}
+        onSuccess={handleAuthSuccess}
+        trigger="favorites"
       />
-    </button>
+    </>
   );
 }

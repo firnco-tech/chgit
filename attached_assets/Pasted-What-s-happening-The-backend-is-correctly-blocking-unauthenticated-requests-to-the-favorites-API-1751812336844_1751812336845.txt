@@ -1,0 +1,70 @@
+What’s happening:
+
+The backend is correctly blocking unauthenticated requests to the favorites API (returns 401).
+
+The frontend is not handling the 401 response by prompting the user to register or log in.
+
+As a result, users see a generic error instead of a registration/login modal.
+
+Mission-Critical Prompt for Replit
+The backend now correctly requires authentication for the favorites feature. However, the frontend is not handling unauthenticated requests properly. This is mission-critical for user experience and conversion.
+
+Sequential Steps to Fix and Complete the Favorites Feature
+Frontend 401 Handling for Favorites
+
+When a user clicks the “Add to Favorites” heart and receives a 401 “Authentication required” from the API, the frontend must:
+
+Immediately display a registration/login modal (not just an error message).
+
+After successful registration/login, retry the original “Add to Favorites” action automatically.
+
+Registration/Login Modal Integration
+
+Implement or connect a modal that allows users to register (with email) or log in.
+
+The modal should be user-friendly and not disrupt the browsing experience.
+
+After successful authentication, close the modal and update the UI to reflect the user’s logged-in state.
+
+Favorites Persistence and Feedback
+
+Once logged in, allow the user to favorite/unfavorite profiles.
+
+Show immediate visual feedback (heart icon filled/unfilled).
+
+Ensure favorites are persisted in the database and reflected in the user’s dashboard.
+
+Testing
+
+Test the entire flow:
+
+As a guest, clicking the heart triggers registration/login.
+
+After registering/logging in, the favorite action completes and the heart updates.
+
+Repeat for unfavoriting.
+
+Confirm admins cannot favorite.
+
+Confirm regular users cannot access admin features.
+
+No existing functionality should be broken.
+
+Error Handling
+
+If registration/login fails, show a clear error and allow the user to try again.
+
+If the favorite action fails for any other reason, show a user-friendly message.
+
+Requirements:
+
+Do NOT break or alter existing site structure or other user flows.
+
+All new code must be clearly commented and documented.
+
+Wait for my review after each step before proceeding.
+
+Begin with Step 1: Implement frontend handling for 401 errors on the favorites API, and integrate the registration/login modal. Wait for my confirmation before continuing.
+
+Summary:
+The backend is secure, but the frontend must now provide a smooth, conversion-friendly authentication flow for the favorites feature. This is mission-critical for user engagement and must be completed without breaking any existing functionality.

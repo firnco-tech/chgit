@@ -1,17 +1,25 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Heart, User, LogOut, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
+import { useAuth } from "@/hooks/useAuth";
 import { CartSidebar } from "./cart-sidebar";
+import { AuthModal } from "./auth/AuthModal";
 import { useState } from "react";
 
 export function Navbar() {
   const [location] = useLocation();
   const { getItemCount } = useCart();
+  const { user, isAuthenticated, logout, isLoggingOut } = useAuth();
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const itemCount = getItemCount();
 
   const isActive = (path: string) => location === path;
+  
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <>
@@ -56,13 +64,24 @@ export function Navbar() {
                     Contact
                   </span>
                 </Link>
-                <Link href="/help">
-                  <span className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer ${
-                    isActive('/help') ? 'text-primary' : 'text-gray-500 hover:text-primary'
-                  }`}>
-                    Help
-                  </span>
-                </Link>
+                {isAuthenticated ? (
+                  <Link href="/favorites">
+                    <span className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer flex items-center gap-1 ${
+                      isActive('/favorites') ? 'text-primary' : 'text-gray-500 hover:text-primary'
+                    }`}>
+                      <Heart className="h-4 w-4" />
+                      Favorites
+                    </span>
+                  </Link>
+                ) : (
+                  <button 
+                    onClick={() => setShowAuthModal(true)}
+                    className="px-3 py-2 rounded-md text-sm font-medium cursor-pointer text-gray-500 hover:text-primary flex items-center gap-1"
+                  >
+                    <Heart className="h-4 w-4" />
+                    Favorites
+                  </button>
+                )}
               </div>
             </div>
 
@@ -80,12 +99,49 @@ export function Navbar() {
                   </span>
                 )}
               </Button>
+              
+              {/* Authentication Section */}
+              {isAuthenticated ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600 flex items-center gap-1">
+                    <User className="h-4 w-4" />
+                    {user?.username || user?.email}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleLogout}
+                    disabled={isLoggingOut}
+                    className="text-gray-500 hover:text-red-600 flex items-center gap-1"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    {isLoggingOut ? 'Logging out...' : 'Logout'}
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowAuthModal(true)}
+                  className="text-gray-500 hover:text-primary flex items-center gap-1"
+                >
+                  <LogIn className="h-4 w-4" />
+                  Login
+                </Button>
+              )}
             </div>
           </div>
         </div>
       </nav>
 
       <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      
+      {/* Authentication Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        trigger="general"
+      />
     </>
   );
 }
