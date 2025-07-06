@@ -12,6 +12,12 @@ import {
   handleSuperAdminLogout, 
   getCurrentSuperAdmin 
 } from "./superAdminAuth";
+import {
+  requireAdmin,
+  requireSuperAdmin,
+  getCurrentUser,
+  auditLog
+} from "./authorizationMiddleware";
 import { 
   requireAdminRole, 
   requireSuperAdmin, 
@@ -678,6 +684,119 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ isFavorited });
     } catch (error: any) {
       res.status(500).json({ message: "Error checking favorite status: " + error.message });
+    }
+  });
+
+  // =============================================================================
+  // ADMIN AUTHENTICATION ROUTES - Admin panel login and authentication
+  // =============================================================================
+
+  // Admin login (for both admin and super admin roles)
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+
+      // Get admin user by username
+      const adminUser = await storage.getAdminUserByUsername(username);
+      if (!adminUser) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      // Verify password
+      const isValidPassword = await verifyPassword(password, adminUser.passwordHash);
+      if (!isValidPassword) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      // Check if admin user is active
+      if (!adminUser.isActive) {
+        return res.status(401).json({ message: "Account is deactivated" });
+      }
+
+      // Create admin session
+      const sessionId = `admin_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      await storage.createAdminSession({
+        sessionId,
+        adminId: adminUser.id,
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+        ipAddress: req.ip || 'unknown',
+        userAgent: req.get('User-Agent') || 'unknown'
+      });
+
+      // Set session cookie
+      res.cookie('adminSession', sessionId, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        sameSite: 'strict'
+      });
+
+      // Log admin login activity
+      await storage.logAdminActivity({
+        adminId: adminUser.id,
+        action: 'admin_login',
+        targetType: 'admin_user',
+        targetId: adminUser.id,
+        details: {
+          ipAddress: req.ip || 'unknown',
+          userAgent: req.get('User-Agent') || 'unknown',
+          timestamp: new Date().toISOString()
+        },
+        ipAddress: req.ip || 'unknown',
+      });
+
+      // Return success response (without password hash)
+      const { passwordHash, ...userResponse } = adminUser;
+      res.json({
+        success: true,
+        user: userResponse
+      });
+
+    } catch (error: any) {
+      console.error('Admin login error:', error);
+      res.status(500).json({ message: "Login failed: " + error.message });
+    }
+  });
+
+  // Admin logout
+  app.post("/api/admin/logout", async (req, res) => {
+    try {
+      const sessionId = req.cookies.adminSession;
+      
+      if (sessionId) {
+        // Delete admin session
+        await storage.deleteAdminSession(sessionId);
+      }
+
+      // Clear session cookie
+      res.clearCookie('adminSession');
+      res.json({ success: true });
+
+    } catch (error: any) {
+      console.error('Admin logout error:', error);
+      res.status(500).json({ message: "Logout failed: " + error.message });
+    }
+  });
+
+  // Get current admin user
+  app.get("/api/admin/user", requireAdmin, async (req, res) => {
+    try {
+      const currentUser = getCurrentUser(req);
+      if (currentUser.admin) {
+        const { passwordHash, ...userResponse } = currentUser.admin;
+        res.json(userResponse);
+      } else if (currentUser.superAdmin) {
+        const { passwordHash, ...userResponse } = currentUser.superAdmin;
+        res.json(userResponse);
+      } else {
+        res.status(401).json({ message: "Not authenticated" });
+      }
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching user: " + error.message });
     }
   });
 

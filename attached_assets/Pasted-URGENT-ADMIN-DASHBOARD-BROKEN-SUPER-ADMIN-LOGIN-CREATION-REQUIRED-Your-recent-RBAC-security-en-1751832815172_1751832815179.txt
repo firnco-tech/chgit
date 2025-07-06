@@ -1,0 +1,44 @@
+URGENT: ADMIN DASHBOARD BROKEN & SUPER ADMIN LOGIN CREATION REQUIRED
+
+Your recent RBAC/security enhancements have introduced two major issues that must be fixed immediately, without breaking any other functionality or introducing regressions:
+
+1. ADMIN DASHBOARD SHOWS ZERO PROFILES
+Problem:
+The admin dashboard now displays zero profiles, even though profiles exist and are visible on the front end.
+
+Required Fix:
+
+Diagnose and repair the admin dashboard so that all profiles (pending, active, inactive) are visible to users with the correct admin or super admin permissions.
+
+Ensure that profile data is properly queried from the database and displayed in the admin dashboard.
+
+Do not alter or break profile visibility or data on the front end.
+
+Provide proof (screenshots or screencast) that the admin dashboard correctly displays all profiles after the fix.
+
+2. SUPER ADMIN LOGIN CREATION & ACCESS
+Problem:
+There is currently no way to create or log in as a super admin. Accessing /admin simply displays the admin dashboard without authentication.
+
+Required Fix:
+
+Implement a secure Super Admin login page where I can create a super admin account with a custom username and password.
+
+Require authentication for all admin and super admin routes; do not allow direct access to /admin or super admin features without logging in.
+
+After login, redirect to the correct dashboard based on role (super admin or admin).
+
+Provide instructions or a form for initial super admin account creation, if one does not exist.
+
+Confirm that standard admin and front-end user flows are not affected or broken.
+
+CRITICAL INSTRUCTIONS:
+Do not break or alter any existing site structure, user data, or front-end user experience.
+
+All new or changed code must be clearly commented and documented.
+
+If you encounter a blocking issue or uncertainty, STOP and report before proceeding.
+
+Wait for my review and approval after each fix before moving to the next.
+
+Begin with Step 1 (Fix admin dashboard profile visibility), and wait for my review before proceeding to Step 2 (Super Admin login creation).

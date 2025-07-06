@@ -17,6 +17,7 @@ import Favorites from "@/pages/favorites";
 import NotFound from "@/pages/not-found";
 
 // Admin Panel Components - Isolated from main site
+import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminEditProfile from "@/pages/admin/AdminEditProfile";
 import AdminUsers from "@/pages/admin/AdminUsers";
@@ -36,6 +37,7 @@ function Router() {
       <Route path="/favorites" component={Favorites} />
       
       {/* Admin Panel Routes - Isolated section */}
+      <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/users" component={AdminUsers} />
       <Route path="/admin/edit-profile/:id" component={AdminEditProfile} />

@@ -6,7 +6,9 @@
  * Completely separate from user-facing site functionality
  */
 
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 
@@ -61,15 +63,49 @@ function getStatusBadgeClass(status: 'PENDING' | 'ACTIVE' | 'INACTIVE'): string 
 }
 
 export default function AdminDashboard() {
-  // Fetch dashboard statistics
-  const { data: stats = {} as DashboardStats, isLoading: statsLoading } = useQuery<DashboardStats>({
-    queryKey: ["/api/admin/dashboard-stats"],
+  const [, navigate] = useLocation();
+
+  // Check admin authentication status
+  const { data: adminUser, isLoading: authLoading, error: authError } = useQuery({
+    queryKey: ["/api/admin/user"],
+    retry: false,
   });
 
-  // Fetch recent profiles
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && (authError || !adminUser)) {
+      navigate('/admin/login');
+    }
+  }, [authLoading, authError, adminUser, navigate]);
+
+  // Fetch dashboard statistics (only if authenticated)
+  const { data: stats = {} as DashboardStats, isLoading: statsLoading } = useQuery<DashboardStats>({
+    queryKey: ["/api/admin/dashboard-stats"],
+    enabled: !!adminUser, // Only fetch if user is authenticated
+  });
+
+  // Fetch recent profiles (only if authenticated)
   const { data: recentProfiles = [] as Profile[], isLoading: profilesLoading } = useQuery<Profile[]>({
     queryKey: ["/api/admin/recent-profiles"],
+    enabled: !!adminUser, // Only fetch if user is authenticated
   });
+
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Verifying authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render content if not authenticated (will redirect)
+  if (!adminUser) {
+    return null;
+  }
 
   // Handle edit profile action
   const handleEditProfile = (profileId: number) => {
