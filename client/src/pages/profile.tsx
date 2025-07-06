@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
-import { ArrowLeft, MessageCircle, Instagram, Mail, Shield, Zap, Lock } from "lucide-react";
+import { ArrowLeft, MessageCircle, Instagram, Mail, Shield, Zap, Lock, Phone, Send, Facebook, Video } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
@@ -223,6 +223,30 @@ export default function ProfilePage() {
                           <Mail className="h-6 w-6" />
                         </div>
                         <span className="text-sm text-gray-600">Email</span>
+                      </div>
+                    )}
+                    {profile.contactMethods?.telegram && (
+                      <div className="text-center">
+                        <div className="bg-blue-100 text-blue-600 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
+                          <Send className="h-6 w-6" />
+                        </div>
+                        <span className="text-sm text-gray-600">Telegram</span>
+                      </div>
+                    )}
+                    {profile.contactMethods?.facebook && (
+                      <div className="text-center">
+                        <div className="bg-blue-100 text-blue-600 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
+                          <Facebook className="h-6 w-6" />
+                        </div>
+                        <span className="text-sm text-gray-600">Facebook</span>
+                      </div>
+                    )}
+                    {profile.contactMethods?.tiktok && (
+                      <div className="text-center">
+                        <div className="bg-black text-white p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
+                          <Video className="h-6 w-6" />
+                        </div>
+                        <span className="text-sm text-gray-600">TikTok</span>
                       </div>
                     )}
                   </div>
