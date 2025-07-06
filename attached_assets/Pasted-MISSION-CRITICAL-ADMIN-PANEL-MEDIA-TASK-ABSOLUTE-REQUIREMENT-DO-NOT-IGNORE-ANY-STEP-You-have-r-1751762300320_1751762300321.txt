@@ -1,0 +1,57 @@
+MISSION-CRITICAL ADMIN PANEL MEDIA TASK – ABSOLUTE REQUIREMENT: DO NOT IGNORE ANY STEP
+
+You have repeatedly failed to complete all requested tasks for the admin panel. This is a mission-critical request. Partial completion is unacceptable.
+Before writing any code, you must:
+
+Outline a detailed, step-by-step plan for making images and videos viewable in the admin panel, allowing the admin to:
+
+Toggle each photo/video as "active" or "inactive"
+
+Choose "primary" media via a toggle
+
+Approve, save, and mark media as featured
+
+Display all media as actual images or playable videos (not file links)
+
+Describe how you will implement these features without breaking or altering any existing site structure or unrelated code.
+
+List all potential risks and how you will mitigate them.
+
+Provide a checklist of requirements and confirm how you will verify that each is completed.
+
+DO NOT WRITE ANY CODE YET.
+Wait for my approval of your plan and checklist.
+After I approve, you must:
+
+Implement each step one at a time.
+
+After each step, confirm completion and show proof (screenshots, code snippets, or test results).
+
+Do not proceed to the next step until I confirm the previous is done.
+
+If you encounter any issue, pause and ask for clarification.
+
+You must not break, remove, or alter any existing code or site structure outside these requirements.
+If you cannot complete a requirement, you must explain why in detail and propose a solution.
+If you skip or ignore any requirement, you must immediately stop and notify me.
+
+This is a non-negotiable, mission-critical request. Strictly adhere to every instruction and requirement.
+
+Why this works:
+
+Forces the agent into a "plan first, act only with approval" mode.
+
+Demands accountability and stepwise confirmation, reducing missed steps.
+
+Makes it clear that incomplete or partial results are not acceptable.
+
+Reduces risk of breaking existing code by requiring explicit planning and risk mitigation.
+
+You can adapt this structure for any future multi-step, high-priority Replit tasks.
+
+Related
+How can I craft a prompt that ensures Replit completes all tasks without skipping or ignoring steps
+What specific command or phrase emphasizes the importance and non-negotiability of task completion in Replit
+How do I instruct Replit to prioritize sequential testing and validation after each task before proceeding
+What language or structure should I use to make clear that incomplete task execution is mission critical for my project
+How can I include a fail-safe prompt to recover from partial completions and enforce full task execution
