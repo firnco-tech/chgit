@@ -62,6 +62,8 @@ interface Profile {
   isFeatured?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  inactivePhotos?: string[];
+  inactiveVideos?: string[];
 }
 
 export default function AdminEditProfile() {
@@ -130,6 +132,8 @@ export default function AdminEditProfile() {
       languages: Array.isArray(formData.languages) ? formData.languages : [],
       lookingFor: Array.isArray(formData.lookingFor) ? formData.lookingFor : [],
       contactMethods: Array.isArray(formData.contactMethods) ? formData.contactMethods : [],
+      inactivePhotos: Array.isArray(formData.inactivePhotos) ? formData.inactivePhotos : [],
+      inactiveVideos: Array.isArray(formData.inactiveVideos) ? formData.inactiveVideos : [],
       // Convert string values to numbers where needed
       age: typeof formData.age === 'string' ? parseInt(formData.age) : formData.age,
       price: typeof formData.price === 'string' ? parseFloat(formData.price) : formData.price,
@@ -548,11 +552,17 @@ export default function AdminEditProfile() {
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {formData.photos.map((photo, index) => (
                       <div key={index} className="space-y-2">
-                        <div className="relative overflow-hidden rounded-lg border-2 border-gray-200 bg-gray-100">
+                        <div className={`relative overflow-hidden rounded-lg border-2 bg-gray-100 ${
+                          formData.inactivePhotos?.includes(photo) 
+                            ? 'border-red-300 opacity-50' 
+                            : 'border-gray-200'
+                        }`}>
                           <img 
                             src={photo.startsWith('data:') || photo.startsWith('http') ? photo : `https://picsum.photos/200/150?random=${index}`} 
                             alt={`Photo ${index + 1}`}
-                            className="w-full h-40 object-cover"
+                            className={`w-full h-40 object-cover ${
+                              formData.inactivePhotos?.includes(photo) ? 'grayscale' : ''
+                            }`}
                             onError={(e) => {
                               const target = e.currentTarget;
                               target.src = `data:image/svg+xml;base64,${btoa(`
@@ -585,14 +595,44 @@ export default function AdminEditProfile() {
                             <Checkbox
                               checked={formData.primaryPhoto === photo}
                               onCheckedChange={(checked) => {
-                                if (checked) handleInputChange('primaryPhoto', photo);
+                                if (checked) {
+                                  handleInputChange('primaryPhoto', photo);
+                                  // Auto-save primary photo change
+                                  setTimeout(() => {
+                                    const saveData = { primaryPhoto: photo };
+                                    updateMutation.mutate(saveData);
+                                  }, 100);
+                                }
                               }}
                               className="h-4 w-4"
                             />
-                            <Label className="text-xs font-medium text-gray-700">Set as Primary Photo</Label>
+                            <Label className="text-xs font-medium text-gray-700">Primary Photo</Label>
                           </div>
                           
-                          {/* Remove Button */}
+                          {/* Active/Inactive Toggle */}
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              checked={!(formData.inactivePhotos?.includes(photo) || false)}
+                              onCheckedChange={(checked) => {
+                                const inactivePhotos = formData.inactivePhotos || [];
+                                if (checked) {
+                                  // Remove from inactive list (make active)
+                                  const newInactive = inactivePhotos.filter(p => p !== photo);
+                                  handleInputChange('inactivePhotos', newInactive);
+                                } else {
+                                  // Add to inactive list
+                                  const newInactive = [...inactivePhotos, photo];
+                                  handleInputChange('inactivePhotos', newInactive);
+                                }
+                              }}
+                              className="h-4 w-4"
+                            />
+                            <Label className="text-xs font-medium text-gray-700">
+                              {(formData.inactivePhotos?.includes(photo) || false) ? 'Inactive' : 'Active'}
+                            </Label>
+                          </div>
+                          
+                          {/* Remove Button - Much Smaller */}
                           <Button
                             type="button"
                             variant="outline"
@@ -604,9 +644,9 @@ export default function AdminEditProfile() {
                                 handleInputChange('primaryPhoto', newPhotos[0] || '');
                               }
                             }}
-                            className="w-full text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
+                            className="text-xs px-2 py-1 h-6 text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
                           >
-                            Remove Photo
+                            Delete
                           </Button>
                         </div>
                       </div>
@@ -651,7 +691,11 @@ export default function AdminEditProfile() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {formData.videos.map((video, index) => (
                       <div key={index} className="space-y-2">
-                        <div className="relative overflow-hidden rounded-lg border-2 border-gray-200 bg-gray-100">
+                        <div className={`relative overflow-hidden rounded-lg border-2 bg-gray-100 ${
+                          formData.inactiveVideos?.includes(video) 
+                            ? 'border-red-300 opacity-50' 
+                            : 'border-gray-200'
+                        }`}>
                           <video 
                             src={video.startsWith('data:') || video.startsWith('http') ? video : `https://sample-videos.com/zip/10/mp4/SampleVideo_360x240_1mb.mp4`}
                             className="w-full h-48 object-cover"
@@ -692,7 +736,30 @@ export default function AdminEditProfile() {
                           {/* File Name */}
                           <p className="text-xs text-gray-600 truncate" title={video}>{video}</p>
                           
-                          {/* Remove Button */}
+                          {/* Active/Inactive Toggle */}
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              checked={!(formData.inactiveVideos?.includes(video) || false)}
+                              onCheckedChange={(checked) => {
+                                const inactiveVideos = formData.inactiveVideos || [];
+                                if (checked) {
+                                  // Remove from inactive list (make active)
+                                  const newInactive = inactiveVideos.filter(v => v !== video);
+                                  handleInputChange('inactiveVideos', newInactive);
+                                } else {
+                                  // Add to inactive list
+                                  const newInactive = [...inactiveVideos, video];
+                                  handleInputChange('inactiveVideos', newInactive);
+                                }
+                              }}
+                              className="h-4 w-4"
+                            />
+                            <Label className="text-xs font-medium text-gray-700">
+                              {(formData.inactiveVideos?.includes(video) || false) ? 'Inactive' : 'Active'}
+                            </Label>
+                          </div>
+                          
+                          {/* Remove Button - Much Smaller */}
                           <Button
                             type="button"
                             variant="outline"
@@ -701,9 +768,9 @@ export default function AdminEditProfile() {
                               const newVideos = formData.videos.filter((_, i) => i !== index);
                               handleInputChange('videos', newVideos);
                             }}
-                            className="w-full text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
+                            className="text-xs px-2 py-1 h-6 text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
                           >
-                            Remove Video
+                            Delete
                           </Button>
                         </div>
                       </div>

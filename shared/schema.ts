@@ -37,6 +37,9 @@ export const profiles = pgTable("profiles", {
   // Media
   photos: text("photos").array(),
   videos: text("videos").array(),
+  primaryPhoto: text("primary_photo"),
+  inactivePhotos: text("inactive_photos").array().default([]),
+  inactiveVideos: text("inactive_videos").array().default([]),
   
   // Contact Methods - stored as JSON with all possible contact methods
   contactMethods: json("contact_methods"),
