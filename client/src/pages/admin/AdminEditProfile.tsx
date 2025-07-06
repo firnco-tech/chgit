@@ -544,6 +544,20 @@ export default function AdminEditProfile() {
           <Card>
             <CardHeader>
               <CardTitle>Photos and Media</CardTitle>
+              <div className="flex flex-wrap gap-3 mt-2">
+                <div className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded">
+                  Active Photos: {(formData.photos?.length || 0) - (formData.inactivePhotos?.length || 0)}
+                </div>
+                <div className="text-sm bg-gray-100 text-gray-800 px-2 py-1 rounded">
+                  Inactive Photos: {formData.inactivePhotos?.length || 0}
+                </div>
+                <div className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                  Active Videos: {(formData.videos?.length || 0) - (formData.inactiveVideos?.length || 0)}
+                </div>
+                <div className="text-sm bg-gray-100 text-gray-800 px-2 py-1 rounded">
+                  Inactive Videos: {formData.inactiveVideos?.length || 0}
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -619,10 +633,20 @@ export default function AdminEditProfile() {
                                   // Remove from inactive list (make active)
                                   const newInactive = inactivePhotos.filter(p => p !== photo);
                                   handleInputChange('inactivePhotos', newInactive);
+                                  // Auto-save inactive status change
+                                  setTimeout(() => {
+                                    const saveData = { inactivePhotos: newInactive };
+                                    updateMutation.mutate(saveData);
+                                  }, 100);
                                 } else {
                                   // Add to inactive list
                                   const newInactive = [...inactivePhotos, photo];
                                   handleInputChange('inactivePhotos', newInactive);
+                                  // Auto-save inactive status change
+                                  setTimeout(() => {
+                                    const saveData = { inactivePhotos: newInactive };
+                                    updateMutation.mutate(saveData);
+                                  }, 100);
                                 }
                               }}
                               className="h-4 w-4"
@@ -746,10 +770,20 @@ export default function AdminEditProfile() {
                                   // Remove from inactive list (make active)
                                   const newInactive = inactiveVideos.filter(v => v !== video);
                                   handleInputChange('inactiveVideos', newInactive);
+                                  // Auto-save inactive status change
+                                  setTimeout(() => {
+                                    const saveData = { inactiveVideos: newInactive };
+                                    updateMutation.mutate(saveData);
+                                  }, 100);
                                 } else {
                                   // Add to inactive list
                                   const newInactive = [...inactiveVideos, video];
                                   handleInputChange('inactiveVideos', newInactive);
+                                  // Auto-save inactive status change
+                                  setTimeout(() => {
+                                    const saveData = { inactiveVideos: newInactive };
+                                    updateMutation.mutate(saveData);
+                                  }, 100);
                                 }
                               }}
                               className="h-4 w-4"
