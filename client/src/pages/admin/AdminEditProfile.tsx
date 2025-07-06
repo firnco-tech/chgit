@@ -30,29 +30,38 @@ interface Profile {
   location: string;
   height: string;
   bodyType: string;
-  skinColor: string;
-  hairColor: string;
-  eyeColor: string;
-  education: string;
-  occupation: string;
-  relationshipStatus: string;
-  hasChildren: boolean;
-  wantsChildren: boolean;
-  smokingStatus: string;
-  drinkingStatus: string;
-  aboutMe: string;
-  interests: string[];
-  photos: string[];
-  contactMethods: string[];
+  skinColor?: string;
+  hairColor?: string;
+  eyeColor?: string;
+  education?: string;
+  occupation?: string;
+  occupationDetails?: string;
+  relationshipStatus?: string;
+  hasChildren?: boolean;
+  wantsChildren?: boolean;
+  smokingStatus?: string;
+  drinkingStatus?: string;
+  aboutMe?: string;
+  interests?: string[];
+  languages?: string[];
+  lookingFor?: string[];
+  photos?: string[];
+  videos?: string[];
+  primaryPhoto?: string;
+  appearance?: string;
+  contactMethods?: string[];
   contactWhatsapp?: string;
   contactInstagram?: string;
   contactEmail?: string;
   contactPhone?: string;
-  price: number;
-  isApproved: boolean;
-  isFeatured: boolean;
-  createdAt: string;
-  updatedAt: string;
+  contactTelegram?: string;
+  contactFacebook?: string;
+  contactTiktok?: string;
+  price?: number;
+  isApproved?: boolean;
+  isFeatured?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export default function AdminEditProfile() {
@@ -170,10 +179,10 @@ export default function AdminEditProfile() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Basic Information */}
+          {/* Personal Information */}
           <Card>
             <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
+              <CardTitle>Personal Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -218,6 +227,39 @@ export default function AdminEditProfile() {
                   </Select>
                 </div>
                 <div>
+                  <Label htmlFor="height">Height</Label>
+                  <Select
+                    value={formData.height || ''}
+                    onValueChange={(value) => handleInputChange('height', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select height" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="4'8">4'8"</SelectItem>
+                      <SelectItem value="4'9">4'9"</SelectItem>
+                      <SelectItem value="4'10">4'10"</SelectItem>
+                      <SelectItem value="4'11">4'11"</SelectItem>
+                      <SelectItem value="5'0">5'0"</SelectItem>
+                      <SelectItem value="5'1">5'1"</SelectItem>
+                      <SelectItem value="5'2">5'2"</SelectItem>
+                      <SelectItem value="5'3">5'3"</SelectItem>
+                      <SelectItem value="5'4">5'4"</SelectItem>
+                      <SelectItem value="5'5">5'5"</SelectItem>
+                      <SelectItem value="5'6">5'6"</SelectItem>
+                      <SelectItem value="5'7">5'7"</SelectItem>
+                      <SelectItem value="5'8">5'8"</SelectItem>
+                      <SelectItem value="5'9">5'9"</SelectItem>
+                      <SelectItem value="5'10">5'10"</SelectItem>
+                      <SelectItem value="5'11">5'11"</SelectItem>
+                      <SelectItem value="6'0">6'0"</SelectItem>
+                      <SelectItem value="6'1">6'1"</SelectItem>
+                      <SelectItem value="6'2">6'2"</SelectItem>
+                      <SelectItem value="6'3">6'3"</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
                   <Label htmlFor="location">Location</Label>
                   <Input
                     id="location"
@@ -225,41 +267,107 @@ export default function AdminEditProfile() {
                     onChange={(e) => handleInputChange('location', e.target.value)}
                   />
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Professional Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Professional & Educational Information</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="price">Price ($)</Label>
+                  <Label htmlFor="education">Education Level</Label>
+                  <Select
+                    value={formData.education || ''}
+                    onValueChange={(value) => handleInputChange('education', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select education level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="High School">High School</SelectItem>
+                      <SelectItem value="Some College">Some College</SelectItem>
+                      <SelectItem value="Associate Degree">Associate Degree</SelectItem>
+                      <SelectItem value="Bachelor's Degree">Bachelor's Degree</SelectItem>
+                      <SelectItem value="Master's Degree">Master's Degree</SelectItem>
+                      <SelectItem value="Doctorate">Doctorate</SelectItem>
+                      <SelectItem value="Trade School">Trade School</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="occupation">Occupation</Label>
                   <Input
-                    id="price"
-                    type="number"
-                    step="0.01"
-                    value={formData.price || ''}
-                    onChange={(e) => handleInputChange('price', parseFloat(e.target.value))}
+                    id="occupation"
+                    value={formData.occupation || ''}
+                    onChange={(e) => handleInputChange('occupation', e.target.value)}
                   />
+                </div>
+                <div>
+                  <Label htmlFor="occupationDetails">Occupation Details</Label>
+                  <Input
+                    id="occupationDetails"
+                    value={formData.occupationDetails || ''}
+                    onChange={(e) => handleInputChange('occupationDetails', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="relationshipStatus">Relationship Status</Label>
+                  <Select
+                    value={formData.relationshipStatus || ''}
+                    onValueChange={(value) => handleInputChange('relationshipStatus', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Single">Single</SelectItem>
+                      <SelectItem value="Divorced">Divorced</SelectItem>
+                      <SelectItem value="Widowed">Widowed</SelectItem>
+                      <SelectItem value="Separated">Separated</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Appearance */}
+          {/* Physical Appearance */}
           <Card>
             <CardHeader>
-              <CardTitle>Appearance</CardTitle>
+              <CardTitle>Physical Appearance</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="height">Height</Label>
-                  <Input
-                    id="height"
-                    value={formData.height || ''}
-                    onChange={(e) => handleInputChange('height', e.target.value)}
-                  />
+                  <Label htmlFor="bodyType">Body Type</Label>
+                  <Select
+                    value={formData.bodyType || ''}
+                    onValueChange={(value) => handleInputChange('bodyType', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select body type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Slim">Slim</SelectItem>
+                      <SelectItem value="Athletic">Athletic</SelectItem>
+                      <SelectItem value="Average">Average</SelectItem>
+                      <SelectItem value="Curvy">Curvy</SelectItem>
+                      <SelectItem value="Plus Size">Plus Size</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
-                  <Label htmlFor="bodyType">Body Type</Label>
+                  <Label htmlFor="appearance">Overall Appearance</Label>
                   <Input
-                    id="bodyType"
-                    value={formData.bodyType || ''}
-                    onChange={(e) => handleInputChange('bodyType', e.target.value)}
+                    id="appearance"
+                    value={formData.appearance || ''}
+                    onChange={(e) => handleInputChange('appearance', e.target.value)}
+                    placeholder="Brief description of your appearance"
                   />
                 </div>
                 <div>
@@ -290,20 +398,235 @@ export default function AdminEditProfile() {
             </CardContent>
           </Card>
 
-          {/* About */}
+          {/* Personal Attributes */}
           <Card>
             <CardHeader>
-              <CardTitle>About</CardTitle>
+              <CardTitle>Personal Attributes</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="hasChildren"
+                    checked={formData.hasChildren || false}
+                    onCheckedChange={(checked) => handleInputChange('hasChildren', checked)}
+                  />
+                  <Label htmlFor="hasChildren">Has Children</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="wantsChildren"
+                    checked={formData.wantsChildren || false}
+                    onCheckedChange={(checked) => handleInputChange('wantsChildren', checked)}
+                  />
+                  <Label htmlFor="wantsChildren">Wants Children</Label>
+                </div>
+                <div>
+                  <Label htmlFor="smokingStatus">Smoking Status</Label>
+                  <Select
+                    value={formData.smokingStatus || ''}
+                    onValueChange={(value) => handleInputChange('smokingStatus', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select smoking status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Non-smoker">Non-smoker</SelectItem>
+                      <SelectItem value="Social smoker">Social smoker</SelectItem>
+                      <SelectItem value="Regular smoker">Regular smoker</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="drinkingStatus">Drinking Status</Label>
+                  <Select
+                    value={formData.drinkingStatus || ''}
+                    onValueChange={(value) => handleInputChange('drinkingStatus', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select drinking status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Non-drinker">Non-drinker</SelectItem>
+                      <SelectItem value="Social drinker">Social drinker</SelectItem>
+                      <SelectItem value="Regular drinker">Regular drinker</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Languages and Interests */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Languages & Interests</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="aboutMe">About Me</Label>
+                <Label htmlFor="languages">Languages Spoken</Label>
+                <Input
+                  id="languages"
+                  value={Array.isArray(formData.languages) ? formData.languages.join(', ') : formData.languages || ''}
+                  onChange={(e) => handleInputChange('languages', e.target.value.split(', ').filter(Boolean))}
+                  placeholder="e.g., Spanish, English, French"
+                />
+              </div>
+              <div>
+                <Label htmlFor="interests">Interests & Hobbies</Label>
+                <Input
+                  id="interests"
+                  value={Array.isArray(formData.interests) ? formData.interests.join(', ') : formData.interests || ''}
+                  onChange={(e) => handleInputChange('interests', e.target.value.split(', ').filter(Boolean))}
+                  placeholder="e.g., Dancing, Cooking, Reading, Travel"
+                />
+              </div>
+              <div>
+                <Label htmlFor="lookingFor">Looking For</Label>
+                <Input
+                  id="lookingFor"
+                  value={Array.isArray(formData.lookingFor) ? formData.lookingFor.join(', ') : formData.lookingFor || ''}
+                  onChange={(e) => handleInputChange('lookingFor', e.target.value.split(', ').filter(Boolean))}
+                  placeholder="e.g., Serious relationship, Marriage, Friendship"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* About Me */}
+          <Card>
+            <CardHeader>
+              <CardTitle>About Me</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="aboutMe">Tell us about yourself</Label>
                 <Textarea
                   id="aboutMe"
                   value={formData.aboutMe || ''}
                   onChange={(e) => handleInputChange('aboutMe', e.target.value)}
                   rows={4}
+                  placeholder="Share something interesting about yourself..."
                 />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Photos and Media */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Photos and Media</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label className="text-base font-medium">Current Photos</Label>
+                {formData.photos && formData.photos.length > 0 ? (
+                  <div className="space-y-2">
+                    {formData.photos.map((photo, index) => (
+                      <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                        <span className="text-sm">{photo}</span>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            checked={formData.primaryPhoto === photo}
+                            onCheckedChange={(checked) => {
+                              if (checked) handleInputChange('primaryPhoto', photo);
+                            }}
+                          />
+                          <Label className="text-xs">Primary</Label>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const newPhotos = formData.photos.filter((_, i) => i !== index);
+                              handleInputChange('photos', newPhotos);
+                              if (formData.primaryPhoto === photo) {
+                                handleInputChange('primaryPhoto', newPhotos[0] || '');
+                              }
+                            }}
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500">No photos uploaded</p>
+                )}
+                
+                <div className="mt-4">
+                  <Label className="text-sm font-medium">Add New Photos</Label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center mt-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files || []);
+                        const fileNames = files.map(file => file.name);
+                        const currentPhotos = formData.photos || [];
+                        const newPhotos = [...currentPhotos, ...fileNames];
+                        handleInputChange('photos', newPhotos);
+                        if (!formData.primaryPhoto && fileNames.length > 0) {
+                          handleInputChange('primaryPhoto', fileNames[0]);
+                        }
+                      }}
+                      className="hidden"
+                      id="admin-photo-upload"
+                    />
+                    <label htmlFor="admin-photo-upload" className="cursor-pointer">
+                      <div className="text-sm text-gray-600">Click to upload photos</div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-base font-medium">Current Videos</Label>
+                {formData.videos && formData.videos.length > 0 ? (
+                  <div className="space-y-2">
+                    {formData.videos.map((video, index) => (
+                      <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                        <span className="text-sm">{video}</span>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const newVideos = formData.videos.filter((_, i) => i !== index);
+                            handleInputChange('videos', newVideos);
+                          }}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500">No videos uploaded</p>
+                )}
+                
+                <div className="mt-4">
+                  <Label className="text-sm font-medium">Add New Videos</Label>
+                  <div className="border-2 border-dashed border-purple-300 rounded-lg p-4 text-center mt-2">
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files || []);
+                        const fileNames = files.map(file => file.name);
+                        const currentVideos = formData.videos || [];
+                        handleInputChange('videos', [...currentVideos, ...fileNames]);
+                      }}
+                      className="hidden"
+                      id="admin-video-upload"
+                    />
+                    <label htmlFor="admin-video-upload" className="cursor-pointer">
+                      <div className="text-sm text-gray-600">Click to upload videos</div>
+                    </label>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -321,6 +644,7 @@ export default function AdminEditProfile() {
                     id="contactWhatsapp"
                     value={formData.contactWhatsapp || ''}
                     onChange={(e) => handleInputChange('contactWhatsapp', e.target.value)}
+                    placeholder="WhatsApp number"
                   />
                 </div>
                 <div>
@@ -329,6 +653,7 @@ export default function AdminEditProfile() {
                     id="contactInstagram"
                     value={formData.contactInstagram || ''}
                     onChange={(e) => handleInputChange('contactInstagram', e.target.value)}
+                    placeholder="Instagram handle"
                   />
                 </div>
                 <div>
@@ -338,16 +663,56 @@ export default function AdminEditProfile() {
                     type="email"
                     value={formData.contactEmail || ''}
                     onChange={(e) => handleInputChange('contactEmail', e.target.value)}
+                    placeholder="Email address"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="contactPhone">Phone</Label>
+                  <Label htmlFor="contactTelegram">Telegram</Label>
                   <Input
-                    id="contactPhone"
-                    value={formData.contactPhone || ''}
-                    onChange={(e) => handleInputChange('contactPhone', e.target.value)}
+                    id="contactTelegram"
+                    value={formData.contactTelegram || ''}
+                    onChange={(e) => handleInputChange('contactTelegram', e.target.value)}
+                    placeholder="Telegram username"
                   />
                 </div>
+                <div>
+                  <Label htmlFor="contactFacebook">Facebook</Label>
+                  <Input
+                    id="contactFacebook"
+                    value={formData.contactFacebook || ''}
+                    onChange={(e) => handleInputChange('contactFacebook', e.target.value)}
+                    placeholder="Facebook profile"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="contactTiktok">TikTok</Label>
+                  <Input
+                    id="contactTiktok"
+                    value={formData.contactTiktok || ''}
+                    onChange={(e) => handleInputChange('contactTiktok', e.target.value)}
+                    placeholder="TikTok handle"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Pricing */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Pricing</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="price">Contact Information Price ($)</Label>
+                <Input
+                  id="price"
+                  type="number"
+                  step="0.01"
+                  value={formData.price || ''}
+                  onChange={(e) => handleInputChange('price', parseFloat(e.target.value))}
+                  placeholder="Price for contact information access"
+                />
               </div>
             </CardContent>
           </Card>
