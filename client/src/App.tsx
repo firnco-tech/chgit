@@ -21,6 +21,7 @@ import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminEditProfile from "@/pages/admin/AdminEditProfile";
 import AdminUsers from "@/pages/admin/AdminUsers";
+import AdminManagement from "@/pages/admin/AdminManagement";
 
 function Router() {
   return (
@@ -40,6 +41,7 @@ function Router() {
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/users" component={AdminUsers} />
+      <Route path="/admin/admins" component={AdminManagement} />
       <Route path="/admin/edit-profile/:id" component={AdminEditProfile} />
       
       <Route component={NotFound} />

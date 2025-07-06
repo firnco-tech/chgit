@@ -13,15 +13,9 @@ import {
   getCurrentSuperAdmin 
 } from "./superAdminAuth";
 import {
+  requireAdminRole,
   requireAdmin,
   requireSuperAdmin,
-  getCurrentUser,
-  auditLog
-} from "./authorizationMiddleware";
-import { 
-  requireAdminRole, 
-  requireSuperAdmin, 
-  requireAdmin, 
   requireResourceAccess,
   auditLog,
   hasPermission,
@@ -833,58 +827,207 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get current super admin user
   app.get("/api/super-admin/user", requireSuperAdminAuth, getCurrentSuperAdmin);
 
+  // =============================================================================
+  // ADMIN MANAGEMENT ROUTES - Super Admin Only Access
+  // =============================================================================
+
   // Get all admin users (super admin only)
-  app.get("/api/super-admin/admin-users", requireSuperAdminAuth, async (req, res) => {
+  app.get("/api/admin/admins", requireSuperAdmin, async (req, res) => {
     try {
       const adminUsers = await storage.getAllAdminUsers();
-      res.json(adminUsers);
+      
+      // Remove password hashes from response
+      const safeAdminUsers = adminUsers.map(({ passwordHash, ...admin }) => admin);
+      
+      res.json(safeAdminUsers);
     } catch (error: any) {
-      res.status(500).json({ message: "Error fetching admin users: " + error.message });
+      console.error('Error fetching admin users:', error);
+      res.status(500).json({ message: "Failed to fetch admin users: " + error.message });
     }
   });
 
   // Create new admin user (super admin only)
-  app.post("/api/super-admin/admin-users", requireSuperAdminAuth, async (req, res) => {
+  app.post("/api/admin/admins", requireSuperAdmin, async (req, res) => {
     try {
       const { username, email, password, role } = req.body;
       
+      // Validate required fields
       if (!username || !email || !password || !role) {
-        return res.status(400).json({ message: "Username, email, password, and role are required" });
+        return res.status(400).json({ 
+          message: "Username, email, password, and role are required" 
+        });
       }
 
+      // Check if role is valid
       if (!['admin', 'superadmin'].includes(role)) {
-        return res.status(400).json({ message: "Invalid role specified" });
+        return res.status(400).json({ 
+          message: "Role must be 'admin' or 'superadmin'" 
+        });
       }
 
       // Hash password
       const passwordHash = await hashPassword(password);
 
-      const newAdminUser = await storage.createAdminUser({
+      // Create admin user
+      const newAdmin = await storage.createAdminUser({
         username,
         email,
         passwordHash,
-        role: role as 'admin' | 'superadmin',
-        isActive: true,
-      });
-
-      // Log admin user creation
-      await storage.logAdminActivity({
-        adminId: req.superAdmin!.id,
-        action: 'create_admin_user',
-        targetType: 'admin_user',
-        targetId: newAdminUser.id,
-        details: { 
-          username,
-          email,
-          role,
-          timestamp: new Date().toISOString()
-        },
-        ipAddress: req.ip || 'unknown',
+        role,
+        isActive: true
       });
 
       // Remove password hash from response
-      const { passwordHash: _, ...adminUserResponse } = newAdminUser;
-      res.json(adminUserResponse);
+      const { passwordHash: _, ...safeAdmin } = newAdmin;
+      
+      // Log admin creation activity
+      const currentUser = getCurrentUser(req);
+      if (currentUser) {
+        await storage.logAdminActivity({
+          adminId: currentUser.id,
+          action: 'admin_created',
+          targetType: 'admin_user',
+          targetId: newAdmin.id,
+          details: JSON.stringify({
+            createdUsername: username,
+            createdRole: role,
+            createdEmail: email
+          })
+        });
+      }
+
+      res.status(201).json(safeAdmin);
+    } catch (error: any) {
+      console.error('Error creating admin user:', error);
+      res.status(500).json({ message: "Failed to create admin user: " + error.message });
+    }
+  });
+
+  // Update admin user (super admin only)
+  app.patch("/api/admin/admins/:id", requireSuperAdmin, async (req, res) => {
+    try {
+      const adminId = parseInt(req.params.id);
+      const { username, email, role, isActive } = req.body;
+      
+      if (isNaN(adminId)) {
+        return res.status(400).json({ message: "Invalid admin ID" });
+      }
+
+      // Validate role if provided
+      if (role && !['admin', 'superadmin'].includes(role)) {
+        return res.status(400).json({ 
+          message: "Role must be 'admin' or 'superadmin'" 
+        });
+      }
+
+      // Get current admin to prevent self-demotion
+      const currentUser = getCurrentUser(req);
+      if (currentUser && currentUser.id === adminId && role === 'admin' && currentUser.role === 'superadmin') {
+        return res.status(400).json({ 
+          message: "Cannot demote yourself from super admin" 
+        });
+      }
+
+      // Update admin user
+      const updatedAdmin = await storage.updateAdminUser(adminId, {
+        username,
+        email,
+        role,
+        isActive
+      });
+
+      if (!updatedAdmin) {
+        return res.status(404).json({ message: "Admin user not found" });
+      }
+
+      // Remove password hash from response
+      const { passwordHash: _, ...safeAdmin } = updatedAdmin;
+      
+      // Log admin update activity
+      if (currentUser) {
+        await storage.logAdminActivity({
+          adminId: currentUser.id,
+          action: 'admin_updated',
+          targetType: 'admin_user',
+          targetId: adminId,
+          details: JSON.stringify({
+            updatedFields: { username, email, role, isActive }
+          })
+        });
+      }
+
+      res.json(safeAdmin);
+    } catch (error: any) {
+      console.error('Error updating admin user:', error);
+      res.status(500).json({ message: "Failed to update admin user: " + error.message });
+    }
+  });
+
+  // Delete admin user (super admin only)
+  app.delete("/api/admin/admins/:id", requireSuperAdmin, async (req, res) => {
+    try {
+      const adminId = parseInt(req.params.id);
+      
+      if (isNaN(adminId)) {
+        return res.status(400).json({ message: "Invalid admin ID" });
+      }
+
+      // Prevent self-deletion
+      const currentUser = getCurrentUser(req);
+      if (currentUser && currentUser.id === adminId) {
+        return res.status(400).json({ 
+          message: "Cannot delete your own admin account" 
+        });
+      }
+
+      // Get admin info before deletion for logging
+      const adminToDelete = await storage.getAdminUser(adminId);
+      if (!adminToDelete) {
+        return res.status(404).json({ message: "Admin user not found" });
+      }
+
+      // Delete admin user
+      const deleted = await storage.deleteAdminUser(adminId);
+      
+      if (!deleted) {
+        return res.status(404).json({ message: "Admin user not found" });
+      }
+
+      // Log admin deletion activity
+      if (currentUser) {
+        await storage.logAdminActivity({
+          adminId: currentUser.id,
+          action: 'admin_deleted',
+          targetType: 'admin_user',
+          targetId: adminId,
+          details: JSON.stringify({
+            deletedUsername: adminToDelete.username,
+            deletedRole: adminToDelete.role,
+            deletedEmail: adminToDelete.email
+          })
+        });
+      }
+
+      res.json({ success: true, message: "Admin user deleted successfully" });
+    } catch (error: any) {
+      console.error('Error deleting admin user:', error);
+      res.status(500).json({ message: "Failed to delete admin user: " + error.message });
+    }
+  });
+
+  // =============================================================================
+  // LEGACY SUPER ADMIN ROUTES - Keep for backward compatibility
+  // =============================================================================
+
+  // Get all admin users (legacy route)
+  app.get("/api/super-admin/admin-users", requireSuperAdminAuth, async (req, res) => {
+    try {
+      const adminUsers = await storage.getAllAdminUsers();
+      
+      // Remove password hashes from response
+      const safeAdminUsers = adminUsers.map(({ passwordHash, ...admin }) => admin);
+      
+      res.json(safeAdminUsers);
     } catch (error: any) {
       res.status(500).json({ message: "Error creating admin user: " + error.message });
     }

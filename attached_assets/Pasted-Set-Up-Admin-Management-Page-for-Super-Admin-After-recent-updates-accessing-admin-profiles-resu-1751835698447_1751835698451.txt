@@ -1,0 +1,52 @@
+Set Up Admin Management Page for Super Admin
+
+After recent updates, accessing /admin/profiles results in a 404 error.
+This page should allow a super admin to create and manage standard admin accounts.
+
+Your task:
+Set up the /admin/profiles (or a clearly named equivalent, e.g., /admin/admins or /admin/manage-admins) page with the following requirements:
+
+1. Super Admin Admin Management Page
+Only super admins can access this page.
+
+The page must allow super admins to:
+
+View a list of all admin users (including their roles, names, emails, last login).
+
+Create new standard admin accounts (set username, email, password, and role).
+
+Change the role of an existing admin (e.g., promote to super admin, demote to standard admin).
+
+Deactivate, reactivate, or delete admin accounts as needed.
+
+All actions must be fully auditable and logged.
+
+2. Access Control & Security
+Ensure only authenticated super admins can access this page or any admin management actions.
+
+Standard admins and front-end users must NOT see or access this page or its routes.
+
+3. UI/UX
+The management page should be clearly labeled (e.g., “Admin Management”).
+
+Use a clean, intuitive layout: list of admins, search/filter, and clear action buttons (Add, Edit, Deactivate, Delete).
+
+When creating or editing an admin, use a modal or dedicated form with proper validation and feedback.
+
+4. Regression Safety
+Do not break or alter any existing admin dashboard or site structure.
+
+Do not affect profile management, user management, or any other admin flows.
+
+All new code must be clearly commented and documented.
+
+5. Testing & Verification
+After implementation, provide:
+
+Screenshots of the new admin management page.
+
+Proof that only super admins can access and use it.
+
+Confirmation that all existing admin and user flows are unaffected.
+
+Begin with creating the admin management page for super admin at /admin/profiles (or a clearly named equivalent), and wait for my review before making any further changes.
