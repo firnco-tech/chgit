@@ -1,68 +1,29 @@
-/**
- * FAVORITES PAGE - View user's saved favorite profiles
- * 
- * This page displays all profiles that the authenticated user has favorited.
- * Requires user authentication to access.
- */
-
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
-import { Navbar } from "@/components/navbar";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Heart, MapPin, Calendar, Eye, ShoppingCart, Trash2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
+import { ProfileCard } from "@/components/profile-card";
+import { Loader2, Search, Heart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
-import { getProfileImageUrl } from "@/lib/mediaUtils";
 import type { Profile, UserFavorite } from "@shared/schema";
 
-// Helper component for safe image display  
-const ProfileImage = ({ photos, firstName, lastName }: { photos: string[] | null, firstName: string, lastName: string }) => {
-  const [imageError, setImageError] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  
-  const photoUrl = getProfileImageUrl(photos);
-  
-  if (!photoUrl || imageError) {
-    return (
-      <div className="w-full h-full bg-pink-100 flex items-center justify-center">
-        <span className="text-4xl font-medium text-pink-600">
-          {firstName?.[0] || 'P'}
-        </span>
-      </div>
-    );
-  }
-  
-  return (
-    <>
-      {!imageLoaded && (
-        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-          <span className="text-gray-400">Loading...</span>
-        </div>
-      )}
-      <img 
-        src={photoUrl} 
-        alt={`${firstName} ${lastName}`}
-        className={`w-full h-full object-cover ${imageLoaded ? 'block' : 'hidden'}`}
-        onLoad={() => setImageLoaded(true)}
-        onError={() => setImageError(true)}
-      />
-    </>
-  );
-};
-
-// Use the correct type from schema
+// Type for favorite profiles with included profile data
 type FavoriteProfile = UserFavorite & { profile: Profile };
 
 export default function Favorites() {
-  const { user, isLoading: authLoading, isAuthenticated } = useAuth();
+  const { isLoading: authLoading, isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
+  
+  // Filter and sorting states - same as browse page
+  const [searchQuery, setSearchQuery] = useState("");
+  const [ageFilter, setAgeFilter] = useState("all");
+  const [locationFilter, setLocationFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -79,57 +40,73 @@ export default function Favorites() {
     }
   }, [isAuthenticated, authLoading, toast, setLocation]);
 
-  // Fetch user favorites
-  const { data: favorites = [], isLoading, error } = useQuery({
+  // Fetch user favorites with profile data
+  const { data: favorites = [], isLoading } = useQuery<FavoriteProfile[]>({
     queryKey: ['/api/favorites'],
     enabled: isAuthenticated,
     retry: false,
   });
 
-  // Remove favorite mutation
-  const removeFavoriteMutation = useMutation({
-    mutationFn: async (profileId: number) => {
-      return apiRequest(`/api/favorites/${profileId}`, {
-        method: 'DELETE',
-      });
-    },
-    onSuccess: (_, profileId) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
-      queryClient.invalidateQueries({ queryKey: [`/api/favorites/${profileId}/status`] });
-      toast({
-        title: "Removed from favorites",
-        description: "Profile has been removed from your favorites.",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to remove from favorites.",
-        variant: "destructive",
-      });
-    },
+  // Extract profiles from favorites for consistent handling
+  const favoriteProfiles = favorites.map(fav => fav.profile);
+
+  // Apply filters - same logic as browse page
+  const filteredProfiles = favoriteProfiles.filter(profile => {
+    // Search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      const fullName = `${profile.firstName} ${profile.lastName}`.toLowerCase();
+      const location = profile.location?.toLowerCase() || '';
+      const occupation = profile.occupation?.toLowerCase() || '';
+      const aboutMe = profile.aboutMe?.toLowerCase() || '';
+      
+      if (!fullName.includes(query) && 
+          !location.includes(query) && 
+          !occupation.includes(query) && 
+          !aboutMe.includes(query)) {
+        return false;
+      }
+    }
+
+    // Age filter
+    if (ageFilter && ageFilter !== 'all') {
+      const [minAge, maxAge] = ageFilter.split('-').map(Number);
+      if (profile.age < minAge || (maxAge && profile.age > maxAge)) {
+        return false;
+      }
+    }
+
+    // Location filter
+    if (locationFilter && locationFilter !== 'all') {
+      if (profile.location !== locationFilter) {
+        return false;
+      }
+    }
+
+    return true;
   });
 
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString();
-  };
-
-  const handleViewProfile = (profileId: number) => {
-    setLocation(`/profile/${profileId}`);
-  };
-
-  const handleRemoveFavorite = (profileId: number) => {
-    removeFavoriteMutation.mutate(profileId);
-  };
+  // Apply sorting - same logic as browse page
+  const sortedProfiles = [...filteredProfiles];
+  if (sortBy === "newest") {
+    sortedProfiles.sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+  } else if (sortBy === "age") {
+    sortedProfiles.sort((a, b) => a.age - b.age);
+  } else if (sortBy === "added") {
+    // Sort by when added to favorites
+    sortedProfiles.sort((a, b) => {
+      const favA = favorites.find(fav => fav.profile.id === a.id);
+      const favB = favorites.find(fav => fav.profile.id === b.id);
+      return new Date(favB?.createdAt || 0).getTime() - new Date(favA?.createdAt || 0).getTime();
+    });
+  }
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">My Favorites</h1>
-            <p className="text-gray-600">Loading...</p>
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         </div>
       </div>
@@ -141,148 +118,135 @@ export default function Favorites() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      
-      <div className="container mx-auto px-4 py-8">
-        {/* Simplified Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">My Favorites</h1>
-          <p className="text-gray-600">
-            {favorites.length} profile{favorites.length !== 1 ? 's' : ''} saved
-          </p>
-        </div>
-
-        {/* Content */}
-        {isLoading ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500">Loading your favorites...</p>
-          </div>
-        ) : error ? (
-          <div className="text-center py-12">
-            <p className="text-red-500">Error loading favorites. Please try again.</p>
-          </div>
-        ) : favorites.length === 0 ? (
-          <Card className="text-center py-12">
-            <CardContent>
-              <Heart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-              <CardTitle className="text-xl mb-2">No favorites yet</CardTitle>
-              <CardDescription className="mb-6">
-                Start browsing profiles and click the heart icon to save your favorites here.
-              </CardDescription>
-              <Button onClick={() => setLocation("/browse")}>
-                Browse Profiles
-              </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {favorites.map((favorite: FavoriteProfile) => (
-              <Card key={favorite.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader className="pb-4">
-                  <div className="relative">
-                    {/* Profile Image */}
-                    <div className="w-full h-64 rounded-lg overflow-hidden bg-gray-200 mb-4">
-                      <ProfileImage 
-                        photos={favorite.profile.photos || []}
-                        firstName={favorite.profile.firstName}
-                        lastName={favorite.profile.lastName}
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Filters Sidebar - same as browse page */}
+          <div className="lg:w-1/4">
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Filter Favorites</h3>
+                
+                <div className="space-y-4">
+                  {/* Search */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Search
+                    </label>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                      <Input
+                        placeholder="Search favorites..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10"
                       />
                     </div>
-
-                    {/* Status Badges */}
-                    <div className="absolute top-2 right-2 flex flex-col gap-2">
-                      {favorite.profile.isFeatured && (
-                        <Badge variant="default" className="bg-yellow-500">
-                          Featured
-                        </Badge>
-                      )}
-                      <Badge variant={favorite.profile.isApproved ? "default" : "secondary"}>
-                        {favorite.profile.isApproved ? "Verified" : "Pending"}
-                      </Badge>
-                    </div>
-
-                    {/* Remove from favorites button */}
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="absolute top-2 left-2"
-                      onClick={() => handleRemoveFavorite(favorite.profile.id)}
-                      disabled={removeFavoriteMutation.isPending}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
                   </div>
-
-                  <CardTitle className="text-xl">
-                    {favorite.profile.firstName} {favorite.profile.lastName}
-                  </CardTitle>
                   
-                  <div className="flex items-center gap-4 text-sm text-gray-500">
-                    <span>{favorite.profile.age} years old</span>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="h-4 w-4" />
-                      <span>{favorite.profile.location}</span>
-                    </div>
+                  {/* Age Range */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Age Range
+                    </label>
+                    <Select value={ageFilter} onValueChange={setAgeFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="All Ages" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Ages</SelectItem>
+                        <SelectItem value="18-25">18-25</SelectItem>
+                        <SelectItem value="26-30">26-30</SelectItem>
+                        <SelectItem value="31-35">31-35</SelectItem>
+                        <SelectItem value="36-99">36+</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                </CardHeader>
-
-                <CardContent className="pt-0">
-                  {/* About Me */}
-                  {favorite.profile.aboutMe && (
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-                      {favorite.profile.aboutMe}
-                    </p>
-                  )}
-
-                  {/* Occupation */}
-                  {favorite.profile.occupation && (
-                    <p className="text-sm text-gray-500 mb-4">
-                      <strong>Occupation:</strong> {favorite.profile.occupation}
-                    </p>
-                  )}
-
-                  {/* Added Date */}
-                  <div className="flex items-center gap-1 text-xs text-gray-400 mb-4">
-                    <Calendar className="h-3 w-3" />
-                    <span>Added {formatDate(favorite.createdAt)}</span>
+                  
+                  {/* Location */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Location
+                    </label>
+                    <Select value={locationFilter} onValueChange={setLocationFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="All Locations" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Locations</SelectItem>
+                        <SelectItem value="Santo Domingo">Santo Domingo</SelectItem>
+                        <SelectItem value="Santiago">Santiago</SelectItem>
+                        <SelectItem value="Puerto Plata">Puerto Plata</SelectItem>
+                        <SelectItem value="La Romana">La Romana</SelectItem>
+                        <SelectItem value="Punta Cana">Punta Cana</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-
-                  {/* Price */}
-                  <div className="text-lg font-semibold text-green-600 mb-4">
-                    ${favorite.profile.price}
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-2">
-                    <Button 
-                      variant="outline" 
-                      className="flex-1"
-                      onClick={() => handleViewProfile(favorite.profile.id)}
-                    >
-                      <Eye className="h-4 w-4 mr-1" />
-                      View Profile
-                    </Button>
-                    <Button 
-                      variant="default" 
-                      className="flex-1"
-                      onClick={() => {
-                        // Add to cart functionality would go here
-                        toast({
-                          title: "Feature coming soon",
-                          description: "Cart functionality will be available soon.",
-                        });
-                      }}
-                    >
-                      <ShoppingCart className="h-4 w-4 mr-1" />
-                      Add to Cart
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        )}
+
+          {/* Profile Grid - same structure as browse page */}
+          <div className="lg:w-3/4">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">My Favorites</h2>
+              <div className="flex items-center space-x-4">
+                <span className="text-gray-600">
+                  {sortedProfiles.length} of {favoriteProfiles.length} favorites
+                </span>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="added">Sort by added date</SelectItem>
+                    <SelectItem value="newest">Sort by newest</SelectItem>
+                    <SelectItem value="age">Sort by age</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            {isLoading ? (
+              <div className="flex justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : favoriteProfiles.length === 0 ? (
+              <div className="text-center py-12">
+                <Heart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No favorites yet</h3>
+                <p className="text-gray-500 mb-6">
+                  Start browsing profiles and click the heart icon to save your favorites here.
+                </p>
+                <Button onClick={() => setLocation("/browse")}>
+                  Browse Profiles
+                </Button>
+              </div>
+            ) : sortedProfiles.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-500">No favorites match your current filters.</p>
+                <Button 
+                  variant="outline" 
+                  className="mt-4"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setAgeFilter("all");
+                    setLocationFilter("all");
+                  }}
+                >
+                  Clear Filters
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {sortedProfiles.map((profile) => (
+                  <ProfileCard key={profile.id} profile={profile} />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
