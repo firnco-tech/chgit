@@ -45,10 +45,24 @@ export function requireAdminRole(
     try {
       // Check for super admin authentication first
       const superAdminSessionId = req.cookies?.superAdminSession;
+      console.log('🔍 SUPER ADMIN SESSION DEBUG:', {
+        path: req.path,
+        method: req.method,
+        cookiesReceived: Object.keys(req.cookies || {}),
+        superAdminSessionId: superAdminSessionId ? `${superAdminSessionId.substring(0, 10)}...` : 'NOT_FOUND',
+        requireSuperAdmin,
+        allowedRoles
+      });
       
       if (superAdminSessionId && (requireSuperAdmin || allowedRoles.includes('superadmin'))) {
         const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
         const superAdminSession = await storage.getAdminSession(superAdminSessionId);
+        console.log('📋 SUPER ADMIN SESSION LOOKUP:', {
+          sessionFound: !!superAdminSession,
+          expired: superAdminSession ? superAdminSession.expiresAt <= new Date() : 'N/A',
+          sessionType: superAdminSession?.type || 'N/A',
+          adminId: superAdminSession?.adminId || 'N/A'
+        });
         
         if (superAdminSession && superAdminSession.expiresAt > new Date()) {
           const superAdmin = await storage.getAdminUser(superAdminSession.adminId);
