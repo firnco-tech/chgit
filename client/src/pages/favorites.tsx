@@ -17,13 +17,25 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
+import type { Profile, UserFavorite } from "@shared/schema";
 
 // Helper component for safe image display
-const ProfileImage = ({ photos, firstName, lastName }: { photos: string[], firstName: string, lastName: string }) => {
+const ProfileImage = ({ photos, firstName, lastName }: { photos: string[] | null, firstName: string, lastName: string }) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   
-  const hasValidPhoto = photos && Array.isArray(photos) && photos.length > 0 && photos[0];
+  // Check if we have valid photos and they're not empty
+  const hasValidPhoto = photos && Array.isArray(photos) && photos.length > 0 && photos[0] && photos[0].trim() !== '';
+  
+  // Debug logging to understand the data
+  console.log('ProfileImage Debug:', {
+    firstName,
+    lastName,
+    photos,
+    hasValidPhoto,
+    imageError,
+    imageLoaded
+  });
   
   if (!hasValidPhoto || imageError) {
     return (
@@ -53,25 +65,8 @@ const ProfileImage = ({ photos, firstName, lastName }: { photos: string[], first
   );
 };
 
-interface FavoriteProfile {
-  id: number;
-  userId: number;
-  profileId: number;
-  createdAt: string;
-  profile: {
-    id: number;
-    firstName: string;
-    lastName: string;
-    age: number;
-    location: string;
-    photos: string[];
-    price: string;
-    aboutMe: string;
-    occupation: string;
-    isApproved: boolean;
-    isFeatured: boolean;
-  };
-}
+// Use the correct type from schema
+type FavoriteProfile = UserFavorite & { profile: Profile };
 
 export default function Favorites() {
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();
