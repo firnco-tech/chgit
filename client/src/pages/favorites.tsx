@@ -19,7 +19,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 import type { Profile, UserFavorite } from "@shared/schema";
 
-// Helper component for safe image display
+// Helper component for safe image display  
 const ProfileImage = ({ photos, firstName, lastName }: { photos: string[] | null, firstName: string, lastName: string }) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -27,17 +27,32 @@ const ProfileImage = ({ photos, firstName, lastName }: { photos: string[] | null
   // Check if we have valid photos and they're not empty
   const hasValidPhoto = photos && Array.isArray(photos) && photos.length > 0 && photos[0] && photos[0].trim() !== '';
   
-  // Debug logging to understand the data
-  console.log('ProfileImage Debug:', {
-    firstName,
-    lastName,
-    photos,
-    hasValidPhoto,
-    imageError,
-    imageLoaded
-  });
-  
   if (!hasValidPhoto || imageError) {
+    return (
+      <div className="w-full h-full bg-pink-100 flex items-center justify-center">
+        <span className="text-4xl font-medium text-pink-600">
+          {firstName?.[0] || 'P'}
+        </span>
+      </div>
+    );
+  }
+  
+  // Convert photo to proper URL if needed
+  const getPhotoUrl = (photo: string) => {
+    // If it's already a full URL (starts with http), use as-is
+    if (photo.startsWith('http')) {
+      return photo;
+    }
+    // For local filenames, we need to construct the URL
+    // Note: This would typically point to your image storage service
+    // For now, show fallback since we don't have the actual storage URLs
+    return '';
+  };
+  
+  const photoUrl = getPhotoUrl(photos[0]);
+  
+  // If we can't construct a valid URL, show initials
+  if (!photoUrl) {
     return (
       <div className="w-full h-full bg-pink-100 flex items-center justify-center">
         <span className="text-4xl font-medium text-pink-600">
@@ -55,7 +70,7 @@ const ProfileImage = ({ photos, firstName, lastName }: { photos: string[] | null
         </div>
       )}
       <img 
-        src={photos[0]} 
+        src={photoUrl} 
         alt={`${firstName} ${lastName}`}
         className={`w-full h-full object-cover ${imageLoaded ? 'block' : 'hidden'}`}
         onLoad={() => setImageLoaded(true)}
