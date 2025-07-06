@@ -136,10 +136,13 @@ export default function Checkout() {
     }
 
     // Create PaymentIntent as soon as the page loads
-    apiRequest("POST", "/api/create-payment-intent", {
-      amount: getTotal(),
-      profileIds: items.map(item => item.id),
-      customerEmail: "", // Will be collected in the form
+    apiRequest("/api/create-payment-intent", {
+      method: "POST",
+      body: {
+        amount: getTotal(),
+        profileIds: items.map(item => item.id),
+        customerEmail: "", // Will be collected in the form
+      }
     })
       .then((res) => res.json())
       .then((data) => {

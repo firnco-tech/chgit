@@ -1,0 +1,85 @@
+=== FORM SUBMISSION STARTED ===
+submit-profile.tsx:116 Form is valid, submitting data: Object
+submit-profile.tsx:117 Form errors: Object
+submit-profile.tsx:91 === FRONTEND SUBMISSION DEBUG ===
+submit-profile.tsx:92 Form data being sent: {
+  "firstName": "lily",
+  "lastName": "santana",
+  "age": 18,
+  "gender": "female",
+  "height": "5'0\"",
+  "location": "Santo Domingo",
+  "education": "Some College",
+  "occupation": "Employed",
+  "occupationDetails": "",
+  "languages": [
+    "Spanish",
+    "English"
+  ],
+  "relationshipStatus": "Single",
+  "children": "Have children",
+  "smoking": "",
+  "bodyType": "",
+  "appearance": "",
+  "drinking": "",
+  "lookingFor": [
+    "Long term partner"
+  ],
+  "aboutMe": "I spend a lot of time in the gym. I sell nutrition products and have a kid. I'm looking for a boyfriend, with goals to build a future together. I'm originally from Santo Domingo but reside in San Juan de la Maguana currently. ",
+  "interests": [
+    "Travel",
+    "Music",
+    "Dancing"
+  ],
+  "photos": [
+    "6fa1c260-0c14-47a8-855d-ba3ae655a831.jpg",
+    "72ee9794-8413-404c-9815-45740538aeee.jpg",
+    "952ead1c-4ecf-43e9-ac71-4368ed42b2b4.jpg",
+    "863501f7-f441-472f-b6a6-6c92e23784b4.jpg",
+    "a246ca06-190c-4755-af8e-a25979911521.jpg",
+    "df49c798-de6d-4e3b-add2-24c2b30eabc9.jpg"
+  ],
+  "videos": [
+    "5fcd9ee9-86ac-46b4-a429-311ebed917f4.mp4"
+  ],
+  "contactMethods": {
+    "whatsapp": "1234567890",
+    "instagram": "",
+    "email": "",
+    "telegram": "nuy",
+    "facebook": "",
+    "tiktok": "huny"
+  },
+  "ageConfirmation": true,
+  "termsAccepted": true,
+  "reviewConsent": true,
+  "contactSharingConsent": false
+}
+submit-profile.tsx:96 === FRONTEND SUBMISSION SUCCESS ===
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+shared-52bde51db9135…caed2c8db801ae.js:1 Uncaught (in promise) FetchError: Error fetching https://r.stripe.com/b: Failed to fetch
+    at shared-52bde51db9135adabfcaed2c8db801ae.js:1:217748
+css-generic.js:1 uBOL: Generic cosmetic filtering stopped because no more DOM changes
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+shared-52bde51db9135…caed2c8db801ae.js:1 Uncaught (in promise) FetchError: Error fetching https://r.stripe.com/b: Failed to fetch
+    at shared-52bde51db9135adabfcaed2c8db801ae.js:1:217748
+
+                
+          
+          
+          
+         Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.

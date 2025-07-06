@@ -74,22 +74,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Submit profile
   app.post("/api/profiles", async (req, res) => {
     try {
-      console.log("=== PROFILE SUBMISSION DEBUG ===");
-      console.log("Request body:", JSON.stringify(req.body, null, 2));
-      
       const validatedData = insertProfileSchema.parse(req.body);
-      console.log("Validation successful, creating profile...");
-      
       const profile = await storage.createProfile(validatedData);
-      console.log("Profile created successfully:", profile.id);
-      
       res.status(201).json(profile);
     } catch (error: any) {
-      console.error("=== PROFILE SUBMISSION ERROR ===");
-      console.error("Error:", error);
-      
       if (error instanceof z.ZodError) {
-        console.error("Validation errors:", error.errors);
         return res.status(400).json({ message: "Validation error", errors: error.errors });
       }
       res.status(500).json({ message: "Error creating profile: " + error.message });

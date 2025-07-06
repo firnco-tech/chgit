@@ -136,6 +136,13 @@ RESTful API endpoints include:
   - Fixed dashboard statistics and admin panel functionality
   - Enhanced photo navigation with carousel controls and thumbnail interactions
 
+- July 06, 2025. Critical profile submission bug fix
+  - Fixed frontend profile submission not reaching backend due to incorrect apiRequest parameter order
+  - Corrected apiRequest calls in submit-profile.tsx and checkout.tsx to use proper format: apiRequest(url, {method, body})
+  - Verified complete profile submission workflow: frontend form → backend validation → database storage → admin panel display
+  - User-submitted profiles now appear correctly in admin panel for review and approval
+  - All profile submission functionality fully operational
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.

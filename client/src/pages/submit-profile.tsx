@@ -88,12 +88,9 @@ export default function SubmitProfile() {
 
   const submitProfileMutation = useMutation({
     mutationFn: async (data: SubmitProfileFormData) => {
-      console.log("=== FRONTEND SUBMISSION DEBUG ===");
-      console.log("Form data being sent:", JSON.stringify(data, null, 2));
-      return apiRequest("POST", "/api/profiles", data);
+      return apiRequest("/api/profiles", { method: "POST", body: data });
     },
     onSuccess: () => {
-      console.log("=== FRONTEND SUBMISSION SUCCESS ===");
       toast({
         title: "Profile submitted successfully!",
         description: "Your profile has been submitted for review. We'll get back to you within 24-48 hours.",
@@ -101,8 +98,6 @@ export default function SubmitProfile() {
       form.reset();
     },
     onError: (error: any) => {
-      console.error("=== FRONTEND SUBMISSION ERROR ===");
-      console.error("Error details:", error);
       toast({
         title: "Error submitting profile",
         description: error.message || "There was an error submitting your profile. Please try again.",
@@ -112,10 +107,6 @@ export default function SubmitProfile() {
   });
 
   const onSubmit = (data: SubmitProfileFormData) => {
-    console.log("=== FORM SUBMISSION STARTED ===");
-    console.log("Form is valid, submitting data:", data);
-    console.log("Form errors:", form.formState.errors);
-    
     setIsSubmitting(true);
     submitProfileMutation.mutate(data);
     setIsSubmitting(false);
