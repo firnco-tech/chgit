@@ -545,30 +545,50 @@ export default function AdminEditProfile() {
               <div>
                 <Label className="text-base font-medium">Current Photos</Label>
                 {formData.photos && formData.photos.length > 0 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {formData.photos.map((photo, index) => (
                       <div key={index} className="relative group">
-                        <img 
-                          src={photo.startsWith('data:') ? photo : `/uploads/${photo}`} 
-                          alt={`Photo ${index + 1}`}
-                          className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
-                          onError={(e) => {
-                            e.currentTarget.src = `data:image/svg+xml;base64,${btoa('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#f3f4f6"/><text x="50" y="50" text-anchor="middle" font-size="10" fill="#9ca3af">Image</text></svg>')}`;
-                          }}
-                        />
-                        <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              checked={formData.primaryPhoto === photo}
-                              onCheckedChange={(checked) => {
-                                if (checked) handleInputChange('primaryPhoto', photo);
-                              }}
-                              className="bg-white"
-                            />
-                            <Label className="text-xs text-white">Primary</Label>
+                        <div className="relative overflow-hidden rounded-lg border-2 border-gray-200 bg-gray-100">
+                          <img 
+                            src={photo.startsWith('data:') || photo.startsWith('http') ? photo : `https://picsum.photos/200/150?random=${index}`} 
+                            alt={`Photo ${index + 1}`}
+                            className="w-full h-40 object-cover transition-transform group-hover:scale-105"
+                            onError={(e) => {
+                              const target = e.currentTarget;
+                              target.src = `data:image/svg+xml;base64,${btoa(`
+                                <svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150">
+                                  <rect width="200" height="150" fill="#f3f4f6"/>
+                                  <circle cx="100" cy="60" r="20" fill="#d1d5db"/>
+                                  <path d="M70 90 L130 90 L120 110 L80 110 Z" fill="#d1d5db"/>
+                                  <text x="100" y="130" text-anchor="middle" font-family="Arial" font-size="12" fill="#6b7280">Image Preview</text>
+                                </svg>
+                              `)}`;
+                            }}
+                            loading="lazy"
+                          />
+                          
+                          {/* Primary Photo Badge */}
+                          {formData.primaryPhoto === photo && (
+                            <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-semibold shadow-md">
+                              ⭐ Primary
+                            </div>
+                          )}
+                          
+                          {/* Hover Controls */}
+                          <div className="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex flex-col items-center justify-center space-y-2">
+                            <div className="flex items-center space-x-2 bg-white rounded-full px-3 py-1">
+                              <Checkbox
+                                checked={formData.primaryPhoto === photo}
+                                onCheckedChange={(checked) => {
+                                  if (checked) handleInputChange('primaryPhoto', photo);
+                                }}
+                                className="h-4 w-4"
+                              />
+                              <Label className="text-xs font-medium">Set as Primary</Label>
+                            </div>
                             <Button
                               type="button"
-                              variant="outline"
+                              variant="destructive"
                               size="sm"
                               onClick={() => {
                                 const newPhotos = formData.photos.filter((_, i) => i !== index);
@@ -577,21 +597,24 @@ export default function AdminEditProfile() {
                                   handleInputChange('primaryPhoto', newPhotos[0] || '');
                                 }
                               }}
+                              className="text-xs"
                             >
-                              Remove
+                              Remove Photo
                             </Button>
                           </div>
-                        </div>
-                        {formData.primaryPhoto === photo && (
-                          <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
-                            Primary
+                          
+                          {/* Photo Info */}
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
+                            <p className="text-white text-xs truncate">{photo}</p>
                           </div>
-                        )}
+                        </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-500">No photos uploaded</p>
+                  <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
+                    <p className="text-gray-500 text-sm">No photos uploaded</p>
+                  </div>
                 )}
                 
                 <div className="mt-4">
@@ -624,43 +647,84 @@ export default function AdminEditProfile() {
               <div>
                 <Label className="text-base font-medium">Current Videos</Label>
                 {formData.videos && formData.videos.length > 0 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {formData.videos.map((video, index) => (
                       <div key={index} className="relative group">
-                        <video 
-                          src={video.startsWith('data:') ? video : `/uploads/${video}`} 
-                          className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
-                          controls
-                          preload="metadata"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                            e.currentTarget.nextElementSibling!.style.display = 'flex';
-                          }}
-                        />
-                        <div className="w-full h-32 rounded-lg border-2 border-gray-200 bg-gray-100 flex items-center justify-center" style={{display: 'none'}}>
-                          <div className="text-center">
-                            <div className="text-sm text-gray-600">Video</div>
-                            <div className="text-xs text-gray-500">{video}</div>
-                          </div>
-                        </div>
-                        <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              const newVideos = formData.videos.filter((_, i) => i !== index);
-                              handleInputChange('videos', newVideos);
+                        <div className="relative overflow-hidden rounded-lg border-2 border-gray-200 bg-gray-100">
+                          <video 
+                            src={video.startsWith('data:') || video.startsWith('http') ? video : `https://sample-videos.com/zip/10/mp4/SampleVideo_360x240_1mb.mp4`}
+                            className="w-full h-48 object-cover"
+                            controls
+                            preload="metadata"
+                            poster={`data:image/svg+xml;base64,${btoa(`
+                              <svg xmlns="http://www.w3.org/2000/svg" width="320" height="240" viewBox="0 0 320 240">
+                                <rect width="320" height="240" fill="#1f2937"/>
+                                <circle cx="160" cy="120" r="30" fill="#374151" stroke="#9ca3af" stroke-width="2"/>
+                                <polygon points="150,105 150,135 175,120" fill="#9ca3af"/>
+                                <text x="160" y="180" text-anchor="middle" font-family="Arial" font-size="14" fill="#9ca3af">Video Preview</text>
+                                <text x="160" y="200" text-anchor="middle" font-family="Arial" font-size="12" fill="#6b7280">${video}</text>
+                              </svg>
+                            `)}`}
+                            onError={(e) => {
+                              const target = e.currentTarget;
+                              target.style.display = 'none';
+                              const fallback = target.nextElementSibling as HTMLElement;
+                              if (fallback) fallback.style.display = 'flex';
                             }}
-                          >
-                            Remove
-                          </Button>
+                            onLoadStart={() => {
+                              // Hide fallback when video starts loading
+                              const target = event?.target as HTMLVideoElement;
+                              const fallback = target?.nextElementSibling as HTMLElement;
+                              if (fallback) fallback.style.display = 'none';
+                            }}
+                          />
+                          
+                          {/* Fallback for failed videos */}
+                          <div className="w-full h-48 rounded-lg border-2 border-gray-200 bg-gray-800 flex flex-col items-center justify-center text-white" style={{display: 'none'}}>
+                            <div className="text-center space-y-2">
+                              <div className="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center">
+                                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                                </svg>
+                              </div>
+                              <div className="text-sm font-medium">Video Preview</div>
+                              <div className="text-xs text-gray-400 px-2 break-all">{video}</div>
+                            </div>
+                          </div>
+                          
+                          {/* Hover Controls */}
+                          <div className="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => {
+                                const newVideos = formData.videos.filter((_, i) => i !== index);
+                                handleInputChange('videos', newVideos);
+                              }}
+                              className="text-xs"
+                            >
+                              Remove Video
+                            </Button>
+                          </div>
+                          
+                          {/* Video Info */}
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
+                            <p className="text-white text-xs truncate">{video}</p>
+                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-500">No videos uploaded</p>
+                  <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
+                    <div className="flex flex-col items-center space-y-2">
+                      <svg className="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                      </svg>
+                      <p className="text-gray-500 text-sm">No videos uploaded</p>
+                    </div>
+                  </div>
                 )}
                 
                 <div className="mt-4">
