@@ -202,11 +202,11 @@ export default function AdminEditProfile() {
           </div>
           <div className="flex items-center gap-2">
             <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-              profile.isApproved 
-                ? 'bg-green-100 text-green-800' 
-                : 'bg-yellow-100 text-yellow-800'
+              profile.status === 'ACTIVE' ? 'bg-green-100 text-green-800' :
+              profile.status === 'INACTIVE' ? 'bg-gray-100 text-gray-800' :
+              'bg-yellow-100 text-yellow-800'
             }`}>
-              {profile.isApproved ? 'APPROVED' : 'PENDING'}
+              {profile.status || (profile.isApproved ? 'ACTIVE' : 'PENDING')}
             </span>
             {profile.isFeatured && (
               <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -947,21 +947,35 @@ export default function AdminEditProfile() {
               <CardTitle>Profile Status</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="isApproved"
-                  checked={formData.isApproved || false}
-                  onCheckedChange={(checked) => handleInputChange('isApproved', checked)}
-                />
-                <Label htmlFor="isApproved">Approved</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="isFeatured"
-                  checked={formData.isFeatured || false}
-                  onCheckedChange={(checked) => handleInputChange('isFeatured', checked)}
-                />
-                <Label htmlFor="isFeatured">Featured</Label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="status">Profile Status</Label>
+                  <Select 
+                    value={formData.status || 'PENDING'} 
+                    onValueChange={(value) => {
+                      handleInputChange('status', value);
+                      // Update isApproved for backward compatibility
+                      handleInputChange('isApproved', value === 'ACTIVE');
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="PENDING">PENDING</SelectItem>
+                      <SelectItem value="ACTIVE">ACTIVE</SelectItem>
+                      <SelectItem value="INACTIVE">INACTIVE</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="isFeatured"
+                    checked={formData.isFeatured || false}
+                    onCheckedChange={(checked) => handleInputChange('isFeatured', checked)}
+                  />
+                  <Label htmlFor="isFeatured">Featured</Label>
+                </div>
               </div>
             </CardContent>
           </Card>

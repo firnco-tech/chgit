@@ -52,7 +52,8 @@ export const profiles = pgTable("profiles", {
   
   // System fields
   price: decimal("price", { precision: 10, scale: 2 }).notNull().default("2.00"),
-  isApproved: boolean("is_approved").default(false),
+  status: text("status").notNull().default("PENDING"), // PENDING, ACTIVE, INACTIVE
+  isApproved: boolean("is_approved").default(false), // Keep for backward compatibility
   isFeatured: boolean("is_featured").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
