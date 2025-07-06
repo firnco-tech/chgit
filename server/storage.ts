@@ -428,13 +428,13 @@ export class DatabaseStorage implements IStorage {
     const [totalOrders] = await db.select({ count: sql<number>`count(*)` }).from(orders);
     const [completedOrders] = await db.select({ count: sql<number>`count(*)` }).from(orders).where(eq(orders.status, 'completed'));
     const [pendingOrders] = await db.select({ count: sql<number>`count(*)` }).from(orders).where(eq(orders.status, 'pending'));
-    const [revenue] = await db.select({ sum: sql<number>`sum(total)` }).from(orders).where(eq(orders.status, 'completed'));
+    const [revenue] = await db.select({ sum: sql<number>`sum(total_amount)` }).from(orders).where(eq(orders.status, 'completed'));
     
     return {
       total: totalOrders.count,
       completed: completedOrders.count,
       pending: pendingOrders.count,
-      revenue: revenue.sum || 0
+      revenue: parseFloat(revenue.sum || "0")
     };
   }
 }

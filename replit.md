@@ -42,10 +42,21 @@ The application uses a well-structured PostgreSQL schema with the following main
 
 ### API Structure
 RESTful API endpoints include:
+
+**Public API:**
 - `GET /api/profiles/featured` - Retrieve featured profiles
 - `GET /api/profiles` - Browse all approved profiles with filtering
+- `GET /api/profiles/:id` - Get individual profile details
 - `POST /api/profiles` - Submit new profiles for approval
 - Payment processing endpoints for Stripe integration
+
+**Admin API:**
+- `GET /api/admin/dashboard-stats` - Admin dashboard statistics
+- `GET /api/admin/recent-profiles` - Recent profile submissions
+- `GET /api/admin/profiles` - Admin profile management with filtering
+- `GET /api/admin/profiles/:id` - Get profile for admin editing
+- `PATCH /api/admin/profiles/:id` - Update profile via admin panel
+- `POST /api/admin/profiles/:id/approve` - Approve pending profiles
 
 ### Authentication & Authorization
 - Basic username/password authentication system
@@ -114,6 +125,16 @@ RESTful API endpoints include:
   - Fixed JSON type casting issues in Drizzle ORM operations
   - Improved form validation and error handling
   - All application features now working properly
+
+- July 06, 2025. Advanced admin panel and media management
+  - Implemented comprehensive admin panel with full profile editing system
+  - Added advanced media management with active/inactive photo toggles
+  - Created contact data management system with JSON storage
+  - Built photo carousel with clickable thumbnails for enhanced user experience
+  - Fixed front-end media display issues with proper image fallback system
+  - Completed all contact method display functionality (WhatsApp, Instagram, Email, Telegram, Facebook, TikTok)
+  - Fixed dashboard statistics and admin panel functionality
+  - Enhanced photo navigation with carousel controls and thumbnail interactions
 
 ## User Preferences
 
