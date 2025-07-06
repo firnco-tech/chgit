@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, decimal, timestamp, json, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, decimal, timestamp, json, varchar, index } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -79,6 +79,7 @@ export const orderItems = pgTable("order_items", {
 
 export const profilesRelations = relations(profiles, ({ many }) => ({
   orderItems: many(orderItems),
+  favorites: many(userFavorites),
 }));
 
 export const ordersRelations = relations(orders, ({ many }) => ({
@@ -202,3 +203,37 @@ export type AdminActivityLog = typeof adminActivityLog.$inferSelect;
 export type InsertAdminActivityLog = z.infer<typeof insertAdminActivityLogSchema>;
 export type AdminSettings = typeof adminSettings.$inferSelect;
 export type InsertAdminSettings = z.infer<typeof insertAdminSettingsSchema>;
+
+// =============================================================================
+// USER FAVORITES SYSTEM
+// =============================================================================
+
+// User favorites table for tracking user favorite profiles
+export const userFavorites = pgTable("user_favorites", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  profileId: integer("profile_id").references(() => profiles.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => [
+  // Unique constraint to prevent duplicate favorites
+  index("unique_user_profile_favorite").on(table.userId, table.profileId),
+]);
+
+// User favorites relations
+export const userFavoritesRelations = relations(userFavorites, ({ one }) => ({
+  profile: one(profiles, {
+    fields: [userFavorites.profileId],
+    references: [profiles.id],
+  }),
+}));
+
+// profiles relations updated above to include favorites
+
+// User favorites schema types
+export const insertUserFavoriteSchema = createInsertSchema(userFavorites).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type UserFavorite = typeof userFavorites.$inferSelect;
+export type InsertUserFavorite = z.infer<typeof insertUserFavoriteSchema>;

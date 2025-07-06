@@ -9,6 +9,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
+import { FavoriteHeart } from "@/components/FavoriteHeart";
 import { Users, FileText, DollarSign, Edit, Calendar } from "lucide-react";
 
 interface DashboardStats {
@@ -179,22 +180,25 @@ export default function AdminDashboard() {
                             )}
                           </div>
                           
-                          {/* Profile Info - Clickable Name */}
-                          <div>
-                            <button 
-                              className="text-left hover:text-blue-600 transition-colors"
-                              onClick={() => window.open(`/profile/${profile.id}`, '_blank')}
-                            >
-                              <p className="text-base font-medium text-gray-900 hover:text-blue-600">
-                                {profile.firstName} {profile.lastName}
+                          {/* Profile Info - Clickable Name with Heart */}
+                          <div className="flex items-center gap-3">
+                            <FavoriteHeart profileId={profile.id} size="lg" />
+                            <div>
+                              <button 
+                                className="text-left hover:text-blue-600 transition-colors"
+                                onClick={() => window.open(`/profile/${profile.id}`, '_blank')}
+                              >
+                                <p className="text-base font-medium text-gray-900 hover:text-blue-600">
+                                  {profile.firstName} {profile.lastName}
+                                </p>
+                              </button>
+                              <p className="text-sm text-gray-500">
+                                {profile.age} • {profile.location}
                               </p>
-                            </button>
-                            <p className="text-sm text-gray-500">
-                              {profile.age} • {profile.location}
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              Added {new Date(profile.createdAt).toLocaleDateString()}
-                            </p>
+                              <p className="text-xs text-gray-400">
+                                Added {new Date(profile.createdAt).toLocaleDateString()}
+                              </p>
+                            </div>
                           </div>
                         </div>
                         

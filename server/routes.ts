@@ -358,6 +358,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // =============================================================================
+  // USER FAVORITES API ROUTES
+  // =============================================================================
+  
+  // Add profile to favorites
+  app.post("/api/favorites/:profileId", async (req, res) => {
+    try {
+      // For now, use a dummy userId since we don't have auth implemented
+      // In real implementation, this would come from authenticated user session
+      const userId = 1; // TODO: Get from authenticated user session
+      const profileId = parseInt(req.params.profileId);
+      
+      const favorite = await storage.addUserFavorite(userId, profileId);
+      res.json(favorite);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error adding favorite: " + error.message });
+    }
+  });
+  
+  // Remove profile from favorites
+  app.delete("/api/favorites/:profileId", async (req, res) => {
+    try {
+      const userId = 1; // TODO: Get from authenticated user session
+      const profileId = parseInt(req.params.profileId);
+      
+      const removed = await storage.removeUserFavorite(userId, profileId);
+      res.json({ success: removed });
+    } catch (error: any) {
+      res.status(500).json({ message: "Error removing favorite: " + error.message });
+    }
+  });
+  
+  // Get user's favorite profiles
+  app.get("/api/favorites", async (req, res) => {
+    try {
+      const userId = 1; // TODO: Get from authenticated user session
+      
+      const favorites = await storage.getUserFavorites(userId);
+      res.json(favorites);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching favorites: " + error.message });
+    }
+  });
+  
+  // Check if profile is favorited
+  app.get("/api/favorites/:profileId/status", async (req, res) => {
+    try {
+      const userId = 1; // TODO: Get from authenticated user session
+      const profileId = parseInt(req.params.profileId);
+      
+      const isFavorited = await storage.isProfileFavorited(userId, profileId);
+      res.json({ isFavorited });
+    } catch (error: any) {
+      res.status(500).json({ message: "Error checking favorite status: " + error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

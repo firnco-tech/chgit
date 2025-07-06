@@ -197,9 +197,19 @@ export default function AdminEditProfile() {
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Dashboard
             </Button>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Edit Profile: {profile.firstName} {profile.lastName}
-            </h1>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Edit Profile: {profile.firstName} {profile.lastName}
+              </h1>
+              <p className="text-sm text-gray-500 mt-1">
+                Submitted: {new Date(profile.createdAt).toLocaleDateString()} 
+                {profile.updatedAt && profile.updatedAt !== profile.createdAt && (
+                  <span className="ml-3">
+                    Last Updated: {new Date(profile.updatedAt).toLocaleDateString()}
+                  </span>
+                )}
+              </p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <span className={`px-3 py-1 rounded-full text-xs font-medium ${

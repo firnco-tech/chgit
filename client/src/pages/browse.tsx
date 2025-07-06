@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { ProfileCard } from "@/components/profile-card";
+import { FavoriteHeart } from "@/components/FavoriteHeart";
 import { Loader2, Search } from "lucide-react";
 import type { Profile } from "@shared/schema";
 

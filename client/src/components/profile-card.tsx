@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { FavoriteHeart } from "@/components/FavoriteHeart";
 import { useCart } from "@/lib/cart";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
@@ -49,12 +50,17 @@ export function ProfileCard({ profile }: ProfileCardProps) {
       </Link>
       
       <CardContent className="p-6">
-        <Link href={`/profile/${profile.id}`}>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2 hover:text-primary">
-            {profile.firstName}, {profile.age}
-          </h3>
-        </Link>
-        <p className="text-gray-600 mb-2">{profile.location}</p>
+        <div className="flex justify-between items-start mb-2">
+          <div className="flex-1">
+            <Link href={`/profile/${profile.id}`}>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2 hover:text-primary">
+                {profile.firstName}, {profile.age}
+              </h3>
+            </Link>
+            <p className="text-gray-600 mb-2">{profile.location}</p>
+          </div>
+          <FavoriteHeart profileId={profile.id} size="lg" />
+        </div>
         <p className="text-gray-700 text-sm mb-4 line-clamp-2">
           {profile.aboutMe || 'No description available'}
         </p>

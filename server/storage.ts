@@ -7,6 +7,8 @@ import {
   adminUsers,
   adminActivityLog,
   adminSettings,
+  // User favorites
+  userFavorites,
   type User, 
   type InsertUser, 
   type Profile, 
@@ -22,6 +24,9 @@ import {
   type InsertAdminActivityLog,
   type AdminSettings,
   type InsertAdminSettings,
+  // Favorites types
+  type UserFavorite,
+  type InsertUserFavorite,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or, ilike, inArray, sql } from "drizzle-orm";
@@ -100,6 +105,16 @@ export interface IStorage {
     offset?: number;
   }): Promise<Order[]>;
   getOrderStats(): Promise<{ total: number; completed: number; pending: number; revenue: number }>;
+  
+  // =============================================================================
+  // USER FAVORITES METHODS
+  // =============================================================================
+  
+  // User favorites management
+  addUserFavorite(userId: number, profileId: number): Promise<UserFavorite>;
+  removeUserFavorite(userId: number, profileId: number): Promise<boolean>;
+  getUserFavorites(userId: number): Promise<Profile[]>;
+  isProfileFavorited(userId: number, profileId: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -436,6 +451,62 @@ export class DatabaseStorage implements IStorage {
       pending: pendingOrders.count,
       revenue: parseFloat(revenue.sum || "0")
     };
+  }
+
+  // =============================================================================
+  // USER FAVORITES METHODS IMPLEMENTATION
+  // =============================================================================
+
+  async addUserFavorite(userId: number, profileId: number): Promise<UserFavorite> {
+    const [favorite] = await db
+      .insert(userFavorites)
+      .values({
+        userId,
+        profileId,
+      })
+      .onConflictDoNothing()
+      .returning();
+    return favorite;
+  }
+
+  async removeUserFavorite(userId: number, profileId: number): Promise<boolean> {
+    const result = await db
+      .delete(userFavorites)
+      .where(
+        and(
+          eq(userFavorites.userId, userId),
+          eq(userFavorites.profileId, profileId)
+        )
+      );
+    return result.rowCount > 0;
+  }
+
+  async getUserFavorites(userId: number): Promise<Profile[]> {
+    const favoriteProfiles = await db
+      .select({
+        profile: profiles,
+      })
+      .from(userFavorites)
+      .innerJoin(profiles, eq(userFavorites.profileId, profiles.id))
+      .where(eq(userFavorites.userId, userId))
+      .orderBy(desc(userFavorites.createdAt));
+    
+    return favoriteProfiles.map(item => item.profile);
+  }
+
+  async isProfileFavorited(userId: number, profileId: number): Promise<boolean> {
+    const [favorite] = await db
+      .select()
+      .from(userFavorites)
+      .where(
+        and(
+          eq(userFavorites.userId, userId),
+          eq(userFavorites.profileId, profileId)
+        )
+      )
+      .limit(1);
+    
+    return !!favorite;
   }
 }
 

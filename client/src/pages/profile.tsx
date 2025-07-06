@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { FavoriteHeart } from "@/components/FavoriteHeart";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
 import { ArrowLeft, MessageCircle, Instagram, Mail, Shield, Zap, Lock, Phone, Send, Facebook, Video } from "lucide-react";
 import { useCart } from "@/lib/cart";
@@ -145,10 +146,15 @@ export default function ProfilePage() {
           <div className="space-y-6">
             <Card>
               <CardContent className="p-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  {profile.firstName} {profile.lastName && profile.lastName[0] + '.'}, {profile.age}
-                </h1>
-                <p className="text-gray-600 text-lg mb-4">{profile.location}</p>
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                      {profile.firstName} {profile.lastName && profile.lastName[0] + '.'}, {profile.age}
+                    </h1>
+                    <p className="text-gray-600 text-lg">{profile.location}</p>
+                  </div>
+                  <FavoriteHeart profileId={profile.id} size="lg" />
+                </div>
                 {profile.aboutMe && (
                   <p className="text-gray-700 mb-6">{profile.aboutMe}</p>
                 )}
