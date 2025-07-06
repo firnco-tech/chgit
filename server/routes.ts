@@ -731,7 +731,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Set session cookie
       res.cookie('adminSession', sessionId, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
         sameSite: 'strict'
       });
