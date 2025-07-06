@@ -7,10 +7,12 @@ import {
   adminUsers,
   adminActivityLog,
   adminSettings,
-  // User favorites
+  // User system
   userFavorites,
+  userSessions,
   type User, 
-  type InsertUser, 
+  type InsertUser,
+  type RegisterUser,
   type Profile, 
   type InsertProfile, 
   type Order, 
@@ -24,17 +26,35 @@ import {
   type InsertAdminActivityLog,
   type AdminSettings,
   type InsertAdminSettings,
-  // Favorites types
+  // User system types
   type UserFavorite,
   type InsertUserFavorite,
+  type UserSession,
+  type InsertUserSession,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or, ilike, inArray, sql } from "drizzle-orm";
 
 export interface IStorage {
-  // User methods
-  getUser(id: number): Promise<User | undefined>;
+  // =============================================================================
+  // FRONT-END USER AUTHENTICATION METHODS - For regular site users
+  // =============================================================================
+  
+  // User account management
+  getUserById(id: number): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  createUser(user: RegisterUser): Promise<User>;
+  updateUser(id: number, user: Partial<User>): Promise<User | undefined>;
+  
+  // Session management
+  createUserSession(session: InsertUserSession): Promise<UserSession>;
+  getUserSession(sessionId: string): Promise<UserSession | undefined>;
+  deleteUserSession(sessionId: string): Promise<boolean>;
+  cleanupExpiredSessions(): Promise<void>;
+  
+  // Legacy user methods (for backward compatibility)
+  getUser(id: number): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   
   // Profile methods
@@ -118,8 +138,17 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  async getUser(id: number): Promise<User | undefined> {
+  // =============================================================================
+  // FRONT-END USER AUTHENTICATION METHODS IMPLEMENTATION
+  // =============================================================================
+  
+  async getUserById(id: number): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
     return user || undefined;
   }
 
@@ -128,12 +157,64 @@ export class DatabaseStorage implements IStorage {
     return user || undefined;
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db
+  async createUser(user: RegisterUser): Promise<User> {
+    const [newUser] = await db
       .insert(users)
-      .values(insertUser)
+      .values({
+        email: user.email,
+        username: user.username,
+        passwordHash: user.password, // This will be hashed by auth layer
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: 'user',
+        isActive: true,
+      })
       .returning();
-    return user;
+    return newUser;
+  }
+
+  async updateUser(id: number, user: Partial<User>): Promise<User | undefined> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ ...user, updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
+    return updatedUser || undefined;
+  }
+
+  // Session management
+  async createUserSession(session: InsertUserSession): Promise<UserSession> {
+    const [newSession] = await db
+      .insert(userSessions)
+      .values(session)
+      .returning();
+    return newSession;
+  }
+
+  async getUserSession(sessionId: string): Promise<UserSession | undefined> {
+    const [session] = await db
+      .select()
+      .from(userSessions)
+      .where(eq(userSessions.id, sessionId));
+    return session || undefined;
+  }
+
+  async deleteUserSession(sessionId: string): Promise<boolean> {
+    const result = await db
+      .delete(userSessions)
+      .where(eq(userSessions.id, sessionId));
+    return result.rowCount > 0;
+  }
+
+  async cleanupExpiredSessions(): Promise<void> {
+    await db
+      .delete(userSessions)
+      .where(sql`${userSessions.expiresAt} < now()`);
+  }
+
+  // Legacy user methods (for backward compatibility)
+  async getUser(id: number): Promise<User | undefined> {
+    return this.getUserById(id);
   }
 
   async getProfile(id: number): Promise<Profile | undefined> {

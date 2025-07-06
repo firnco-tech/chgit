@@ -3,10 +3,28 @@ import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// =============================================================================
+// FRONT-END USER AUTHENTICATION SYSTEM
+// =============================================================================
+
+// Front-end users table - for regular site users (NOT admins)
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
+  email: text("email").notNull().unique(),
   username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  passwordHash: text("password_hash").notNull(),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  isEmailVerified: boolean("is_email_verified").default(false),
+  role: text("role").default("user").notNull(), // user, premium_user
+  isActive: boolean("is_active").default(true),
+  registrationDate: timestamp("registration_date").defaultNow().notNull(),
+  lastLogin: timestamp("last_login"),
+  emailVerificationToken: text("email_verification_token"),
+  passwordResetToken: text("password_reset_token"),
+  passwordResetExpires: timestamp("password_reset_expires"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const profiles = pgTable("profiles", {
@@ -97,10 +115,7 @@ export const orderItemsRelations = relations(orderItems, ({ one }) => ({
   }),
 }));
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
-});
+// Removed old insertUserSchema - now defined in authentication section
 
 export const insertProfileSchema = createInsertSchema(profiles).omit({
   id: true,
@@ -208,10 +223,18 @@ export type InsertAdminSettings = z.infer<typeof insertAdminSettingsSchema>;
 // USER FAVORITES SYSTEM
 // =============================================================================
 
-// User favorites table for tracking user favorite profiles
+// User sessions table for authentication
+export const userSessions = pgTable("user_sessions", {
+  id: text("id").primaryKey(), // session ID
+  userId: integer("user_id").references(() => users.id).notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// User favorites table for tracking user favorite profiles (REQUIRES AUTHENTICATION)
 export const userFavorites = pgTable("user_favorites", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(), // Links to front-end users, NOT admin users
   profileId: integer("profile_id").references(() => profiles.id).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
@@ -219,8 +242,26 @@ export const userFavorites = pgTable("user_favorites", {
   unique("unique_user_profile_favorite").on(table.userId, table.profileId),
 ]);
 
+// User relations
+export const usersRelations = relations(users, ({ many }) => ({
+  favorites: many(userFavorites),
+  sessions: many(userSessions),
+}));
+
+// User sessions relations  
+export const userSessionsRelations = relations(userSessions, ({ one }) => ({
+  user: one(users, {
+    fields: [userSessions.userId],
+    references: [users.id],
+  }),
+}));
+
 // User favorites relations
 export const userFavoritesRelations = relations(userFavorites, ({ one }) => ({
+  user: one(users, {
+    fields: [userFavorites.userId],
+    references: [users.id],
+  }),
   profile: one(profiles, {
     fields: [userFavorites.profileId],
     references: [profiles.id],
@@ -229,11 +270,49 @@ export const userFavoritesRelations = relations(userFavorites, ({ one }) => ({
 
 // profiles relations updated above to include favorites
 
+// =============================================================================
+// SCHEMA TYPES FOR AUTHENTICATION AND FAVORITES
+// =============================================================================
+
+// User schema types
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  registrationDate: true,
+  lastLogin: true,
+});
+
+export const loginUserSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
+
+export const registerUserSchema = z.object({
+  email: z.string().email(),
+  username: z.string().min(3).max(50),
+  password: z.string().min(6),
+  firstName: z.string().min(1).max(100).optional(),
+  lastName: z.string().min(1).max(100).optional(),
+});
+
+// User session schema types
+export const insertUserSessionSchema = createInsertSchema(userSessions).omit({
+  createdAt: true,
+});
+
 // User favorites schema types
 export const insertUserFavoriteSchema = createInsertSchema(userFavorites).omit({
   id: true,
   createdAt: true,
 });
 
+// Type exports
+export type User = typeof users.$inferSelect;
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type LoginUser = z.infer<typeof loginUserSchema>;
+export type RegisterUser = z.infer<typeof registerUserSchema>;
+export type UserSession = typeof userSessions.$inferSelect;
+export type InsertUserSession = z.infer<typeof insertUserSessionSchema>;
 export type UserFavorite = typeof userFavorites.$inferSelect;
 export type InsertUserFavorite = z.infer<typeof insertUserFavoriteSchema>;

@@ -1,0 +1,75 @@
+MISSION-CRITICAL: Favorites Feature, User Registration, and Role Separation
+
+The “Add to Favorites” feature is not functioning correctly and is mission-critical to the site. The current implementation allows admin users to add profiles to the cart.  Admin cannot add users to cart.  The current implementation also does not require front end users to register for favoriting. This creates conflicts and errors (see attached screenshot: “Failed to update favorites. Please try again.”). The following steps must be performed sequentially, with thorough testing after each, and without breaking any existing functionality or user experience.
+
+SEQUENTIAL TASKS:
+
+Separate Admin and Front-End User Permissions
+
+Ensure the admin user and front-end user roles are clearly separated in both the codebase and database.
+
+Admins must NOT be able to use front-end features like “Add to Favorites” or “Add to Cart” as a regular user.
+
+Implement permission checks on all relevant actions (favoriting, cart, etc.) to enforce this separation.
+
+Favorites Feature: Registration Requirement
+
+The “Add to Favorites” heart icon must trigger a registration/login modal if the user is not signed in.
+
+Only registered and logged-in users can use the favorites feature.
+
+After registration/login, the user should be able to favorite profiles, and their favorites must persist in the database and be accessible from any device.
+
+Favorites Data Structure
+
+Implement a robust many-to-many relationship in the database to link users with their favorite profiles (e.g., a favorites table with user_id and profile_id).
+
+Ensure the favorites feature is fully integrated with the user account system. Email authentication not required, but a confirmation email for successful registration should be sent to newly registered users.
+
+Guest User Cart Functionality:
+
+Allow guest (non-logged-in) users to use the “Add to Cart” feature and proceed through a standard e-commerce checkout path.
+
+Ensure that guest cart actions are not linked to the favorites or user account system.
+
+Favorites and Orders Dashboard
+
+Registered users must have access to a dashboard where they can:
+
+View their favorited profiles.
+
+See their past orders.
+
+Error Handling and User Feedback
+
+Ensure all errors (like “Failed to update favorites”) are handled gracefully, with clear user feedback.
+
+If an action fails due to lack of authentication, prompt the user to register or log in.
+
+Testing and Verification
+
+After each step, thoroughly test:
+
+Admin users cannot access front-end user features.
+
+Only registered users can add favorites, and the feature works across sessions and devices.
+
+Guest users can add to cart but not to favorites.
+
+No existing site functionality is broken or degraded.
+
+Provide code changes and a demonstration for review before proceeding to the next step.
+
+CRITICAL REQUIREMENTS:
+
+Do NOT break or alter any existing site structure or user experience outside these requirements.
+
+All new code must be clearly commented and documented.
+
+If any step cannot be completed, explain the reason and propose a solution before proceeding.
+
+System stability and user experience are top priorities.
+
+Begin with Step 1 and wait for my review before moving to the next.
+
+
