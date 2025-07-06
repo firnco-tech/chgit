@@ -18,6 +18,41 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 
+// Helper component for safe image display
+const ProfileImage = ({ photos, firstName, lastName }: { photos: string[], firstName: string, lastName: string }) => {
+  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  
+  const hasValidPhoto = photos && Array.isArray(photos) && photos.length > 0 && photos[0];
+  
+  if (!hasValidPhoto || imageError) {
+    return (
+      <div className="w-full h-full bg-pink-100 flex items-center justify-center">
+        <span className="text-4xl font-medium text-pink-600">
+          {firstName?.[0] || 'P'}
+        </span>
+      </div>
+    );
+  }
+  
+  return (
+    <>
+      {!imageLoaded && (
+        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+          <span className="text-gray-400">Loading...</span>
+        </div>
+      )}
+      <img 
+        src={photos[0]} 
+        alt={`${firstName} ${lastName}`}
+        className={`w-full h-full object-cover ${imageLoaded ? 'block' : 'hidden'}`}
+        onLoad={() => setImageLoaded(true)}
+        onError={() => setImageError(true)}
+      />
+    </>
+  );
+};
+
 interface FavoriteProfile {
   id: number;
   userId: number;
@@ -107,8 +142,9 @@ export default function Favorites() {
       <div className="min-h-screen bg-background">
         <Navbar />
         <div className="container mx-auto px-4 py-8">
-          <div className="text-center">
-            <p className="text-gray-500">Loading...</p>
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">My Favorites</h1>
+            <p className="text-gray-600">Loading...</p>
           </div>
         </div>
       </div>
@@ -124,14 +160,11 @@ export default function Favorites() {
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <Heart className="h-8 w-8 text-red-500" />
-            <h1 className="text-3xl font-bold text-gray-900">My Favorites</h1>
-          </div>
+        {/* Simplified Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">My Favorites</h1>
           <p className="text-gray-600">
-            Your saved profiles and connections. {favorites.length} profile{favorites.length !== 1 ? 's' : ''} saved.
+            {favorites.length} profile{favorites.length !== 1 ? 's' : ''} saved
           </p>
         </div>
 
@@ -165,19 +198,11 @@ export default function Favorites() {
                   <div className="relative">
                     {/* Profile Image */}
                     <div className="w-full h-64 rounded-lg overflow-hidden bg-gray-200 mb-4">
-                      {favorite.profile.photos && favorite.profile.photos.length > 0 ? (
-                        <img 
-                          src={favorite.profile.photos[0]} 
-                          alt={`${favorite.profile.firstName} ${favorite.profile.lastName}`}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-pink-100 flex items-center justify-center">
-                          <span className="text-4xl font-medium text-pink-600">
-                            {favorite.profile.firstName?.[0] || 'P'}
-                          </span>
-                        </div>
-                      )}
+                      <ProfileImage 
+                        photos={favorite.profile.photos || []}
+                        firstName={favorite.profile.firstName}
+                        lastName={favorite.profile.lastName}
+                      />
                     </div>
 
                     {/* Status Badges */}
