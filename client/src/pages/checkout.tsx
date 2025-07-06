@@ -40,26 +40,46 @@ const CheckoutForm = () => {
       return;
     }
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/payment-success`,
-      },
-    });
+    try {
+      // Update customer details before confirming payment
+      await apiRequest("/api/update-payment-intent", {
+        method: "POST",
+        body: {
+          customerEmail,
+          customerName: customerName || "Guest Customer",
+          profileIds: items.map(item => item.id),
+        }
+      });
 
-    if (error) {
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${window.location.origin}/payment-success?email=${encodeURIComponent(customerEmail)}`,
+        },
+      });
+
+      if (error) {
+        toast({
+          title: "Payment Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        clearCart();
+        toast({
+          title: "Payment Successful",
+          description: "Thank you for your purchase! You will receive your contact information shortly.",
+        });
+      }
+    } catch (updateError) {
+      console.error('Error updating payment details:', updateError);
       toast({
-        title: "Payment Failed",
-        description: error.message,
+        title: "Error",
+        description: "There was an issue processing your order. Please try again.",
         variant: "destructive",
       });
-    } else {
-      clearCart();
-      toast({
-        title: "Payment Successful",
-        description: "Thank you for your purchase! You will receive your contact information shortly.",
-      });
     }
+    
     setIsProcessing(false);
   };
 
@@ -141,7 +161,7 @@ export default function Checkout() {
       body: {
         amount: getTotal(),
         profileIds: items.map(item => item.id),
-        customerEmail: "", // Will be collected in the form
+        customerEmail: "placeholder@email.com", // Will be updated when form is submitted
       }
     })
       .then((res) => res.json())

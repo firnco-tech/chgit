@@ -14,6 +14,7 @@ import Safety from "@/pages/safety";
 import Checkout from "@/pages/checkout";
 import Cart from "@/pages/cart";
 import Favorites from "@/pages/favorites";
+import PaymentSuccess from "@/pages/payment-success";
 import NotFound from "@/pages/not-found";
 
 // Admin Panel Components - Isolated from main site
@@ -36,6 +37,7 @@ function Router() {
       <Route path="/checkout" component={Checkout} />
       <Route path="/cart" component={Cart} />
       <Route path="/favorites" component={Favorites} />
+      <Route path="/payment-success" component={PaymentSuccess} />
       
       {/* Admin Panel Routes - Isolated section */}
       <Route path="/admin/login" component={AdminLogin} />

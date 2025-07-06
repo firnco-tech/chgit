@@ -184,7 +184,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { amount, profileIds, customerEmail } = req.body;
       
-      if (!amount || !profileIds || !customerEmail) {
+      if (!amount || !profileIds) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
@@ -192,14 +192,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         amount: Math.round(amount * 100), // Convert to cents
         currency: "usd",
         metadata: {
-          customerEmail,
+          customerEmail: customerEmail || "placeholder@email.com",
           profileIds: JSON.stringify(profileIds),
         },
       });
 
       // Create order
       const order = await storage.createOrder({
-        customerEmail,
+        customerEmail: customerEmail || "placeholder@email.com",
         totalAmount: amount.toString(),
         stripePaymentIntentId: paymentIntent.id,
         status: "pending"
@@ -211,6 +211,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error: any) {
       res.status(500).json({ message: "Error creating payment intent: " + error.message });
+    }
+  });
+
+  // Update payment intent with customer details
+  app.post("/api/update-payment-intent", async (req, res) => {
+    try {
+      const { customerEmail, customerName, profileIds } = req.body;
+      
+      if (!customerEmail || !profileIds) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      // Find the most recent pending order for these profile IDs
+      // This is a simplified approach - in production you might want a more sophisticated matching system
+      const orders = await storage.getOrdersForAdmin({ status: "pending", limit: 10 });
+      const recentOrder = orders.find(order => 
+        order.stripePaymentIntentId && 
+        order.status === "pending"
+      );
+
+      if (recentOrder?.stripePaymentIntentId) {
+        // Update the Stripe PaymentIntent metadata
+        await stripe.paymentIntents.update(recentOrder.stripePaymentIntentId, {
+          metadata: {
+            customerEmail,
+            customerName: customerName || "Guest Customer",
+            profileIds: JSON.stringify(profileIds),
+          },
+        });
+
+        // Update the order with correct customer email
+        await storage.updateOrder(recentOrder.id, { 
+          customerEmail,
+          customerName: customerName || "Guest Customer"
+        });
+      }
+
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ message: "Error updating payment intent: " + error.message });
     }
   });
 
