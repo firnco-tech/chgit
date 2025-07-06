@@ -1,0 +1,43 @@
+MISSION-CRITICAL: Targeted Fixes for User Management, Login, and Favorites View
+
+The following issues must be fixed sequentially, with careful testing after each step, and without breaking or altering any existing site features or user/admin flows:
+
+1. Fix "View Details" Button in User Management
+The "View Details" button for registered users in the admin panel is not clickable.
+
+Diagnose and repair the backend route or frontend handler so that clicking "View Details" opens the correct user detail view or modal.
+
+Confirm that admin can view all relevant user information after the fix.
+
+2. Fix Login Session Issue
+After logging out and logging back in, the system says "Welcome back, you have successfully logged in" but does not actually log the user in.
+
+Investigate and resolve session handling and authentication logic to ensure that, after login, the user is fully authenticated and can access their account and features as expected.
+
+Test login/logout flows for both admin and regular users to ensure reliability.
+
+3. Fix Favorites Page 404 Error
+When a user clicks the "Favorites" button to view their selected favorites, a 404 Page Not Found error occurs.
+
+Diagnose and repair the routing and backend endpoint for the favorites view so users can access and see their favorited profiles.
+
+Ensure the favorites page is only accessible to authenticated users and displays the correct data.
+
+4. Regression Testing
+After each fix, verify that:
+
+No existing functionality is broken.
+
+Registration, login, logout, user management, and favoriting all work as intended for both admin and regular users.
+
+Provide screenshots or code samples for verification before moving to the next step.
+
+Critical Instructions:
+
+Do not break or alter any existing site structure, user data, or admin/user experience.
+
+All new or changed code must be clearly commented and documented.
+
+Pause and report if any step cannot be completed as described.
+
+Begin with Step 1 (View Details button), and wait for my review before proceeding to the next step.
