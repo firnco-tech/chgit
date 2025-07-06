@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FavoriteHeart } from "@/components/FavoriteHeart";
+import { VideoPlayer } from "@/components/VideoPlayer";
+import { VideoModal } from "@/components/VideoModal";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
-import { ArrowLeft, MessageCircle, Instagram, Mail, Shield, Zap, Lock, Phone, Send, Facebook, Video, Play } from "lucide-react";
+import { ArrowLeft, MessageCircle, Instagram, Mail, Shield, Zap, Lock, Phone, Send, Facebook, Video, Play, Maximize } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
@@ -18,6 +20,9 @@ export default function ProfilePage() {
   const { addItem } = useCart();
   const { toast } = useToast();
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState<string>('');
+  const [selectedVideoIndex, setSelectedVideoIndex] = useState(0);
 
   const { data: profile, isLoading, error } = useQuery<Profile>({
     queryKey: [`/api/profiles/${id}`],
@@ -113,12 +118,9 @@ export default function ProfilePage() {
                   {/* Videos */}
                   {profile.videos && profile.videos.map((video, index) => (
                     <CarouselItem key={`video-${index}`}>
-                      <div className="aspect-[3/4] overflow-hidden rounded-xl shadow-lg relative bg-black">
-                        <video 
+                      <div className="aspect-[3/4] overflow-hidden rounded-xl shadow-lg relative">
+                        <VideoPlayer
                           src={getMediaUrl(video, 'video')}
-                          className="w-full h-full object-cover"
-                          controls
-                          preload="metadata"
                           poster={`data:image/svg+xml;base64,${btoa(`
                             <svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500">
                               <rect width="400" height="500" fill="#1f2937"/>
@@ -127,30 +129,32 @@ export default function ProfilePage() {
                               <text x="200" y="350" text-anchor="middle" font-family="Arial" font-size="16" fill="#9ca3af">Video Preview</text>
                             </svg>
                           `)}`}
-                          onError={(e) => {
-                            const video = e.currentTarget;
-                            video.style.display = 'none';
-                            const fallback = video.nextElementSibling as HTMLElement;
-                            if (fallback) fallback.style.display = 'flex';
+                          className="w-full h-full rounded-xl"
+                          onError={(error) => {
+                            console.error('Video playback error:', error);
                           }}
                         />
-                        <div 
-                          className="w-full h-full bg-gray-800 flex flex-col items-center justify-center text-white" 
-                          style={{display: 'none'}}
-                        >
-                          <div className="text-center space-y-4">
-                            <div className="w-20 h-20 rounded-full bg-gray-600 flex items-center justify-center">
-                              <Play className="w-10 h-10 text-white ml-1" />
-                            </div>
-                            <div className="text-lg font-medium">Video Preview</div>
-                            <div className="text-sm text-gray-400 px-4 break-all">{video}</div>
-                          </div>
-                        </div>
                         
-                        <div className="absolute top-4 left-4 bg-purple-500 text-white text-sm px-2 py-1 rounded-full font-medium flex items-center gap-1">
+                        <div className="absolute top-4 left-4 bg-purple-500 text-white text-sm px-2 py-1 rounded-full font-medium flex items-center gap-1 pointer-events-none z-10">
                           <span>🎥</span>
                           <span>Video</span>
                         </div>
+                        
+                        {/* Fullscreen Button */}
+                        <Button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setSelectedVideo(video);
+                            setSelectedVideoIndex(index);
+                            setVideoModalOpen(true);
+                          }}
+                          size="sm"
+                          variant="ghost"
+                          className="absolute top-4 right-4 bg-black bg-opacity-50 text-white hover:bg-opacity-70 z-10"
+                        >
+                          <Maximize className="w-4 h-4" />
+                        </Button>
                       </div>
                     </CarouselItem>
                   ))}
@@ -208,7 +212,7 @@ export default function ProfilePage() {
                   
                   {/* Video Thumbnails */}
                   {profile.videos && profile.videos.slice(0, 8 - (profile.photos?.length || 0)).map((video, index) => (
-                    <div key={`thumb-video-${index}`} className="relative">
+                    <div key={`thumb-video-${index}`} className="relative group">
                       <div 
                         className="w-full rounded-lg aspect-square bg-gray-900 hover:opacity-80 hover:ring-2 hover:ring-purple-400 transition-all cursor-pointer overflow-hidden"
                         onClick={() => carouselApi?.scrollTo((profile.photos?.length || 0) + index)}
@@ -226,7 +230,39 @@ export default function ProfilePage() {
                             </svg>
                           `)}`}
                         />
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        
+                        {/* Hover Overlay with Controls */}
+                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-200 flex items-center justify-center">
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-2">
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                carouselApi?.scrollTo((profile.photos?.length || 0) + index);
+                              }}
+                              size="sm"
+                              variant="ghost"
+                              className="bg-white bg-opacity-90 text-black hover:bg-opacity-100"
+                            >
+                              <Play className="w-3 h-3" />
+                            </Button>
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedVideo(video);
+                                setSelectedVideoIndex(index);
+                                setVideoModalOpen(true);
+                              }}
+                              size="sm"
+                              variant="ghost"
+                              className="bg-white bg-opacity-90 text-black hover:bg-opacity-100"
+                            >
+                              <Maximize className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {/* Default Play Button */}
+                        <div className="absolute inset-0 flex items-center justify-center group-hover:opacity-0 transition-opacity duration-200">
                           <div className="w-6 h-6 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
                             <Play className="w-3 h-3 text-white ml-0.5" />
                           </div>
@@ -421,6 +457,16 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Video Modal */}
+      <VideoModal
+        isOpen={videoModalOpen}
+        onClose={() => setVideoModalOpen(false)}
+        videoSrc={selectedVideo}
+        profileName={profile?.firstName || 'Profile'}
+        videoIndex={selectedVideoIndex}
+        totalVideos={profile?.videos?.length || 0}
+      />
     </div>
   );
 }
