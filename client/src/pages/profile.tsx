@@ -1,9 +1,10 @@
 import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
 import { ArrowLeft, MessageCircle, Instagram, Mail, Shield, Zap, Lock } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { useToast } from "@/hooks/use-toast";
@@ -14,6 +15,7 @@ export default function ProfilePage() {
   const { id } = useParams<{ id: string }>();
   const { addItem } = useCart();
   const { toast } = useToast();
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
 
   const { data: profile, isLoading, error } = useQuery<Profile>({
     queryKey: [`/api/profiles/${id}`],
@@ -76,7 +78,7 @@ export default function ProfilePage() {
           {/* Profile Images Carousel */}
           <div className="space-y-4">
             {profile.photos && profile.photos.length > 0 ? (
-              <Carousel className="w-full">
+              <Carousel className="w-full" setApi={setCarouselApi}>
                 <CarouselContent>
                   {profile.photos.map((photo, index) => (
                     <CarouselItem key={index}>
@@ -120,7 +122,8 @@ export default function ProfilePage() {
                         ? photo 
                         : `https://picsum.photos/150/150?random=${profile.id + index + 100}`}
                       alt={`${profile.firstName} photo ${index + 1}`}
-                      className="w-full rounded-lg aspect-square object-cover hover:opacity-80 transition-opacity cursor-pointer"
+                      className="w-full rounded-lg aspect-square object-cover hover:opacity-80 hover:ring-2 hover:ring-primary transition-all cursor-pointer"
+                      onClick={() => carouselApi?.scrollTo(index)}
                       onError={(e) => {
                         e.currentTarget.src = `https://picsum.photos/150/150?random=${profile.id + index + 2000}`;
                       }}
