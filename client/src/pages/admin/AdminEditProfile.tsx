@@ -58,6 +58,7 @@ interface Profile {
   contactFacebook?: string;
   contactTiktok?: string;
   price?: number;
+  status?: string;
   isApproved?: boolean;
   isFeatured?: boolean;
   createdAt?: string;

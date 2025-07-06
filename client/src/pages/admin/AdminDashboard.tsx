@@ -27,6 +27,7 @@ interface Profile {
   age: number;
   location: string;
   photos: string[];
+  status: string;
   isApproved: boolean;
   isFeatured: boolean;
   createdAt: string;
@@ -34,9 +35,14 @@ interface Profile {
 
 // Helper function to determine profile status
 function getProfileStatus(profile: Profile): 'PENDING' | 'ACTIVE' | 'INACTIVE' {
+  // Use the new status field if available, otherwise fall back to old logic
+  if (profile.status) {
+    return profile.status as 'PENDING' | 'ACTIVE' | 'INACTIVE';
+  }
+  
+  // Fallback to old logic for backward compatibility
   if (!profile.isApproved) return 'PENDING';
-  if (profile.isApproved && profile.isFeatured) return 'ACTIVE';
-  return 'INACTIVE';
+  return 'ACTIVE'; // All approved profiles are ACTIVE by default
 }
 
 // Helper function to get status badge styles
