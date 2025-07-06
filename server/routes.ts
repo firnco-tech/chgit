@@ -13,6 +13,15 @@ import {
   getCurrentSuperAdmin 
 } from "./superAdminAuth";
 import { 
+  requireAdminRole, 
+  requireSuperAdmin, 
+  requireAdmin, 
+  requireResourceAccess,
+  auditLog,
+  hasPermission,
+  getCurrentUser
+} from "./authorizationMiddleware";
+import { 
   insertProfileSchema, 
   insertOrderSchema, 
   insertOrderItemSchema,
@@ -292,7 +301,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // =============================================================================
   
   // Admin dashboard statistics - ADMIN ONLY
-  app.get("/api/admin/dashboard-stats", requireAdminAuth, async (req, res) => {
+  app.get("/api/admin/dashboard-stats", 
+    requireAdmin, 
+    auditLog('view_dashboard_stats', 'dashboard'), 
+    async (req, res) => {
     try {
       // Get profile counts
       const profileStats = await storage.getProfileCountByStatus();
@@ -317,7 +329,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin recent profiles - ADMIN ONLY
-  app.get("/api/admin/recent-profiles", requireAdminAuth, async (req, res) => {
+  app.get("/api/admin/recent-profiles", 
+    requireAdmin, 
+    auditLog('view_recent_profiles', 'profile'), 
+    async (req, res) => {
     try {
       const profiles = await storage.getProfilesForAdmin({
         limit: 10
@@ -329,7 +344,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin get single profile for editing - ADMIN ONLY
-  app.get("/api/admin/profiles/:id", requireAdminAuth, async (req, res) => {
+  app.get("/api/admin/profiles/:id", 
+    requireAdmin, 
+    requireResourceAccess('profile', (req) => parseInt(req.params.id), { read: true, admin: true }),
+    auditLog('view_profile', 'profile', (req) => parseInt(req.params.id)), 
+    async (req, res) => {
     try {
       const profileId = parseInt(req.params.id);
       const profile = await storage.getProfile(profileId);
@@ -345,7 +364,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin profile update - ADMIN ONLY
-  app.patch("/api/admin/profiles/:id", requireAdminAuth, async (req, res) => {
+  app.patch("/api/admin/profiles/:id", 
+    requireAdmin, 
+    requireResourceAccess('profile', (req) => parseInt(req.params.id), { write: true, admin: true }),
+    auditLog('update_profile', 'profile', (req) => parseInt(req.params.id)), 
+    async (req, res) => {
     try {
       const profileId = parseInt(req.params.id);
       const updateData = req.body;
@@ -729,7 +752,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update admin user (super admin only)
-  app.patch("/api/super-admin/admin-users/:id", requireSuperAdminAuth, async (req, res) => {
+  app.patch("/api/super-admin/admin-users/:id", 
+    requireSuperAdmin, 
+    auditLog('update_admin_user', 'admin_user', (req) => parseInt(req.params.id)), 
+    async (req, res) => {
     try {
       const adminId = parseInt(req.params.id);
       const updates = req.body;
