@@ -157,7 +157,7 @@ export const adminUsers = pgTable("admin_users", {
 // Admin activity log for security and auditing
 export const adminActivityLog = pgTable("admin_activity_log", {
   id: serial("id").primaryKey(),
-  adminId: integer("admin_id").references(() => adminUsers.id).notNull(),
+  adminId: integer("admin_id").references(() => adminUsers.id), // Nullable for system logs
   action: text("action").notNull(), // profile_approved, profile_rejected, user_blocked, etc.
   targetType: text("target_type").notNull(), // profile, user, order, etc.
   targetId: integer("target_id").notNull(),
@@ -176,15 +176,35 @@ export const adminSettings = pgTable("admin_settings", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Admin sessions for secure authentication
+export const adminSessions = pgTable("admin_sessions", {
+  id: text("id").primaryKey(), // session ID
+  adminId: integer("admin_id").references(() => adminUsers.id).notNull(),
+  type: text("type", { enum: ["admin", "superadmin"] }).notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  lastActivity: timestamp("last_activity").defaultNow().notNull(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Admin relations
 export const adminUsersRelations = relations(adminUsers, ({ many }) => ({
   activityLogs: many(adminActivityLog),
   settingsUpdates: many(adminSettings),
+  sessions: many(adminSessions),
 }));
 
 export const adminActivityLogRelations = relations(adminActivityLog, ({ one }) => ({
   admin: one(adminUsers, {
     fields: [adminActivityLog.adminId],
+    references: [adminUsers.id],
+  }),
+}));
+
+export const adminSessionsRelations = relations(adminSessions, ({ one }) => ({
+  admin: one(adminUsers, {
+    fields: [adminSessions.adminId],
     references: [adminUsers.id],
   }),
 }));
@@ -206,6 +226,10 @@ export const insertAdminSettingsSchema = createInsertSchema(adminSettings).omit(
   updatedAt: true,
 });
 
+export const insertAdminSessionSchema = createInsertSchema(adminSessions).omit({
+  createdAt: true,
+});
+
 // Role type definitions for enhanced type safety
 export const USER_ROLES = ["user", "premium_user"] as const;
 export const ADMIN_ROLES = ["admin", "superadmin"] as const;
@@ -220,6 +244,8 @@ export type AdminActivityLog = typeof adminActivityLog.$inferSelect;
 export type InsertAdminActivityLog = z.infer<typeof insertAdminActivityLogSchema>;
 export type AdminSettings = typeof adminSettings.$inferSelect;
 export type InsertAdminSettings = z.infer<typeof insertAdminSettingsSchema>;
+export type AdminSession = typeof adminSessions.$inferSelect;
+export type InsertAdminSession = z.infer<typeof insertAdminSessionSchema>;
 
 // Enhanced admin user schema with role validation
 export const createAdminUserSchema = insertAdminUserSchema.extend({

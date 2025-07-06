@@ -7,6 +7,12 @@ import Stripe from "stripe";
 import { storage } from "./storage";
 import { requireAuth, requireAdminAuth, hashPassword, verifyPassword, createUserSession } from "./auth";
 import { 
+  requireSuperAdminAuth, 
+  handleSuperAdminLogin, 
+  handleSuperAdminLogout, 
+  getCurrentSuperAdmin 
+} from "./superAdminAuth";
+import { 
   insertProfileSchema, 
   insertOrderSchema, 
   insertOrderItemSchema,
@@ -649,6 +655,165 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ isFavorited });
     } catch (error: any) {
       res.status(500).json({ message: "Error checking favorite status: " + error.message });
+    }
+  });
+
+  // =============================================================================
+  // SUPER ADMIN ROUTES - Secure super admin authentication and management
+  // =============================================================================
+
+  // Super admin login
+  app.post("/api/super-admin/login", handleSuperAdminLogin);
+
+  // Super admin logout  
+  app.post("/api/super-admin/logout", requireSuperAdminAuth, handleSuperAdminLogout);
+
+  // Get current super admin user
+  app.get("/api/super-admin/user", requireSuperAdminAuth, getCurrentSuperAdmin);
+
+  // Get all admin users (super admin only)
+  app.get("/api/super-admin/admin-users", requireSuperAdminAuth, async (req, res) => {
+    try {
+      const adminUsers = await storage.getAllAdminUsers();
+      res.json(adminUsers);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching admin users: " + error.message });
+    }
+  });
+
+  // Create new admin user (super admin only)
+  app.post("/api/super-admin/admin-users", requireSuperAdminAuth, async (req, res) => {
+    try {
+      const { username, email, password, role } = req.body;
+      
+      if (!username || !email || !password || !role) {
+        return res.status(400).json({ message: "Username, email, password, and role are required" });
+      }
+
+      if (!['admin', 'superadmin'].includes(role)) {
+        return res.status(400).json({ message: "Invalid role specified" });
+      }
+
+      // Hash password
+      const passwordHash = await hashPassword(password);
+
+      const newAdminUser = await storage.createAdminUser({
+        username,
+        email,
+        passwordHash,
+        role: role as 'admin' | 'superadmin',
+        isActive: true,
+      });
+
+      // Log admin user creation
+      await storage.logAdminActivity({
+        adminId: req.superAdmin!.id,
+        action: 'create_admin_user',
+        targetType: 'admin_user',
+        targetId: newAdminUser.id,
+        details: { 
+          username,
+          email,
+          role,
+          timestamp: new Date().toISOString()
+        },
+        ipAddress: req.ip || 'unknown',
+      });
+
+      // Remove password hash from response
+      const { passwordHash: _, ...adminUserResponse } = newAdminUser;
+      res.json(adminUserResponse);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error creating admin user: " + error.message });
+    }
+  });
+
+  // Update admin user (super admin only)
+  app.patch("/api/super-admin/admin-users/:id", requireSuperAdminAuth, async (req, res) => {
+    try {
+      const adminId = parseInt(req.params.id);
+      const updates = req.body;
+
+      // Hash password if provided
+      if (updates.password) {
+        updates.passwordHash = await hashPassword(updates.password);
+        delete updates.password;
+      }
+
+      const updatedUser = await storage.updateAdminUser(adminId, updates);
+      if (!updatedUser) {
+        return res.status(404).json({ message: "Admin user not found" });
+      }
+
+      // Log admin user update
+      await storage.logAdminActivity({
+        adminId: req.superAdmin!.id,
+        action: 'update_admin_user',
+        targetType: 'admin_user',
+        targetId: adminId,
+        details: { 
+          updates: Object.keys(updates),
+          timestamp: new Date().toISOString()
+        },
+        ipAddress: req.ip || 'unknown',
+      });
+
+      // Remove password hash from response
+      const { passwordHash: _, ...adminUserResponse } = updatedUser;
+      res.json(adminUserResponse);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error updating admin user: " + error.message });
+    }
+  });
+
+  // Delete admin user (super admin only)
+  app.delete("/api/super-admin/admin-users/:id", requireSuperAdminAuth, async (req, res) => {
+    try {
+      const adminId = parseInt(req.params.id);
+      
+      // Prevent super admin from deleting themselves
+      if (adminId === req.superAdmin!.id) {
+        return res.status(400).json({ message: "Cannot delete your own account" });
+      }
+
+      const deleted = await storage.deleteAdminUser(adminId);
+      if (!deleted) {
+        return res.status(404).json({ message: "Admin user not found" });
+      }
+
+      // Log admin user deletion
+      await storage.logAdminActivity({
+        adminId: req.superAdmin!.id,
+        action: 'delete_admin_user',
+        targetType: 'admin_user',
+        targetId: adminId,
+        details: { 
+          timestamp: new Date().toISOString()
+        },
+        ipAddress: req.ip || 'unknown',
+      });
+
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ message: "Error deleting admin user: " + error.message });
+    }
+  });
+
+  // Get admin activity logs (super admin only)
+  app.get("/api/super-admin/activity-logs", requireSuperAdminAuth, async (req, res) => {
+    try {
+      const { adminId, action, targetType, limit } = req.query;
+      
+      const logs = await storage.getAdminActivityLogs({
+        adminId: adminId ? parseInt(adminId as string) : undefined,
+        action: action as string,
+        targetType: targetType as string,
+        limit: limit ? parseInt(limit as string) : undefined,
+      });
+
+      res.json(logs);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching activity logs: " + error.message });
     }
   });
 

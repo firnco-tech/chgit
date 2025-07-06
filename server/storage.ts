@@ -7,6 +7,7 @@ import {
   adminUsers,
   adminActivityLog,
   adminSettings,
+  adminSessions,
   // User system
   userFavorites,
   userSessions,
@@ -27,6 +28,8 @@ import {
   type InsertAdminActivityLog,
   type AdminSettings,
   type InsertAdminSettings,
+  type AdminSession,
+  type InsertAdminSession,
   // User system types
   type UserFavorite,
   type InsertUserFavorite,
@@ -95,6 +98,13 @@ export interface IStorage {
   updateAdminUser(id: number, user: Partial<AdminUser>): Promise<AdminUser | undefined>;
   deleteAdminUser(id: number): Promise<boolean>;
   getAllAdminUsers(): Promise<AdminUser[]>;
+  
+  // Admin session management for secure authentication
+  createAdminSession(session: InsertAdminSession): Promise<AdminSession>;
+  getAdminSession(sessionId: string): Promise<AdminSession | undefined>;
+  updateAdminSession(sessionId: string, updates: Partial<AdminSession>): Promise<AdminSession | undefined>;
+  deleteAdminSession(sessionId: string): Promise<boolean>;
+  cleanupExpiredAdminSessions(): Promise<void>;
   
   // Admin activity logging
   logAdminActivity(log: InsertAdminActivityLog): Promise<AdminActivityLog>;
@@ -654,6 +664,38 @@ export class DatabaseStorage implements IStorage {
     );
 
     return ordersWithItems;
+  }
+
+  // =============================================================================
+  // ADMIN SESSION MANAGEMENT - For secure super admin authentication
+  // =============================================================================
+
+  async createAdminSession(session: InsertAdminSession): Promise<AdminSession> {
+    const [newSession] = await db.insert(adminSessions).values(session).returning();
+    return newSession;
+  }
+
+  async getAdminSession(sessionId: string): Promise<AdminSession | undefined> {
+    const [session] = await db.select().from(adminSessions).where(eq(adminSessions.id, sessionId));
+    return session || undefined;
+  }
+
+  async updateAdminSession(sessionId: string, updates: Partial<AdminSession>): Promise<AdminSession | undefined> {
+    const [updatedSession] = await db
+      .update(adminSessions)
+      .set(updates)
+      .where(eq(adminSessions.id, sessionId))
+      .returning();
+    return updatedSession || undefined;
+  }
+
+  async deleteAdminSession(sessionId: string): Promise<boolean> {
+    const result = await db.delete(adminSessions).where(eq(adminSessions.id, sessionId));
+    return (result.rowCount || 0) > 0;
+  }
+
+  async cleanupExpiredAdminSessions(): Promise<void> {
+    await db.delete(adminSessions).where(sql`expires_at < NOW()`);
   }
 }
 
