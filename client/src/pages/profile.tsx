@@ -104,12 +104,36 @@ export default function ProfilePage() {
               </div>
             )}
             
-            {/* Photo Counter */}
+            {/* Photo Thumbnails */}
             {profile.photos && profile.photos.length > 1 && (
-              <div className="text-center">
-                <Badge variant="secondary" className="text-sm">
-                  {profile.photos.length} photos
-                </Badge>
+              <div className="space-y-2">
+                <div className="text-center">
+                  <Badge variant="secondary" className="text-sm">
+                    {profile.photos.length} photos
+                  </Badge>
+                </div>
+                <div className="grid grid-cols-4 gap-2">
+                  {profile.photos.slice(0, 8).map((photo, index) => (
+                    <img 
+                      key={index}
+                      src={photo.startsWith('data:') || photo.startsWith('http') 
+                        ? photo 
+                        : `https://picsum.photos/150/150?random=${profile.id + index + 100}`}
+                      alt={`${profile.firstName} photo ${index + 1}`}
+                      className="w-full rounded-lg aspect-square object-cover hover:opacity-80 transition-opacity cursor-pointer"
+                      onError={(e) => {
+                        e.currentTarget.src = `https://picsum.photos/150/150?random=${profile.id + index + 2000}`;
+                      }}
+                    />
+                  ))}
+                </div>
+                {profile.photos.length > 8 && (
+                  <div className="text-center">
+                    <Badge variant="outline" className="text-xs">
+                      +{profile.photos.length - 8} more photos
+                    </Badge>
+                  </div>
+                )}
               </div>
             )}
           </div>
