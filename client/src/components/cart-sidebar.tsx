@@ -51,9 +51,16 @@ export function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
               {items.map((item) => (
                 <div key={item.id} className="flex items-center space-x-4 p-4 border rounded-lg">
                   <img 
-                    src={item.photo} 
+                    src={item.photo 
+                      ? (item.photo.startsWith('data:') || item.photo.startsWith('http') 
+                          ? item.photo 
+                          : `https://picsum.photos/100/100?random=${item.id}`)
+                      : `https://picsum.photos/100/100?random=${item.id + 3000}`}
                     alt={item.name}
                     className="w-16 h-16 object-cover rounded"
+                    onError={(e) => {
+                      e.currentTarget.src = `https://picsum.photos/100/100?random=${item.id + 4000}`;
+                    }}
                   />
                   <div className="flex-1">
                     <h3 className="font-medium">{item.name}</h3>

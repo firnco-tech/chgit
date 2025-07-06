@@ -77,18 +77,28 @@ export default function ProfilePage() {
             {profile.photos && profile.photos.length > 0 ? (
               <div className="grid gap-4">
                 <img 
-                  src={profile.photos[0]} 
+                  src={profile.photos[0].startsWith('data:') || profile.photos[0].startsWith('http') 
+                    ? profile.photos[0] 
+                    : `https://picsum.photos/400/500?random=${profile.id}`}
                   alt={`${profile.firstName} profile photo`}
                   className="w-full rounded-xl shadow-lg aspect-[3/4] object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://picsum.photos/400/500?random=${profile.id + 1000}`;
+                  }}
                 />
                 {profile.photos.length > 1 && (
                   <div className="grid grid-cols-3 gap-2">
                     {profile.photos.slice(1, 4).map((photo, index) => (
                       <img 
                         key={index}
-                        src={photo} 
+                        src={photo.startsWith('data:') || photo.startsWith('http') 
+                          ? photo 
+                          : `https://picsum.photos/200/200?random=${profile.id + index + 100}`}
                         alt={`${profile.firstName} photo ${index + 2}`}
                         className="w-full rounded-lg aspect-square object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = `https://picsum.photos/200/200?random=${profile.id + index + 2000}`;
+                        }}
                       />
                     ))}
                   </div>

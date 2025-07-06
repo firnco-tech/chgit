@@ -41,9 +41,16 @@ export default function Cart() {
                   {items.map((item) => (
                     <div key={item.id} className="flex items-center space-x-4 p-4 border rounded-lg">
                       <img 
-                        src={item.photo} 
+                        src={item.photo 
+                          ? (item.photo.startsWith('data:') || item.photo.startsWith('http') 
+                              ? item.photo 
+                              : `https://picsum.photos/120/120?random=${item.id}`)
+                          : `https://picsum.photos/120/120?random=${item.id + 5000}`}
                         alt={item.name}
                         className="w-20 h-20 object-cover rounded"
+                        onError={(e) => {
+                          e.currentTarget.src = `https://picsum.photos/120/120?random=${item.id + 6000}`;
+                        }}
                       />
                       <div className="flex-1">
                         <h3 className="font-semibold text-lg">{item.name}</h3>

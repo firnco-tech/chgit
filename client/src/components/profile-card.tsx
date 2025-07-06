@@ -34,9 +34,16 @@ export function ProfileCard({ profile }: ProfileCardProps) {
       <Link href={`/profile/${profile.id}`}>
         <div className="aspect-[3/4] overflow-hidden">
           <img 
-            src={profile.photos?.[0] || '/placeholder-profile.jpg'}
+            src={profile.photos?.[0] 
+              ? (profile.photos[0].startsWith('data:') || profile.photos[0].startsWith('http') 
+                  ? profile.photos[0] 
+                  : `https://picsum.photos/300/400?random=${profile.id}`)
+              : `https://picsum.photos/300/400?random=${profile.id + 1000}`}
             alt={`${profile.firstName} profile photo`}
             className="w-full h-full object-cover hover:scale-105 transition-transform"
+            onError={(e) => {
+              e.currentTarget.src = `https://picsum.photos/300/400?random=${profile.id + 2000}`;
+            }}
           />
         </div>
       </Link>
