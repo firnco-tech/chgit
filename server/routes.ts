@@ -382,6 +382,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin get user favorites - ADMIN ONLY
+  app.get("/api/admin/user-favorites/:userId", requireAdminAuth, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const favorites = await storage.getUserFavorites(userId);
+      res.json(favorites);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching user favorites: " + error.message });
+    }
+  });
+
+  // Admin get user orders - ADMIN ONLY
+  app.get("/api/admin/user-orders/:userId", requireAdminAuth, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const orders = await storage.getUserOrdersWithItems(userId);
+      res.json(orders);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching user orders: " + error.message });
+    }
+  });
+
   // =============================================================================
   // FRONT-END USER AUTHENTICATION API ROUTES - STEP 1 IMPLEMENTATION
   // =============================================================================

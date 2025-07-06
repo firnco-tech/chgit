@@ -134,6 +134,9 @@ export interface IStorage {
     offset?: number;
   }): Promise<User[]>;
   
+  // Admin user favorites and orders
+  getUserOrdersWithItems(userId: number): Promise<(Order & { items: (OrderItem & { profile: Profile })[] })[]>;
+  
   // =============================================================================
   // USER FAVORITES METHODS
   // =============================================================================
@@ -141,7 +144,7 @@ export interface IStorage {
   // User favorites management
   addUserFavorite(userId: number, profileId: number): Promise<UserFavorite>;
   removeUserFavorite(userId: number, profileId: number): Promise<boolean>;
-  getUserFavorites(userId: number): Promise<Profile[]>;
+  getUserFavorites(userId: number): Promise<(UserFavorite & { profile: Profile })[]>;
   isProfileFavorited(userId: number, profileId: number): Promise<boolean>;
 }
 
@@ -570,9 +573,13 @@ export class DatabaseStorage implements IStorage {
     return result.rowCount > 0;
   }
 
-  async getUserFavorites(userId: number): Promise<Profile[]> {
+  async getUserFavorites(userId: number): Promise<(UserFavorite & { profile: Profile })[]> {
     const favoriteProfiles = await db
       .select({
+        id: userFavorites.id,
+        userId: userFavorites.userId,
+        profileId: userFavorites.profileId,
+        createdAt: userFavorites.createdAt,
         profile: profiles,
       })
       .from(userFavorites)
@@ -580,7 +587,7 @@ export class DatabaseStorage implements IStorage {
       .where(eq(userFavorites.userId, userId))
       .orderBy(desc(userFavorites.createdAt));
     
-    return favoriteProfiles.map(item => item.profile);
+    return favoriteProfiles;
   }
 
   async isProfileFavorited(userId: number, profileId: number): Promise<boolean> {
@@ -619,6 +626,34 @@ export class DatabaseStorage implements IStorage {
     }
     
     return await query;
+  }
+
+  async getUserOrdersWithItems(userId: number): Promise<(Order & { items: (OrderItem & { profile: Profile })[] })[]> {
+    // First get the user's email
+    const [user] = await db.select({ email: users.email }).from(users).where(eq(users.id, userId));
+    if (!user) {
+      return [];
+    }
+
+    // Get all orders for the user by email
+    const userOrders = await db
+      .select()
+      .from(orders)
+      .where(eq(orders.customerEmail, user.email))
+      .orderBy(desc(orders.createdAt));
+
+    // For each order, get its items with profile information
+    const ordersWithItems = await Promise.all(
+      userOrders.map(async (order) => {
+        const items = await this.getOrderItemsWithProfiles(order.id);
+        return {
+          ...order,
+          items
+        };
+      })
+    );
+
+    return ordersWithItems;
   }
 }
 
