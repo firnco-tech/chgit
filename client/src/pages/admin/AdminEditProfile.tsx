@@ -118,9 +118,11 @@ export default function AdminEditProfile() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Clean up the form data before submitting
+    // Clean up the form data before submitting - EXCLUDE timestamp fields
+    const { createdAt, updatedAt, ...updateableData } = formData;
+    
     const cleanedData = {
-      ...formData,
+      ...updateableData,
       // Ensure arrays are properly formatted
       photos: Array.isArray(formData.photos) ? formData.photos : [],
       videos: Array.isArray(formData.videos) ? formData.videos : [],
@@ -138,7 +140,7 @@ export default function AdminEditProfile() {
       isFeatured: typeof formData.isFeatured === 'string' ? formData.isFeatured === 'true' : formData.isFeatured,
     };
     
-    console.log('Submitting form data:', cleanedData);
+    console.log('Submitting cleaned form data (timestamps excluded):', cleanedData);
     updateMutation.mutate(cleanedData);
   };
 
