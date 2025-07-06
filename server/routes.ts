@@ -720,8 +720,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create admin session
       const sessionId = `admin_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       await storage.createAdminSession({
-        sessionId,
+        id: sessionId,
         adminId: adminUser.id,
+        type: adminUser.role as "admin" | "superadmin",
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
         ipAddress: req.ip || 'unknown',
         userAgent: req.get('User-Agent') || 'unknown'
