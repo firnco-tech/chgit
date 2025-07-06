@@ -1,0 +1,97 @@
+MAJOR ENHANCEMENT: Super Admin, Admin Roles, and Secure User Flows
+
+We are preparing for deployment and require robust role-based access control and secure user flows.
+Do not break or regress any existing functionality.
+Proceed step by step, and wait for my review after each step.
+
+STEP 1: Design and Document Role-Based User Model
+Define three distinct user roles:
+
+Super Admin: Full access, can manage all site settings and create/manage other admin users.
+
+Admin: Access to admin panel for profile/user/content management, but cannot create new admins or change site-wide settings.
+
+Front-End User: Standard site users (shoppers/clients).
+
+Update the user database schema to include a role field (e.g., superadmin, admin, user).
+
+Document the permissions and access boundaries for each role.
+
+Do not proceed until this is documented and approved.
+
+STEP 2: Implement Super Admin Authentication and Management
+Create a Super Admin login route (separate from standard admin/user login if needed).
+
+Only Super Admins can access the super admin dashboard.
+
+Super Admin dashboard must allow:
+
+Creating new admin users.
+
+Viewing, editing, and deleting existing admin users.
+
+Secure all super admin routes and actions with strict authentication and authorization checks.
+
+Provide proof of secure Super Admin login and management before proceeding.
+
+STEP 3: Implement Standard Admin Authentication and Permissions
+Create a separate login flow for admins (or a unified login with role-based dashboard redirection).
+
+Ensure only users with the admin or superadmin role can access the admin panel.
+
+Enforce permissions so admins cannot access super admin features.
+
+Test that front-end users cannot access any admin or super admin routes.
+
+Provide screenshots or code samples confirming correct access control.
+
+STEP 4: Secure All Admin and Super Admin Routes
+Apply middleware or guards to all backend and frontend routes to enforce role-based access.
+
+Ensure all sensitive actions (user management, site settings, etc.) are protected.
+
+Add logging for all admin and super admin actions for audit purposes.
+
+Test and confirm that no unauthorized access is possible.
+
+STEP 5: Establish Front-End User Flow
+Document and implement the flow for standard users:
+
+Shopper: Browses site, adds items to cart.
+
+Client: Registers/logs in, can save favorites, manage profile, and check out.
+
+Checkout: Completes purchase via shopping cart.
+
+Ensure smooth transitions between anonymous shopper, registered user, and checkout.
+
+Confirm that user roles are correctly assigned and enforced throughout the flow.
+
+Test the entire front-end flow and provide a user journey summary.
+
+STEP 6: Regression Testing and Verification
+After each step, thoroughly test all user flows:
+
+Super admin, admin, and front-end user actions.
+
+Login, dashboard access, and permissions.
+
+Shopping cart, checkout, and profile management.
+
+Confirm that no existing site functionality is broken.
+
+Provide before/after screenshots or screencasts as proof.
+
+Wait for my review and approval before deploying or proceeding to the next step.
+
+Critical Instructions:
+
+Do not break or alter any existing site structure or user/admin experience outside these enhancements.
+
+All code changes must be clearly commented and documented.
+
+If you encounter a blocking issue or uncertainty, STOP and report before proceeding.
+
+Site stability and security are the highest priorities.
+
+Begin with Step 1 (Role-Based User Model Design), and wait for my review before proceeding.

@@ -134,14 +134,8 @@ export const insertOrderItemSchema = createInsertSchema(orderItems).omit({
   id: true,
 });
 
-export type User = typeof users.$inferSelect;
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type Profile = typeof profiles.$inferSelect;
-export type InsertProfile = z.infer<typeof insertProfileSchema>;
-export type Order = typeof orders.$inferSelect;
-export type InsertOrder = z.infer<typeof insertOrderSchema>;
-export type OrderItem = typeof orderItems.$inferSelect;
-export type InsertOrderItem = z.infer<typeof insertOrderItemSchema>;
+// These types are defined later in the user authentication section
+// to avoid duplicates and maintain proper organization
 
 // =============================================================================
 // ADMIN PANEL SCHEMA - Isolated admin functionality
@@ -153,7 +147,7 @@ export const adminUsers = pgTable("admin_users", {
   username: text("username").unique().notNull(),
   email: text("email").unique().notNull(),
   passwordHash: text("password_hash").notNull(),
-  role: text("role").default("admin").notNull(), // admin, super_admin
+  role: text("role", { enum: ["admin", "superadmin"] }).default("admin").notNull(),
   isActive: boolean("is_active").default(true).notNull(),
   lastLogin: timestamp("last_login"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -212,12 +206,28 @@ export const insertAdminSettingsSchema = createInsertSchema(adminSettings).omit(
   updatedAt: true,
 });
 
+// Role type definitions for enhanced type safety
+export const USER_ROLES = ["user", "premium_user"] as const;
+export const ADMIN_ROLES = ["admin", "superadmin"] as const;
+
+export type UserRole = typeof USER_ROLES[number];
+export type AdminRole = typeof ADMIN_ROLES[number];
+
+// Admin schema types with enhanced role validation
 export type AdminUser = typeof adminUsers.$inferSelect;
 export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
 export type AdminActivityLog = typeof adminActivityLog.$inferSelect;
 export type InsertAdminActivityLog = z.infer<typeof insertAdminActivityLogSchema>;
 export type AdminSettings = typeof adminSettings.$inferSelect;
 export type InsertAdminSettings = z.infer<typeof insertAdminSettingsSchema>;
+
+// Enhanced admin user schema with role validation
+export const createAdminUserSchema = insertAdminUserSchema.extend({
+  role: z.enum(ADMIN_ROLES),
+  username: z.string().min(3).max(50),
+  email: z.string().email(),
+  password: z.string().min(8), // For creation, not storage
+});
 
 // =============================================================================
 // USER FAVORITES SYSTEM
@@ -316,7 +326,7 @@ export const insertUserFavoriteSchema = createInsertSchema(userFavorites).omit({
   createdAt: true,
 });
 
-// Type exports
+// All platform type exports
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type LoginUser = z.infer<typeof loginUserSchema>;
@@ -326,3 +336,11 @@ export type UserSession = typeof userSessions.$inferSelect;
 export type InsertUserSession = z.infer<typeof insertUserSessionSchema>;
 export type UserFavorite = typeof userFavorites.$inferSelect;
 export type InsertUserFavorite = z.infer<typeof insertUserFavoriteSchema>;
+
+// Profile and order types
+export type Profile = typeof profiles.$inferSelect;
+export type InsertProfile = z.infer<typeof insertProfileSchema>;
+export type Order = typeof orders.$inferSelect;
+export type InsertOrder = z.infer<typeof insertOrderSchema>;
+export type OrderItem = typeof orderItems.$inferSelect;
+export type InsertOrderItem = z.infer<typeof insertOrderItemSchema>;
