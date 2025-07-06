@@ -117,7 +117,29 @@ export default function AdminEditProfile() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    updateMutation.mutate(formData);
+    
+    // Clean up the form data before submitting
+    const cleanedData = {
+      ...formData,
+      // Ensure arrays are properly formatted
+      photos: Array.isArray(formData.photos) ? formData.photos : [],
+      videos: Array.isArray(formData.videos) ? formData.videos : [],
+      interests: Array.isArray(formData.interests) ? formData.interests : [],
+      languages: Array.isArray(formData.languages) ? formData.languages : [],
+      lookingFor: Array.isArray(formData.lookingFor) ? formData.lookingFor : [],
+      contactMethods: Array.isArray(formData.contactMethods) ? formData.contactMethods : [],
+      // Convert string values to numbers where needed
+      age: typeof formData.age === 'string' ? parseInt(formData.age) : formData.age,
+      price: typeof formData.price === 'string' ? parseFloat(formData.price) : formData.price,
+      // Convert string values to boolean where needed
+      hasChildren: typeof formData.hasChildren === 'string' ? formData.hasChildren === 'true' : formData.hasChildren,
+      wantsChildren: typeof formData.wantsChildren === 'string' ? formData.wantsChildren === 'true' : formData.wantsChildren,
+      isApproved: typeof formData.isApproved === 'string' ? formData.isApproved === 'true' : formData.isApproved,
+      isFeatured: typeof formData.isFeatured === 'string' ? formData.isFeatured === 'true' : formData.isFeatured,
+    };
+    
+    console.log('Submitting form data:', cleanedData);
+    updateMutation.mutate(cleanedData);
   };
 
   const handleBack = () => {
@@ -521,33 +543,48 @@ export default function AdminEditProfile() {
               <div>
                 <Label className="text-base font-medium">Current Photos</Label>
                 {formData.photos && formData.photos.length > 0 ? (
-                  <div className="space-y-2">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {formData.photos.map((photo, index) => (
-                      <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                        <span className="text-sm">{photo}</span>
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            checked={formData.primaryPhoto === photo}
-                            onCheckedChange={(checked) => {
-                              if (checked) handleInputChange('primaryPhoto', photo);
-                            }}
-                          />
-                          <Label className="text-xs">Primary</Label>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              const newPhotos = formData.photos.filter((_, i) => i !== index);
-                              handleInputChange('photos', newPhotos);
-                              if (formData.primaryPhoto === photo) {
-                                handleInputChange('primaryPhoto', newPhotos[0] || '');
-                              }
-                            }}
-                          >
-                            Remove
-                          </Button>
+                      <div key={index} className="relative group">
+                        <img 
+                          src={photo.startsWith('data:') ? photo : `/uploads/${photo}`} 
+                          alt={`Photo ${index + 1}`}
+                          className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
+                          onError={(e) => {
+                            e.currentTarget.src = `data:image/svg+xml;base64,${btoa('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#f3f4f6"/><text x="50" y="50" text-anchor="middle" font-size="10" fill="#9ca3af">Image</text></svg>')}`;
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              checked={formData.primaryPhoto === photo}
+                              onCheckedChange={(checked) => {
+                                if (checked) handleInputChange('primaryPhoto', photo);
+                              }}
+                              className="bg-white"
+                            />
+                            <Label className="text-xs text-white">Primary</Label>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const newPhotos = formData.photos.filter((_, i) => i !== index);
+                                handleInputChange('photos', newPhotos);
+                                if (formData.primaryPhoto === photo) {
+                                  handleInputChange('primaryPhoto', newPhotos[0] || '');
+                                }
+                              }}
+                            >
+                              Remove
+                            </Button>
+                          </div>
                         </div>
+                        {formData.primaryPhoto === photo && (
+                          <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                            Primary
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -585,21 +622,38 @@ export default function AdminEditProfile() {
               <div>
                 <Label className="text-base font-medium">Current Videos</Label>
                 {formData.videos && formData.videos.length > 0 ? (
-                  <div className="space-y-2">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {formData.videos.map((video, index) => (
-                      <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                        <span className="text-sm">{video}</span>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            const newVideos = formData.videos.filter((_, i) => i !== index);
-                            handleInputChange('videos', newVideos);
+                      <div key={index} className="relative group">
+                        <video 
+                          src={video.startsWith('data:') ? video : `/uploads/${video}`} 
+                          className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
+                          controls
+                          preload="metadata"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling!.style.display = 'flex';
                           }}
-                        >
-                          Remove
-                        </Button>
+                        />
+                        <div className="w-full h-32 rounded-lg border-2 border-gray-200 bg-gray-100 flex items-center justify-center" style={{display: 'none'}}>
+                          <div className="text-center">
+                            <div className="text-sm text-gray-600">Video</div>
+                            <div className="text-xs text-gray-500">{video}</div>
+                          </div>
+                        </div>
+                        <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const newVideos = formData.videos.filter((_, i) => i !== index);
+                              handleInputChange('videos', newVideos);
+                            }}
+                          >
+                            Remove
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </div>

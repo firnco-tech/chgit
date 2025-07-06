@@ -271,14 +271,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const profileId = parseInt(req.params.id);
       const updateData = req.body;
       
+      console.log(`Admin updating profile ${profileId}:`, updateData);
+      
       const updatedProfile = await storage.updateProfile(profileId, updateData);
       
       if (!updatedProfile) {
         return res.status(404).json({ message: "Profile not found" });
       }
       
+      console.log('Profile updated successfully:', updatedProfile);
       res.json(updatedProfile);
     } catch (error: any) {
+      console.error('Error updating profile:', error);
       res.status(500).json({ message: "Error updating profile: " + error.message });
     }
   });

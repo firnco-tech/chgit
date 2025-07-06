@@ -170,12 +170,19 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateProfile(id: number, profile: Partial<Profile>): Promise<Profile | undefined> {
-    const [updated] = await db
-      .update(profiles)
-      .set({ ...profile, updatedAt: new Date() })
-      .where(eq(profiles.id, id))
-      .returning();
-    return updated || undefined;
+    console.log(`Updating profile ${id} in database with:`, profile);
+    try {
+      const [updated] = await db
+        .update(profiles)
+        .set({ ...profile, updatedAt: new Date() })
+        .where(eq(profiles.id, id))
+        .returning();
+      console.log('Database update result:', updated);
+      return updated || undefined;
+    } catch (error) {
+      console.error('Database update error:', error);
+      throw error;
+    }
   }
 
   async approveProfile(id: number): Promise<Profile | undefined> {
