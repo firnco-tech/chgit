@@ -728,13 +728,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userAgent: req.get('User-Agent') || 'unknown'
       });
 
-      // Set session cookie
-      res.cookie('adminSession', sessionId, {
+      // Set session cookie - optimized for SUPER ADMIN session handling
+      const cookieSettings = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
-        sameSite: 'strict'
+        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // Lax for development
+        path: '/' // Ensure cookie is available across all paths
+      };
+      
+      // Set the appropriate cookie based on user role for SUPER ADMIN session handling
+      const cookieName = adminUser.role === 'superadmin' ? 'superAdminSession' : 'adminSession';
+      
+      console.log('🍪 SETTING SESSION COOKIE:', {
+        sessionId: sessionId.substring(0, 10) + '...',
+        cookieName: cookieName,
+        cookieSettings: cookieSettings,
+        userRole: adminUser.role,
+        environment: process.env.NODE_ENV
       });
+      
+      res.cookie(cookieName, sessionId, cookieSettings);
 
       // Log admin login activity
       await storage.logAdminActivity({

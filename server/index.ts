@@ -6,6 +6,9 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
+// Trust proxy for cookie handling in development/production environments
+app.set('trust proxy', 1);
+
 // Cookie parser for reading HTTP-only cookies
 app.use(cookieParser());
 
