@@ -1,0 +1,80 @@
+MISSION-CRITICAL: Fix Profile Media Upload and Display Without Breaking Site Functionality
+
+The SUBMIT PROFILE feature was working perfectly in earlier versions. Since recent changes, media uploads (photos/videos) are not displaying correctly in the admin panel’s profile edit view or on the front end after approval. The system now sometimes shows only sample images, even though the uploaded files are present in the database and some thumbnails display in the admin dashboard.
+
+This is a regression introduced by recent changes. It is critical that you fix the media upload and display system, restoring previous working functionality, and do NOT break or alter any other part of the site.
+
+SEQUENTIAL STEPS TO FIX (DO NOT SKIP OR MERGE STEPS):
+1. Analyze and Document the Current Media Flow
+
+Map and document the entire process for photo/video uploads from the SUBMIT PROFILE form, through backend storage, to display in both admin and front end.
+
+Identify all points where uploaded files are handled, stored, and referenced (including file paths, database fields, and frontend display logic).
+
+Compare the current implementation to the last known working version.
+
+2. Restore and Repair Media Upload and Display
+
+Ensure that when a user uploads photos/videos, the files are:
+
+Correctly uploaded to the server or object storage (e.g., using Multer or Replit Object Storage).
+
+The correct URLs/paths are stored in the database.
+
+The admin panel and profile edit view display the actual uploaded media, not sample or placeholder images.
+
+If necessary, roll back to the last known working media upload/display logic and incrementally reapply any needed updates.
+
+3. Fix URL Handling for Uploaded Media
+
+Ensure all components that display profile media (admin panel, profile edit, front end) can handle both:
+
+Full HTTP/HTTPS URLs (for sample/external images)
+
+Local or relative URLs (e.g., /uploads/images/UUID.jpg) for user-uploaded files
+
+Update or create a universal media URL resolver utility and use it consistently across all components.
+
+4. Test End-to-End Media Upload and Display
+
+Submit a new profile with photos and videos.
+
+Confirm that:
+
+Media uploads are stored and accessible.
+
+Thumbnails and full images/videos display correctly in the admin dashboard, admin profile edit view, and front end after approval.
+
+No sample or placeholder images are shown unless no media was uploaded.
+
+Test for both new and existing profiles.
+
+5. Prevent Further Regressions
+
+Do NOT change, break, or remove any other site features or flows.
+
+Clearly comment all changes, especially where media handling is modified.
+
+If you encounter a blocking issue or uncertainty, STOP and report before proceeding.
+
+6. Verification and Approval
+
+After each step, provide:
+
+A clear summary of what was changed.
+
+Screenshots or screencasts showing successful media upload and display in all relevant views.
+
+Wait for my review and approval before moving to the next step.
+
+CRITICAL INSTRUCTIONS:
+
+Do NOT introduce new features, placeholders, or badges unless explicitly requested.
+
+Do NOT remove or alter any existing site structure, user data, or admin/user experience outside this media fix.
+
+If a rollback is needed, notify me before proceeding.
+
+All code changes must be fully documented and justified.
+
+Begin with Step 1: Analyze and document the current media upload/display flow. Wait for my review before proceeding to the next step.
