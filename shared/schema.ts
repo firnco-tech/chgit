@@ -296,6 +296,15 @@ export const registerUserSchema = z.object({
   lastName: z.string().min(1).max(100).optional(),
 });
 
+// Internal type for storing users with hashed passwords
+export const createUserSchema = z.object({
+  email: z.string().email(),
+  username: z.string().min(3).max(50),
+  passwordHash: z.string(),
+  firstName: z.string().min(1).max(100).optional(),
+  lastName: z.string().min(1).max(100).optional(),
+});
+
 // User session schema types
 export const insertUserSessionSchema = createInsertSchema(userSessions).omit({
   createdAt: true,
@@ -312,6 +321,7 @@ export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type LoginUser = z.infer<typeof loginUserSchema>;
 export type RegisterUser = z.infer<typeof registerUserSchema>;
+export type CreateUser = z.infer<typeof createUserSchema>;
 export type UserSession = typeof userSessions.$inferSelect;
 export type InsertUserSession = z.infer<typeof insertUserSessionSchema>;
 export type UserFavorite = typeof userFavorites.$inferSelect;

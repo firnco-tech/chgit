@@ -1,0 +1,48 @@
+MISSION-CRITICAL: Fix Registration, Favorites, and Admin Routing (Do Not Break Existing Code)
+
+You have partially completed the authentication and user flow. The following critical issues must be fixed, step by step, without breaking any existing functionality or progress:
+
+1. Fix Registration API Error
+The registration modal fails with:
+"Failed to execute 'fetch' on 'Window': '/api/auth/register' is not a valid HTTP method."
+
+Diagnose and repair the registration endpoint:
+
+Ensure /api/auth/register exists and accepts the correct HTTP method (POST).
+
+Confirm the frontend is sending the registration request as POST, not GET or other.
+
+Test registration end-to-end and provide proof of successful account creation and login.
+
+2. Remove Favorites Heart from Admin Dashboard
+The "Add to Favorites" heart icon must NOT appear in the admin dashboard or for admin users anywhere.
+
+Only regular (non-admin) users should see and use the favorites feature.
+
+Confirm with screenshots or code that the heart is hidden for admins.
+
+3. Fix /admin/users 404 Error
+The /admin/users page returns "404 Page Not Found."
+
+Add or repair the route/component so that admin users can view and manage the user list.
+
+Ensure this page is only accessible to admins and is styled/functional like the rest of the admin panel.
+
+4. Regression Testing
+After each fix, test the full user and admin flows:
+
+Registration, login, and favoriting as a regular user.
+
+Admin dashboard access, user management, and no access to favorites/cart as admin.
+
+No broken site features, routing, or data.
+
+Critical Instructions
+Do not break or alter any existing site structure, user data, or admin/user experience.
+
+All new or changed code must be clearly commented and documented.
+
+After each step, show proof (screenshots, code, or test results) and wait for my approval before proceeding.
+
+Begin with Step 1: Fix the registration API error. Wait for my review before moving to the next step.
+

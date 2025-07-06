@@ -13,6 +13,7 @@ import {
   type User, 
   type InsertUser,
   type RegisterUser,
+  type CreateUser,
   type Profile, 
   type InsertProfile, 
   type Order, 
@@ -126,6 +127,13 @@ export interface IStorage {
   }): Promise<Order[]>;
   getOrderStats(): Promise<{ total: number; completed: number; pending: number; revenue: number }>;
   
+  // Admin user management (front-end users, NOT admin users)
+  getUsersForAdmin(filters?: {
+    isActive?: boolean;
+    limit?: number;
+    offset?: number;
+  }): Promise<User[]>;
+  
   // =============================================================================
   // USER FAVORITES METHODS
   // =============================================================================
@@ -157,13 +165,13 @@ export class DatabaseStorage implements IStorage {
     return user || undefined;
   }
 
-  async createUser(user: RegisterUser): Promise<User> {
+  async createUser(user: CreateUser): Promise<User> {
     const [newUser] = await db
       .insert(users)
       .values({
         email: user.email,
         username: user.username,
-        passwordHash: user.password, // This will be hashed by auth layer
+        passwordHash: user.passwordHash, // Expecting already hashed password
         firstName: user.firstName,
         lastName: user.lastName,
         role: 'user',
@@ -588,6 +596,29 @@ export class DatabaseStorage implements IStorage {
       .limit(1);
     
     return !!favorite;
+  }
+
+  async getUsersForAdmin(filters?: {
+    isActive?: boolean;
+    limit?: number;
+    offset?: number;
+  }): Promise<User[]> {
+    let query = db.select().from(users);
+    
+    if (filters?.isActive !== undefined) {
+      query = query.where(eq(users.isActive, filters.isActive));
+    }
+    
+    query = query.orderBy(desc(users.createdAt));
+    
+    if (filters?.limit) {
+      query = query.limit(filters.limit);
+    }
+    if (filters?.offset) {
+      query = query.offset(filters.offset);
+    }
+    
+    return await query;
   }
 }
 

@@ -365,6 +365,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin users management - ADMIN ONLY (manage front-end users, NOT admin users)
+  app.get("/api/admin/users", requireAdminAuth, async (req, res) => {
+    try {
+      const { limit = 50, offset = 0, active } = req.query;
+      
+      const users = await storage.getUsersForAdmin({
+        isActive: active === 'true' ? true : active === 'false' ? false : undefined,
+        limit: parseInt(limit as string),
+        offset: parseInt(offset as string)
+      });
+      
+      res.json(users);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching users: " + error.message });
+    }
+  });
+
   // =============================================================================
   // FRONT-END USER AUTHENTICATION API ROUTES - STEP 1 IMPLEMENTATION
   // =============================================================================
@@ -388,8 +405,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Hash password and create user
       const hashedPassword = await hashPassword(userData.password);
       const user = await storage.createUser({
-        ...userData,
-        password: hashedPassword,
+        email: userData.email,
+        username: userData.username,
+        passwordHash: hashedPassword,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
       });
       
       // Create session

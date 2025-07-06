@@ -9,7 +9,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
-import { FavoriteHeart } from "@/components/FavoriteHeart";
+
 import { Users, FileText, DollarSign, Edit, Calendar } from "lucide-react";
 
 interface DashboardStats {
@@ -180,9 +180,8 @@ export default function AdminDashboard() {
                             )}
                           </div>
                           
-                          {/* Profile Info - Clickable Name with Heart */}
+                          {/* Profile Info - Clickable Name (ADMIN VIEW - NO FAVORITES) */}
                           <div className="flex items-center gap-3">
-                            <FavoriteHeart profileId={profile.id} size="lg" />
                             <div>
                               <button 
                                 className="text-left hover:text-blue-600 transition-colors"
