@@ -47,7 +47,9 @@ export default function AdminLogin() {
         body: data
       });
       console.log('Login response received:', response);
-      return response;
+      const jsonData = await response.json();
+      console.log('Login JSON data:', jsonData);
+      return jsonData;
     },
     onSuccess: (response) => {
       console.log('Login onSuccess called with:', response);
