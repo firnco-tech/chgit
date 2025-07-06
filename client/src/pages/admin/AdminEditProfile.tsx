@@ -117,6 +117,16 @@ export default function AdminEditProfile() {
     }));
   };
 
+  const handleContactMethodChange = (method: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      contactMethods: {
+        ...((prev.contactMethods as any) || {}),
+        [method]: value
+      }
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -131,7 +141,7 @@ export default function AdminEditProfile() {
       interests: Array.isArray(formData.interests) ? formData.interests : [],
       languages: Array.isArray(formData.languages) ? formData.languages : [],
       lookingFor: Array.isArray(formData.lookingFor) ? formData.lookingFor : [],
-      contactMethods: Array.isArray(formData.contactMethods) ? formData.contactMethods : [],
+      contactMethods: formData.contactMethods || {},
       inactivePhotos: Array.isArray(formData.inactivePhotos) ? formData.inactivePhotos : [],
       inactiveVideos: Array.isArray(formData.inactiveVideos) ? formData.inactiveVideos : [],
       // Convert string values to numbers where needed
@@ -856,8 +866,8 @@ export default function AdminEditProfile() {
                   <Label htmlFor="contactWhatsapp">WhatsApp</Label>
                   <Input
                     id="contactWhatsapp"
-                    value={formData.contactWhatsapp || ''}
-                    onChange={(e) => handleInputChange('contactWhatsapp', e.target.value)}
+                    value={(formData.contactMethods as any)?.whatsapp || ''}
+                    onChange={(e) => handleContactMethodChange('whatsapp', e.target.value)}
                     placeholder="WhatsApp number"
                   />
                 </div>
@@ -865,8 +875,8 @@ export default function AdminEditProfile() {
                   <Label htmlFor="contactInstagram">Instagram</Label>
                   <Input
                     id="contactInstagram"
-                    value={formData.contactInstagram || ''}
-                    onChange={(e) => handleInputChange('contactInstagram', e.target.value)}
+                    value={(formData.contactMethods as any)?.instagram || ''}
+                    onChange={(e) => handleContactMethodChange('instagram', e.target.value)}
                     placeholder="Instagram handle"
                   />
                 </div>
@@ -875,8 +885,8 @@ export default function AdminEditProfile() {
                   <Input
                     id="contactEmail"
                     type="email"
-                    value={formData.contactEmail || ''}
-                    onChange={(e) => handleInputChange('contactEmail', e.target.value)}
+                    value={(formData.contactMethods as any)?.email || ''}
+                    onChange={(e) => handleContactMethodChange('email', e.target.value)}
                     placeholder="Email address"
                   />
                 </div>
@@ -884,8 +894,8 @@ export default function AdminEditProfile() {
                   <Label htmlFor="contactTelegram">Telegram</Label>
                   <Input
                     id="contactTelegram"
-                    value={formData.contactTelegram || ''}
-                    onChange={(e) => handleInputChange('contactTelegram', e.target.value)}
+                    value={(formData.contactMethods as any)?.telegram || ''}
+                    onChange={(e) => handleContactMethodChange('telegram', e.target.value)}
                     placeholder="Telegram username"
                   />
                 </div>
@@ -893,8 +903,8 @@ export default function AdminEditProfile() {
                   <Label htmlFor="contactFacebook">Facebook</Label>
                   <Input
                     id="contactFacebook"
-                    value={formData.contactFacebook || ''}
-                    onChange={(e) => handleInputChange('contactFacebook', e.target.value)}
+                    value={(formData.contactMethods as any)?.facebook || ''}
+                    onChange={(e) => handleContactMethodChange('facebook', e.target.value)}
                     placeholder="Facebook profile"
                   />
                 </div>
@@ -902,8 +912,8 @@ export default function AdminEditProfile() {
                   <Label htmlFor="contactTiktok">TikTok</Label>
                   <Input
                     id="contactTiktok"
-                    value={formData.contactTiktok || ''}
-                    onChange={(e) => handleInputChange('contactTiktok', e.target.value)}
+                    value={(formData.contactMethods as any)?.tiktok || ''}
+                    onChange={(e) => handleContactMethodChange('tiktok', e.target.value)}
                     placeholder="TikTok handle"
                   />
                 </div>

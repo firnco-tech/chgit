@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { ArrowLeft, MessageCircle, Instagram, Mail, Shield, Zap, Lock } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { useToast } from "@/hooks/use-toast";
@@ -72,41 +73,43 @@ export default function ProfilePage() {
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Profile Images */}
+          {/* Profile Images Carousel */}
           <div className="space-y-4">
             {profile.photos && profile.photos.length > 0 ? (
-              <div className="grid gap-4">
-                <img 
-                  src={profile.photos[0].startsWith('data:') || profile.photos[0].startsWith('http') 
-                    ? profile.photos[0] 
-                    : `https://picsum.photos/400/500?random=${profile.id}`}
-                  alt={`${profile.firstName} profile photo`}
-                  className="w-full rounded-xl shadow-lg aspect-[3/4] object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src = `https://picsum.photos/400/500?random=${profile.id + 1000}`;
-                  }}
-                />
-                {profile.photos.length > 1 && (
-                  <div className="grid grid-cols-3 gap-2">
-                    {profile.photos.slice(1, 4).map((photo, index) => (
-                      <img 
-                        key={index}
-                        src={photo.startsWith('data:') || photo.startsWith('http') 
-                          ? photo 
-                          : `https://picsum.photos/200/200?random=${profile.id + index + 100}`}
-                        alt={`${profile.firstName} photo ${index + 2}`}
-                        className="w-full rounded-lg aspect-square object-cover"
-                        onError={(e) => {
-                          e.currentTarget.src = `https://picsum.photos/200/200?random=${profile.id + index + 2000}`;
-                        }}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {profile.photos.map((photo, index) => (
+                    <CarouselItem key={index}>
+                      <div className="aspect-[3/4] overflow-hidden rounded-xl shadow-lg">
+                        <img 
+                          src={photo.startsWith('data:') || photo.startsWith('http') 
+                            ? photo 
+                            : `https://picsum.photos/400/500?random=${profile.id + index}`}
+                          alt={`${profile.firstName} photo ${index + 1}`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = `https://picsum.photos/400/500?random=${profile.id + index + 1000}`;
+                          }}
+                        />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-4" />
+                <CarouselNext className="right-4" />
+              </Carousel>
             ) : (
               <div className="w-full h-96 bg-gray-200 rounded-xl flex items-center justify-center">
                 <p className="text-gray-500">No photos available</p>
+              </div>
+            )}
+            
+            {/* Photo Counter */}
+            {profile.photos && profile.photos.length > 1 && (
+              <div className="text-center">
+                <Badge variant="secondary" className="text-sm">
+                  {profile.photos.length} photos
+                </Badge>
               </div>
             )}
           </div>
