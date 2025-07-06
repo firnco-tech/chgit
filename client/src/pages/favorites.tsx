@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
+import { getProfileImageUrl } from "@/lib/mediaUtils";
 import type { Profile, UserFavorite } from "@shared/schema";
 
 // Helper component for safe image display  
@@ -24,35 +25,9 @@ const ProfileImage = ({ photos, firstName, lastName }: { photos: string[] | null
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   
-  // Check if we have valid photos and they're not empty
-  const hasValidPhoto = photos && Array.isArray(photos) && photos.length > 0 && photos[0] && photos[0].trim() !== '';
+  const photoUrl = getProfileImageUrl(photos);
   
-  if (!hasValidPhoto || imageError) {
-    return (
-      <div className="w-full h-full bg-pink-100 flex items-center justify-center">
-        <span className="text-4xl font-medium text-pink-600">
-          {firstName?.[0] || 'P'}
-        </span>
-      </div>
-    );
-  }
-  
-  // Convert photo to proper URL if needed
-  const getPhotoUrl = (photo: string) => {
-    // If it's already a full URL (starts with http), use as-is
-    if (photo.startsWith('http')) {
-      return photo;
-    }
-    // For local filenames, we need to construct the URL
-    // Note: This would typically point to your image storage service
-    // For now, show fallback since we don't have the actual storage URLs
-    return '';
-  };
-  
-  const photoUrl = getPhotoUrl(photos[0]);
-  
-  // If we can't construct a valid URL, show initials
-  if (!photoUrl) {
+  if (!photoUrl || imageError) {
     return (
       <div className="w-full h-full bg-pink-100 flex items-center justify-center">
         <span className="text-4xl font-medium text-pink-600">

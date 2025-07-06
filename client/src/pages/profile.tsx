@@ -85,9 +85,11 @@ export default function ProfilePage() {
                     <CarouselItem key={index}>
                       <div className="aspect-[3/4] overflow-hidden rounded-xl shadow-lg">
                         <img 
-                          src={photo.startsWith('data:') || photo.startsWith('http') 
+                          src={photo.startsWith('data:') || photo.startsWith('http') || photo.startsWith('/uploads/') 
                             ? photo 
-                            : `https://picsum.photos/400/500?random=${profile.id + index}`}
+                            : photo.match(/^[a-f0-9\-]{36}\.(jpg|jpeg|png|gif|webp)$/i)
+                              ? `/uploads/images/${photo}`
+                              : `https://picsum.photos/400/500?random=${profile.id + index}`}
                           alt={`${profile.firstName} photo ${index + 1}`}
                           className="w-full h-full object-cover"
                           onError={(e) => {
@@ -119,9 +121,11 @@ export default function ProfilePage() {
                   {profile.photos.slice(0, 8).map((photo, index) => (
                     <img 
                       key={index}
-                      src={photo.startsWith('data:') || photo.startsWith('http') 
+                      src={photo.startsWith('data:') || photo.startsWith('http') || photo.startsWith('/uploads/') 
                         ? photo 
-                        : `https://picsum.photos/150/150?random=${profile.id + index + 100}`}
+                        : photo.match(/^[a-f0-9\-]{36}\.(jpg|jpeg|png|gif|webp)$/i)
+                          ? `/uploads/images/${photo}`
+                          : `https://picsum.photos/150/150?random=${profile.id + index + 100}`}
                       alt={`${profile.firstName} photo ${index + 1}`}
                       className="w-full rounded-lg aspect-square object-cover hover:opacity-80 hover:ring-2 hover:ring-primary transition-all cursor-pointer"
                       onClick={() => carouselApi?.scrollTo(index)}

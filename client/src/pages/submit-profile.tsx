@@ -13,7 +13,27 @@ import { insertProfileSchema } from "@shared/schema";
 import { z } from "zod";
 import { toast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Loader2, CheckCircle, Shield, Clock } from "lucide-react";
+import { Loader2, CheckCircle, Shield, Clock, Upload, X } from "lucide-react";
+
+// Helper function to upload files to the server
+async function uploadFiles(files: File[]): Promise<string[]> {
+  const formData = new FormData();
+  files.forEach(file => {
+    formData.append('files', file);
+  });
+
+  const response = await fetch('/api/upload', {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to upload files');
+  }
+
+  const result = await response.json();
+  return result.files.map((file: any) => file.url);
+}
 
 const submitProfileSchema = insertProfileSchema.extend({
   contactMethods: z.object({
@@ -38,6 +58,9 @@ export default function SubmitProfile() {
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [selectedLookingFor, setSelectedLookingFor] = useState<string[]>([]);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [uploadingFiles, setUploadingFiles] = useState(false);
+  const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
+  const [uploadedVideos, setUploadedVideos] = useState<string[]>([]);
   const [contactMethodsEnabled, setContactMethodsEnabled] = useState({
     whatsapp: false,
     instagram: false,
@@ -69,8 +92,8 @@ export default function SubmitProfile() {
       lookingFor: [],
       aboutMe: "",
       interests: [],
-      photos: [],
-      videos: [],
+      photos: uploadedPhotos,
+      videos: uploadedVideos,
       contactMethods: {
         whatsapp: "",
         instagram: "",
@@ -108,7 +131,15 @@ export default function SubmitProfile() {
 
   const onSubmit = (data: SubmitProfileFormData) => {
     setIsSubmitting(true);
-    submitProfileMutation.mutate(data);
+    
+    // Ensure uploaded media is included in form data
+    const submitData = {
+      ...data,
+      photos: uploadedPhotos.length > 0 ? uploadedPhotos : data.photos,
+      videos: uploadedVideos.length > 0 ? uploadedVideos : data.videos,
+    };
+    
+    submitProfileMutation.mutate(submitData);
     setIsSubmitting(false);
   };
 
@@ -926,13 +957,32 @@ export default function SubmitProfile() {
                                 accept="image/*"
                                 multiple
                                 max="6"
-                                onChange={(e) => {
+                                onChange={async (e) => {
                                   const files = Array.from(e.target.files || []);
-                                  const fileNames = files.map(file => file.name);
-                                  field.onChange(fileNames);
+                                  if (files.length > 0) {
+                                    setUploadingFiles(true);
+                                    try {
+                                      const uploadedUrls = await uploadFiles(files);
+                                      setUploadedPhotos(uploadedUrls);
+                                      field.onChange(uploadedUrls);
+                                      toast({
+                                        title: "Photos uploaded successfully!",
+                                        description: `${files.length} photo(s) uploaded.`,
+                                      });
+                                    } catch (error) {
+                                      toast({
+                                        title: "Upload failed",
+                                        description: "Failed to upload photos. Please try again.",
+                                        variant: "destructive",
+                                      });
+                                    } finally {
+                                      setUploadingFiles(false);
+                                    }
+                                  }
                                 }}
                                 className="hidden"
                                 id="photo-upload"
+                                disabled={uploadingFiles}
                               />
                               <label 
                                 htmlFor="photo-upload" 
@@ -941,8 +991,17 @@ export default function SubmitProfile() {
                                 <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-3">
                                   <span className="text-2xl">📷</span>
                                 </div>
-                                <span className="text-sm font-medium text-gray-700">Click to upload photos</span>
-                                <span className="text-xs text-gray-500 mt-1">JPG, PNG up to 10MB each</span>
+                                {uploadingFiles ? (
+                                  <>
+                                    <Loader2 className="h-6 w-6 animate-spin text-pink-600 mb-2" />
+                                    <span className="text-sm font-medium text-gray-700">Uploading photos...</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span className="text-sm font-medium text-gray-700">Click to upload photos</span>
+                                    <span className="text-xs text-gray-500 mt-1">JPG, PNG up to 10MB each</span>
+                                  </>
+                                )}
                               </label>
                               {field.value && field.value.length > 0 && (
                                 <div className="mt-3 text-sm text-green-600">
@@ -972,13 +1031,32 @@ export default function SubmitProfile() {
                               <input
                                 type="file"
                                 accept="video/*"
-                                onChange={(e) => {
+                                onChange={async (e) => {
                                   const files = Array.from(e.target.files || []);
-                                  const fileNames = files.map(file => file.name);
-                                  field.onChange(fileNames);
+                                  if (files.length > 0) {
+                                    setUploadingFiles(true);
+                                    try {
+                                      const uploadedUrls = await uploadFiles(files);
+                                      setUploadedVideos(uploadedUrls);
+                                      field.onChange(uploadedUrls);
+                                      toast({
+                                        title: "Video uploaded successfully!",
+                                        description: `${files.length} video(s) uploaded.`,
+                                      });
+                                    } catch (error) {
+                                      toast({
+                                        title: "Upload failed",
+                                        description: "Failed to upload video. Please try again.",
+                                        variant: "destructive",
+                                      });
+                                    } finally {
+                                      setUploadingFiles(false);
+                                    }
+                                  }
                                 }}
                                 className="hidden"
                                 id="video-upload"
+                                disabled={uploadingFiles}
                               />
                               <label 
                                 htmlFor="video-upload" 
@@ -987,8 +1065,17 @@ export default function SubmitProfile() {
                                 <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-3">
                                   <span className="text-2xl">🎥</span>
                                 </div>
-                                <span className="text-sm font-medium text-gray-700">Click to upload video</span>
-                                <span className="text-xs text-gray-500 mt-1">MP4, MOV up to 50MB</span>
+                                {uploadingFiles ? (
+                                  <>
+                                    <Loader2 className="h-6 w-6 animate-spin text-purple-600 mb-2" />
+                                    <span className="text-sm font-medium text-gray-700">Uploading video...</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span className="text-sm font-medium text-gray-700">Click to upload video</span>
+                                    <span className="text-xs text-gray-500 mt-1">MP4, MOV up to 50MB</span>
+                                  </>
+                                )}
                               </label>
                               {field.value && field.value.length > 0 && (
                                 <div className="mt-3 text-sm text-green-600">

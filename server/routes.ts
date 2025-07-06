@@ -1,5 +1,8 @@
-import type { Express } from "express";
+import express, { type Express } from "express";
 import { createServer, type Server } from "http";
+import path from "path";
+import multer from "multer";
+import { nanoid } from "nanoid";
 import Stripe from "stripe";
 import { storage } from "./storage";
 import { requireAuth, requireAdminAuth, hashPassword, verifyPassword, createUserSession } from "./auth";
@@ -18,7 +21,70 @@ if (!process.env.STRIPE_SECRET_KEY) {
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+// Configure multer for file uploads
+const storage_config = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = file.mimetype.startsWith('video/') ? 'uploads/videos' : 'uploads/images';
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const fileExtension = path.extname(file.originalname);
+    const fileName = `${nanoid()}${fileExtension}`;
+    cb(null, fileName);
+  }
+});
+
+const upload = multer({
+  storage: storage_config,
+  limits: {
+    fileSize: 50 * 1024 * 1024, // 50MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Allow images and videos
+    if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image and video files are allowed'));
+    }
+  }
+});
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  
+  // =============================================================================
+  // MEDIA UPLOAD ROUTES - Handle file uploads for profiles
+  // =============================================================================
+  
+  // Serve uploaded files statically
+  app.use('/uploads', express.static('uploads'));
+  
+  // Upload multiple files (photos and videos)
+  app.post("/api/upload", upload.array('files', 20), (req, res) => {
+    try {
+      if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
+        return res.status(400).json({ message: "No files uploaded" });
+      }
+      
+      const uploadedFiles = req.files.map(file => ({
+        filename: file.filename,
+        originalName: file.originalname,
+        mimetype: file.mimetype,
+        size: file.size,
+        url: `/uploads/${file.mimetype.startsWith('video/') ? 'videos' : 'images'}/${file.filename}`
+      }));
+      
+      res.json({ 
+        message: "Files uploaded successfully", 
+        files: uploadedFiles 
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: "Error uploading files: " + error.message });
+    }
+  });
+  
+  // =============================================================================
+  // PUBLIC PROFILE API ROUTES
+  // =============================================================================
   
   // Get featured profiles
   app.get("/api/profiles/featured", async (req, res) => {
