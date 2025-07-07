@@ -1,0 +1,93 @@
+Objective:
+Safely add the following legal/support pages and create a footer that exactly duplicates the layout, color, and structure shown in the provided screenshot. This must be done without negatively impacting SEO or any previous site enhancements, and NO changes to Header layout and menu items:
+
+Step 1: Footer Creation (Highest Priority)
+Carefully analyze the screenshot and duplicate the footer’s:
+
+Layout (column structure, alignment, spacing)
+
+Colors (background, text, button, and hover states)
+
+Typography (font, size, weight)
+
+Section titles and groupings (e.g., Quick Links, Support, Legal)
+
+Button styles (e.g., “Contact Support”)
+
+Social media icons, copyright, and branding
+
+Ensure the footer is fully responsive and accessible across all devices.
+
+Footer links must use semantic HTML and ARIA labels for accessibility.
+
+Match all styling details, including hover and active states.
+
+Step 2: Add and Link Legal/Support Pages
+Create the following pages, matching the layout and colors, and boxes:
+HERE IS THE EXACT CONTENT TO DUPLICATE FROM THESE WEBSITE PAGES:
+https://holacupid.com/privacy
+https://holacupid.com/report
+https://holacupid.com/cookies
+https://holacupid.com/terms
+https://holacupid.com/disclaimer
+https://holacupid.com/help
+https://holacupid.com/safety
+
+DUPLICATE the exact categories and layout of the footer in the screenshot:
+
+Contact Us   (URL ALREADY EXISTS, ADD ANOTHER BUTTON HERE IN FOOTER)
+Help Center  (URL:   /help  )
+Safety Tips  (URL:   /safety )
+Report Issue  (URL:    /report )
+Privacy Policy  (URL:   /privacy )
+Terms of Service    (URL:   /terms)
+Cookie Policy   (URL:   /cookies )
+Disclaimer   ( URL:    /disclaimer  )
+
+
+
+Each page must:
+
+Use consistent branding, header/footer, and navigation.
+
+Include clear, well-formatted content sections (privacy details, cookie policy, terms, etc.).
+
+Be styled to match the rest of the site and the screenshot’s design.
+
+Add links to these pages in the footer under the appropriate sections (e.g., Legal, Support).
+
+Ensure all URLs are SEO-friendly and included in the sitemap.
+
+Step 3: SEO and Accessibility Safeguards
+Add <title>, <meta name="description">, and canonical tags for each new page.
+
+Update the sitemap.xml and robots.txt to include all new pages.
+
+Add internal links to these pages where relevant (e.g., during registration, checkout, or in email footers).
+
+Use proper heading hierarchy (H1, H2, etc.) on all new pages.
+
+Ensure all footer and page links are crawlable and not blocked by robots.txt.
+
+Test that no existing SEO features, structured data, or analytics are broken by these additions.
+
+Step 4: Testing and Verification
+Test the new footer and all new pages on desktop and mobile.
+
+Verify all links work and direct to the correct content.
+
+Confirm that the footer and new pages do not interfere with site flow, navigation, or SEO.
+
+Provide before/after screenshots of the footer and each new page for review.
+
+Critical Instructions:
+
+Do not break or regress any existing site structure, SEO, or user/admin flows.
+
+All new or changed code must be clearly commented and documented.
+
+If uncertainty or a blocking issue arises, pause and report before proceeding.
+
+Wait for my review and approval after each step before moving to the next.
+
+Begin with Step 1 (Footer Creation), and wait for review before proceeding to Step 2.

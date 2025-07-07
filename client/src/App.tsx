@@ -5,6 +5,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/Footer";
 import { LanguageSuggestionBanner } from "@/components/LanguageSuggestionBanner";
 import { getBestLanguageForUser, addLanguageToPath } from "@/lib/i18n";
 import { useEffect } from "react";
@@ -18,6 +19,11 @@ import About from "@/pages/about";
 import Contact from "@/pages/contact";
 import Help from "@/pages/help";
 import Safety from "@/pages/safety";
+import Privacy from "@/pages/privacy";
+import Terms from "@/pages/terms";
+import Cookies from "@/pages/cookies";
+import Disclaimer from "@/pages/disclaimer";
+import Report from "@/pages/report";
 import Checkout from "@/pages/checkout";
 import Cart from "@/pages/cart";
 import Favorites from "@/pages/favorites";
@@ -43,6 +49,11 @@ function Router() {
       <Route path="/:lang/contact" component={Contact} />
       <Route path="/:lang/help" component={Help} />
       <Route path="/:lang/safety" component={Safety} />
+      <Route path="/:lang/privacy" component={Privacy} />
+      <Route path="/:lang/terms" component={Terms} />
+      <Route path="/:lang/cookies" component={Cookies} />
+      <Route path="/:lang/disclaimer" component={Disclaimer} />
+      <Route path="/:lang/report" component={Report} />
       <Route path="/:lang/checkout" component={Checkout} />
       <Route path="/:lang/cart" component={Cart} />
       <Route path="/:lang/favorites" component={Favorites} />
@@ -57,6 +68,11 @@ function Router() {
       <Route path="/contact" component={() => <RedirectToLanguage path="/contact" />} />
       <Route path="/help" component={() => <RedirectToLanguage path="/help" />} />
       <Route path="/safety" component={() => <RedirectToLanguage path="/safety" />} />
+      <Route path="/privacy" component={() => <RedirectToLanguage path="/privacy" />} />
+      <Route path="/terms" component={() => <RedirectToLanguage path="/terms" />} />
+      <Route path="/cookies" component={() => <RedirectToLanguage path="/cookies" />} />
+      <Route path="/disclaimer" component={() => <RedirectToLanguage path="/disclaimer" />} />
+      <Route path="/report" component={() => <RedirectToLanguage path="/report" />} />
       <Route path="/checkout" component={() => <RedirectToLanguage path="/checkout" />} />
       <Route path="/cart" component={() => <RedirectToLanguage path="/cart" />} />
       <Route path="/favorites" component={() => <RedirectToLanguage path="/favorites" />} />
@@ -99,11 +115,14 @@ function App() {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <div className="min-h-screen bg-background">
+          <div className="min-h-screen bg-background flex flex-col">
             <Analytics />
             <LanguageSuggestionBanner />
             <Navbar />
-            <Router />
+            <main className="flex-1">
+              <Router />
+            </main>
+            <Footer />
             <Toaster />
           </div>
         </TooltipProvider>
