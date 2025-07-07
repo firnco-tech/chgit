@@ -7,6 +7,8 @@
 
 import { Helmet } from 'react-helmet-async';
 import { pageSEOConfig } from '@shared/seo-strategy';
+import { getCurrentLanguage, type SupportedLanguage } from '@/lib/i18n';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface SEOProps {
   page: keyof typeof pageSEOConfig;
@@ -16,7 +18,89 @@ interface SEOProps {
   ogImage?: string;
   canonicalUrl?: string;
   structuredData?: object;
+  profileData?: {
+    name?: string;
+    age?: number;
+    location?: string;
+    photos?: string[];
+  };
 }
+
+// Multilingual SEO configurations
+const multilingualSEOConfig: Record<SupportedLanguage, Record<string, { title: string; description: string; keywords: string[] }>> = {
+  en: {
+    browse: {
+      title: "Browse Dominican Women Profiles | Find Your Perfect Match",
+      description: "Discover authentic profiles of beautiful Dominican women seeking international relationships. Browse verified profiles with photos and contact information.",
+      keywords: ["dominican women", "dating profiles", "international dating", "latin dating", "dominican singles"]
+    },
+    profile: {
+      title: "Meet {name} from {location} | Dominican Dating Profile",
+      description: "Connect with {name}, a {age}-year-old Dominican woman from {location}. View authentic photos and get instant contact information.",
+      keywords: ["dominican woman", "dating profile", "{location}", "international romance", "latin connection"]
+    }
+  },
+  es: {
+    browse: {
+      title: "Perfiles de Mujeres Dominicanas | Encuentra tu Pareja Perfecta",
+      description: "Descubre perfiles auténticos de hermosas mujeres dominicanas que buscan relaciones internacionales. Explora perfiles verificados con fotos e información de contacto.",
+      keywords: ["mujeres dominicanas", "perfiles de citas", "citas internacionales", "citas latinas", "solteras dominicanas"]
+    },
+    profile: {
+      title: "Conoce a {name} de {location} | Perfil de Citas Dominicana",
+      description: "Conéctate con {name}, una mujer dominicana de {age} años de {location}. Ve fotos auténticas y obtén información de contacto al instante.",
+      keywords: ["mujer dominicana", "perfil de citas", "{location}", "romance internacional", "conexión latina"]
+    }
+  },
+  de: {
+    browse: {
+      title: "Profile Dominikanischer Frauen | Finde Deine Perfekte Partnerin",
+      description: "Entdecke authentische Profile wunderschöner dominikanischer Frauen auf der Suche nach internationalen Beziehungen. Durchsuche verifizierte Profile mit Fotos und Kontaktinformationen.",
+      keywords: ["dominikanische frauen", "dating profile", "internationale dating", "lateinische dating", "dominikanische singles"]
+    },
+    profile: {
+      title: "Lerne {name} aus {location} kennen | Dominikanisches Dating-Profil",
+      description: "Verbinde dich mit {name}, einer {age}-jährigen dominikanischen Frau aus {location}. Betrachte authentische Fotos und erhalte sofortige Kontaktinformationen.",
+      keywords: ["dominikanische frau", "dating profil", "{location}", "internationale romanze", "lateinische verbindung"]
+    }
+  },
+  it: {
+    browse: {
+      title: "Profili di Donne Dominicane | Trova la Tua Compagna Perfetta",
+      description: "Scopri profili autentici di bellissime donne dominicane in cerca di relazioni internazionali. Sfoglia profili verificati con foto e informazioni di contatto.",
+      keywords: ["donne dominicane", "profili di appuntamenti", "incontri internazionali", "incontri latini", "single dominicane"]
+    },
+    profile: {
+      title: "Incontra {name} da {location} | Profilo di Appuntamenti Dominicano",
+      description: "Connettiti con {name}, una donna dominicana di {age} anni da {location}. Visualizza foto autentiche e ottieni informazioni di contatto istantanee.",
+      keywords: ["donna dominicana", "profilo di appuntamenti", "{location}", "romanticismo internazionale", "connessione latina"]
+    }
+  },
+  pt: {
+    browse: {
+      title: "Perfis de Mulheres Dominicanas | Encontre Sua Parceira Perfeita",
+      description: "Descubra perfis autênticos de belas mulheres dominicanas procurando relacionamentos internacionais. Navegue pelos perfis verificados com fotos e informações de contato.",
+      keywords: ["mulheres dominicanas", "perfis de namoro", "namoro internacional", "namoro latino", "solteiras dominicanas"]
+    },
+    profile: {
+      title: "Conheça {name} de {location} | Perfil de Namoro Dominicano",
+      description: "Conecte-se com {name}, uma mulher dominicana de {age} anos de {location}. Veja fotos autênticas e obtenha informações de contato instantâneas.",
+      keywords: ["mulher dominicana", "perfil de namoro", "{location}", "romance internacional", "conexão latina"]
+    }
+  },
+  nl: {
+    browse: {
+      title: "Profielen van Dominicaanse Vrouwen | Vind Je Perfecte Partner",
+      description: "Ontdek authentieke profielen van prachtige Dominicaanse vrouwen die op zoek zijn naar internationale relaties. Bekijk geverifieerde profielen met foto's en contactinformatie.",
+      keywords: ["dominicaanse vrouwen", "dating profielen", "internationale dating", "latijnse dating", "dominicaanse singles"]
+    },
+    profile: {
+      title: "Ontmoet {name} uit {location} | Dominicaans Dating Profiel",
+      description: "Maak contact met {name}, een {age}-jarige Dominicaanse vrouw uit {location}. Bekijk authentieke foto's en krijg directe contactinformatie.",
+      keywords: ["dominicaanse vrouw", "dating profiel", "{location}", "internationale romantiek", "latijnse connectie"]
+    }
+  }
+};
 
 export function SEO({
   page,
@@ -25,13 +109,52 @@ export function SEO({
   customKeywords,
   ogImage = 'https://holacupid.com/og-image.jpg',
   canonicalUrl,
-  structuredData
+  structuredData,
+  profileData
 }: SEOProps) {
+  const currentLanguage = getCurrentLanguage();
   const config = pageSEOConfig[page];
-  const title = customTitle || config.title;
-  const description = customDescription || config.description;
-  const keywords = customKeywords || config.keywords;
+  
+  // Get multilingual SEO content
+  const multilingualConfig = multilingualSEOConfig[currentLanguage]?.[page];
+  
+  let title = customTitle || multilingualConfig?.title || config.title;
+  let description = customDescription || multilingualConfig?.description || config.description;
+  let keywords = customKeywords || multilingualConfig?.keywords || config.keywords;
+  
+  // Dynamic content replacement for profile pages
+  if (profileData && page === 'profile') {
+    title = title.replace('{name}', profileData.name || 'Dominican Woman')
+                 .replace('{location}', profileData.location || 'Dominican Republic')
+                 .replace('{age}', profileData.age?.toString() || '');
+    description = description.replace('{name}', profileData.name || 'Beautiful Dominican Woman')
+                            .replace('{location}', profileData.location || 'Dominican Republic')
+                            .replace('{age}', profileData.age?.toString() || '');
+    keywords = keywords.map(keyword => 
+      keyword.replace('{location}', profileData.location || 'Dominican Republic')
+    );
+  }
+  
   const currentUrl = canonicalUrl || `https://holacupid.com${window.location.pathname}`;
+  
+  // Alternative language URLs for SEO
+  const alternateLanguages = ['en', 'es', 'de', 'it', 'pt', 'nl'] as SupportedLanguage[];
+  const basePath = window.location.pathname.replace(/^\/[a-z]{2}\//, '/').replace(/^\/[a-z]{2}$/, '/');
+  
+  // Enhanced structured data for multilingual content
+  const enhancedStructuredData = structuredData ? {
+    ...structuredData,
+    "@context": "https://schema.org",
+    "inLanguage": currentLanguage,
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `https://holacupid.com/${currentLanguage}/browse?search={search_term_string}`
+      },
+      "query-input": "required name=search_term_string"
+    }
+  } : null;
 
   return (
     <Helmet>
@@ -73,8 +196,45 @@ export function SEO({
       <meta name="ICBM" content="18.7357, -70.1627" />
       
       {/* Language and Content Tags */}
-      <meta httpEquiv="Content-Language" content="en" />
-      <meta name="content-language" content="en" />
+      <meta httpEquiv="Content-Language" content={currentLanguage} />
+      <meta name="content-language" content={currentLanguage} />
+      
+      {/* Hreflang Tags for Multilingual SEO */}
+      {alternateLanguages.map(lang => (
+        <link
+          key={lang}
+          rel="alternate"
+          hrefLang={lang}
+          href={`https://holacupid.com/${lang}${basePath === '/' ? '' : basePath}`}
+        />
+      ))}
+      <link rel="alternate" hrefLang="x-default" href={`https://holacupid.com/en${basePath === '/' ? '' : basePath}`} />
+      
+      {/* Performance and Resource Hints */}
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link rel="dns-prefetch" href="//analytics.google.com" />
+      <link rel="dns-prefetch" href="//www.google-analytics.com" />
+      <link rel="dns-prefetch" href="//www.googletagmanager.com" />
+      
+      {/* Enhanced Open Graph Locale */}
+      <meta property="og:locale" content={`${currentLanguage}_${currentLanguage.toUpperCase()}`} />
+      {alternateLanguages.filter(lang => lang !== currentLanguage).map(lang => (
+        <meta key={lang} property="og:locale:alternate" content={`${lang}_${lang.toUpperCase()}`} />
+      ))}
+      
+      {/* Mobile Web App Meta Tags */}
+      <meta name="mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      <meta name="apple-mobile-web-app-title" content="HolaCupid" />
+      
+      {/* Schema.org Structured Data */}
+      {enhancedStructuredData && (
+        <script type="application/ld+json">
+          {JSON.stringify(enhancedStructuredData)}
+        </script>
+      )}
       
       {/* Performance Optimizations */}
       <link rel="preconnect" href="https://fonts.googleapis.com" />

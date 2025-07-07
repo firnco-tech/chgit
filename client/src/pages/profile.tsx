@@ -15,6 +15,7 @@ import { Loader2 } from "lucide-react";
 import { getMediaUrl } from "@/lib/mediaUtils";
 import { addLanguageToPath, getCurrentLanguage } from "@/lib/i18n";
 import { useTranslation } from "@/hooks/useTranslation";
+import SEO, { structuredDataSchemas } from "@/components/SEO";
 import type { Profile } from "@shared/schema";
 
 export default function ProfilePage() {
@@ -76,6 +77,27 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO 
+        page="browse" 
+        profileData={{
+          name: profile.firstName,
+          age: profile.age,
+          location: profile.location,
+          photos: profile.photos
+        }}
+        structuredData={{
+          "@type": "Person",
+          "name": profile.firstName,
+          "age": profile.age,
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "DO",
+            "addressLocality": profile.location
+          },
+          "gender": "Female",
+          "nationality": "Dominican"
+        }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
           <Link href={addLanguageToPath('/browse', currentLanguage)}>

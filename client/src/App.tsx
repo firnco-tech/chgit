@@ -8,7 +8,7 @@ import { Navbar } from "@/components/navbar";
 import { LanguageSuggestionBanner } from "@/components/LanguageSuggestionBanner";
 import { getBestLanguageForUser, addLanguageToPath } from "@/lib/i18n";
 import { useEffect } from "react";
-import { initializeAnalytics } from "@/lib/analytics";
+import Analytics from "@/components/Analytics";
 import Home from "@/pages/home";
 import Browse from "@/pages/browse";
 import ProfilePage from "@/pages/profile";
@@ -86,18 +86,12 @@ function RedirectToLanguage({ path }: { path: string }) {
 }
 
 function App() {
-  // Initialize analytics on app load
-  useEffect(() => {
-    // Initialize analytics with Google Analytics ID (when available)
-    // For now, initialize without GA to set up performance monitoring
-    initializeAnalytics();
-  }, []);
-
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <div className="min-h-screen bg-background">
+            <Analytics />
             <LanguageSuggestionBanner />
             <Navbar />
             <Router />
