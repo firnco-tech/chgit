@@ -1,0 +1,135 @@
+export const pt = {
+  // Navigation
+  home: 'Início',
+  browse: 'Explorar Perfis',
+  howItWorks: 'Como Funciona',
+  about: 'Sobre Nós',
+  contact: 'Contato',
+  favorites: 'Favoritos',
+  login: 'Entrar',
+  logout: 'Sair',
+  
+  // Homepage
+  heroTitle: 'Encontre Sua Parceira Dominicana Perfeita',
+  heroSubtitle: 'Conecte-se com mulheres dominicanas autênticas e verificadas que buscam relacionamentos sérios. Explore perfis genuínos, descubra conexões culturais e encontre sua parceira perfeita hoje.',
+  browseProfiles: 'Explorar Perfis',
+  viewAllProfiles: 'Ver Todos os Perfis',
+  featuredProfiles: 'Perfis em Destaque',
+  featuredProfilesSubtitle: 'Conheça nossas membros verificadas mais populares',
+  
+  // How It Works Section
+  howItWorksTitle: 'Como Funciona',
+  howItWorksSubtitle: 'Passos simples para encontrar sua alma gêmea dominicana',
+  step1Title: 'Explore Perfis Verificados',
+  step1Description: 'Descubra perfis autênticos de mulheres dominicanas procurando relacionamentos significativos',
+  step2Title: 'Adicionar aos Favoritos',
+  step2Description: 'Salve perfis que te interessam e construa sua coleção de possíveis parceiras',
+  step3Title: 'Comprar Info de Contato',
+  step3Description: 'Compre com segurança informações de contato para iniciar sua conversa',
+  step4Title: 'Comece Sua Jornada',
+  step4Description: 'Conecte-se diretamente e comece a construir sua história de amor intercultural',
+  
+  // Features Section
+  whyChooseUs: 'Por Que Escolher HolaCupid?',
+  verifiedProfiles: 'Perfis Verificados',
+  verifiedProfilesDesc: 'Todos os perfis são verificados manualmente para garantir autenticidade e qualidade',
+  securePayments: 'Pagamentos Seguros',
+  securePaymentsDesc: 'Processamento de pagamento seguro e criptografado para sua tranquilidade',
+  instantAccess: 'Acesso Instantâneo',
+  instantAccessDesc: 'Obtenha acesso imediato às informações de contato após a compra',
+  
+  // Browse Page
+  profilesFound: 'perfis encontrados',
+  noProfilesFound: 'Nenhum perfil encontrado que corresponda aos seus critérios.',
+  searchPlaceholder: 'Buscar por nome ou descrição...',
+  ageRange: 'Faixa Etária',
+  location: 'Localização',
+  sortBy: 'Ordenar Por',
+  allAges: 'Todas as Idades',
+  allLocations: 'Todas as Localizações',
+  newest: 'Mais Recentes',
+  oldest: 'Mais Antigos',
+  youngestFirst: 'Mais Jovens Primeiro',
+  oldestFirst: 'Mais Velhas Primeiro',
+  
+  // Profile Page
+  backToBrowse: 'Voltar à Busca',
+  profileNotFound: 'Perfil Não Encontrado',
+  profileNotFoundDesc: 'O perfil que você está procurando não existe ou não está disponível.',
+  addToCart: 'Adicionar ao Carrinho',
+  alreadyInCart: 'No Carrinho',
+  profileDetails: 'Detalhes do Perfil',
+  height: 'Altura',
+  profession: 'Profissão',
+  education: 'Educação',
+  relationshipStatus: 'Estado Civil',
+  interests: 'Interesses',
+  lookingFor: 'Procurando Por',
+  contactInformation: 'Informações de Contato',
+  purchaseRequired: 'Compra necessária para visualizar informações de contato',
+  purchaseContact: 'Comprar Info de Contato',
+  
+  // Contact Methods
+  whatsapp: 'WhatsApp',
+  instagram: 'Instagram',
+  email: 'Email',
+  telegram: 'Telegram',
+  facebook: 'Facebook',
+  tiktok: 'TikTok',
+  
+  // Cart & Checkout
+  cart: 'Carrinho',
+  emptyCart: 'Seu carrinho está vazio',
+  total: 'Total',
+  checkout: 'Finalizar Compra',
+  proceedToCheckout: 'Prosseguir para Pagamento',
+  
+  // Authentication
+  username: 'Nome de Usuário',
+  password: 'Senha',
+  loginToAccount: 'Entrar na Sua Conta',
+  dontHaveAccount: 'Não tem uma conta?',
+  signUp: 'Cadastrar',
+  createAccount: 'Criar Conta',
+  alreadyHaveAccount: 'Já tem uma conta?',
+  
+  // About Page
+  aboutTitle: 'Sobre HolaCupid',
+  aboutSubtitle: 'Conectando corações através de culturas com namoro dominicano autêntico',
+  ourMission: 'Nossa Missão',
+  ourMissionText: 'HolaCupid se dedica a criar conexões significativas entre pessoas do mundo todo e mulheres dominicanas autênticas. Acreditamos no poder dos relacionamentos interculturais e fornecemos uma plataforma segura para o romance genuíno florescer.',
+  whyDominican: 'Por Que Mulheres Dominicanas?',
+  whyDominicanText: 'As mulheres dominicanas são conhecidas por seu calor, valores familiares e cultura vibrante. Elas trazem paixão, lealdade e alegria de viver para os relacionamentos. Nossa plataforma celebra essas qualidades garantindo que cada perfil represente uma pessoa real procurando amor genuíno.',
+  safetyFirst: 'Segurança e Verificação',
+  safetyFirstText: 'Cada perfil passa por verificação manual para garantir autenticidade. Usamos processamento de pagamento seguro e protegemos sua privacidade durante sua jornada para encontrar o amor.',
+  
+  // Contact Page
+  contactTitle: 'Entre em Contato',
+  contactSubtitle: 'Entre em contato com nossa equipe',
+  getInTouch: 'Entre em Contato',
+  getInTouchText: 'Tem dúvidas sobre nossa plataforma ou precisa de ajuda com sua conta? Nossa equipe de suporte ao cliente está aqui para ajudá-lo a encontrar sua parceira perfeita.',
+  customerSupport: 'Suporte ao Cliente',
+  technicalSupport: 'Suporte Técnico',
+  partnershipInquiries: 'Consultas de Parceria',
+  
+  // Common
+  loading: 'Carregando...',
+  error: 'Erro',
+  tryAgain: 'Tentar Novamente',
+  submit: 'Enviar',
+  cancel: 'Cancelar',
+  save: 'Salvar',
+  delete: 'Excluir',
+  edit: 'Editar',
+  close: 'Fechar',
+  
+  // Success Messages
+  addedToCart: 'Adicionado ao carrinho',
+  addedToFavorites: 'Adicionado aos favoritos',
+  removedFromFavorites: 'Removido dos favoritos',
+  
+  // Language
+  language: 'Idioma',
+  changeLanguage: 'Mudar Idioma',
+  languageChanged: 'Idioma alterado com sucesso',
+};

@@ -1,0 +1,135 @@
+export const en = {
+  // Navigation
+  home: 'Home',
+  browse: 'Browse Profiles',
+  howItWorks: 'How It Works',
+  about: 'About',
+  contact: 'Contact',
+  favorites: 'Favorites',
+  login: 'Login',
+  logout: 'Logout',
+  
+  // Homepage
+  heroTitle: 'Find Your Perfect Dominican Match',
+  heroSubtitle: 'Connect with authentic, verified Dominican women seeking serious relationships. Browse genuine profiles, discover cultural connections, and find your perfect match today.',
+  browseProfiles: 'Browse Profiles',
+  viewAllProfiles: 'View All Profiles',
+  featuredProfiles: 'Featured Profiles',
+  featuredProfilesSubtitle: 'Meet our most popular verified members',
+  
+  // How It Works Section
+  howItWorksTitle: 'How It Works',
+  howItWorksSubtitle: 'Simple steps to find your Dominican soulmate',
+  step1Title: 'Browse Verified Profiles',
+  step1Description: 'Explore authentic profiles of Dominican women looking for meaningful relationships',
+  step2Title: 'Add to Favorites',
+  step2Description: 'Save profiles that interest you and build your collection of potential matches',
+  step3Title: 'Purchase Contact Info',
+  step3Description: 'Securely purchase contact information to start your conversation',
+  step4Title: 'Start Your Journey',
+  step4Description: 'Connect directly and begin building your cross-cultural love story',
+  
+  // Features Section
+  whyChooseUs: 'Why Choose HolaCupid?',
+  verifiedProfiles: 'Verified Profiles',
+  verifiedProfilesDesc: 'All profiles are manually verified for authenticity and quality',
+  securePayments: 'Secure Payments',
+  securePaymentsDesc: 'Safe and encrypted payment processing for your peace of mind',
+  instantAccess: 'Instant Access',
+  instantAccessDesc: 'Get immediate access to contact information after purchase',
+  
+  // Browse Page
+  profilesFound: 'profiles found',
+  noProfilesFound: 'No profiles found matching your criteria.',
+  searchPlaceholder: 'Search by name or description...',
+  ageRange: 'Age Range',
+  location: 'Location',
+  sortBy: 'Sort By',
+  allAges: 'All Ages',
+  allLocations: 'All Locations',
+  newest: 'Newest',
+  oldest: 'Oldest',
+  youngestFirst: 'Youngest First',
+  oldestFirst: 'Oldest First',
+  
+  // Profile Page
+  backToBrowse: 'Back to Browse',
+  profileNotFound: 'Profile Not Found',
+  profileNotFoundDesc: 'The profile you\'re looking for doesn\'t exist or isn\'t available.',
+  addToCart: 'Add to Cart',
+  alreadyInCart: 'In Cart',
+  profileDetails: 'Profile Details',
+  height: 'Height',
+  profession: 'Profession',
+  education: 'Education',
+  relationshipStatus: 'Relationship Status',
+  interests: 'Interests',
+  lookingFor: 'Looking For',
+  contactInformation: 'Contact Information',
+  purchaseRequired: 'Purchase required to view contact information',
+  purchaseContact: 'Purchase Contact Info',
+  
+  // Contact Methods
+  whatsapp: 'WhatsApp',
+  instagram: 'Instagram',
+  email: 'Email',
+  telegram: 'Telegram',
+  facebook: 'Facebook',
+  tiktok: 'TikTok',
+  
+  // Cart & Checkout
+  cart: 'Cart',
+  emptyCart: 'Your cart is empty',
+  total: 'Total',
+  checkout: 'Checkout',
+  proceedToCheckout: 'Proceed to Checkout',
+  
+  // Authentication
+  username: 'Username',
+  password: 'Password',
+  loginToAccount: 'Login to Your Account',
+  dontHaveAccount: 'Don\'t have an account?',
+  signUp: 'Sign Up',
+  createAccount: 'Create Account',
+  alreadyHaveAccount: 'Already have an account?',
+  
+  // About Page
+  aboutTitle: 'About HolaCupid',
+  aboutSubtitle: 'Connecting hearts across cultures with authentic Dominican dating',
+  ourMission: 'Our Mission',
+  ourMissionText: 'HolaCupid is dedicated to creating meaningful connections between people worldwide and authentic Dominican women. We believe in the power of cross-cultural relationships and provide a safe, secure platform for genuine romance to flourish.',
+  whyDominican: 'Why Dominican Women?',
+  whyDominicanText: 'Dominican women are known for their warmth, family values, and vibrant culture. They bring passion, loyalty, and a zest for life to relationships. Our platform celebrates these qualities while ensuring every profile represents a real person seeking genuine love.',
+  safetyFirst: 'Safety & Verification',
+  safetyFirstText: 'Every profile undergoes manual verification to ensure authenticity. We use secure payment processing and protect your privacy throughout your journey to find love.',
+  
+  // Contact Page
+  contactTitle: 'Contact Us',
+  contactSubtitle: 'Get in touch with our team',
+  getInTouch: 'Get In Touch',
+  getInTouchText: 'Have questions about our platform or need help with your account? Our customer support team is here to help you find your perfect match.',
+  customerSupport: 'Customer Support',
+  technicalSupport: 'Technical Support',
+  partnershipInquiries: 'Partnership Inquiries',
+  
+  // Common
+  loading: 'Loading...',
+  error: 'Error',
+  tryAgain: 'Try Again',
+  submit: 'Submit',
+  cancel: 'Cancel',
+  save: 'Save',
+  delete: 'Delete',
+  edit: 'Edit',
+  close: 'Close',
+  
+  // Success Messages
+  addedToCart: 'Added to cart',
+  addedToFavorites: 'Added to favorites',
+  removedFromFavorites: 'Removed from favorites',
+  
+  // Language
+  language: 'Language',
+  changeLanguage: 'Change Language',
+  languageChanged: 'Language changed successfully',
+};

@@ -1,0 +1,135 @@
+export const nl = {
+  // Navigation
+  home: 'Home',
+  browse: 'Profielen Bekijken',
+  howItWorks: 'Hoe Het Werkt',
+  about: 'Over Ons',
+  contact: 'Contact',
+  favorites: 'Favorieten',
+  login: 'Inloggen',
+  logout: 'Uitloggen',
+  
+  // Homepage
+  heroTitle: 'Vind Je Perfecte Dominicaanse Match',
+  heroSubtitle: 'Verbind met authentieke, geverifieerde Dominicaanse vrouwen die serieuze relaties zoeken. Bekijk echte profielen, ontdek culturele verbindingen en vind vandaag je perfecte match.',
+  browseProfiles: 'Profielen Bekijken',
+  viewAllProfiles: 'Alle Profielen Bekijken',
+  featuredProfiles: 'Uitgelichte Profielen',
+  featuredProfilesSubtitle: 'Ontmoet onze populairste geverifieerde leden',
+  
+  // How It Works Section
+  howItWorksTitle: 'Hoe Het Werkt',
+  howItWorksSubtitle: 'Eenvoudige stappen om je Dominicaanse zielsverwant te vinden',
+  step1Title: 'Geverifieerde Profielen Bekijken',
+  step1Description: 'Ontdek authentieke profielen van Dominicaanse vrouwen die betekenisvolle relaties zoeken',
+  step2Title: 'Toevoegen aan Favorieten',
+  step2Description: 'Bewaar profielen die je interesseren en bouw je collectie van potentiële matches',
+  step3Title: 'Contactinfo Kopen',
+  step3Description: 'Koop veilig contactinformatie om je gesprek te beginnen',
+  step4Title: 'Begin Je Reis',
+  step4Description: 'Verbind direct en begin je interculturele liefdesverhaal te schrijven',
+  
+  // Features Section
+  whyChooseUs: 'Waarom HolaCupid Kiezen?',
+  verifiedProfiles: 'Geverifieerde Profielen',
+  verifiedProfilesDesc: 'Alle profielen worden handmatig geverifieerd voor authenticiteit en kwaliteit',
+  securePayments: 'Veilige Betalingen',
+  securePaymentsDesc: 'Veilige en versleutelde betalingsverwerking voor je gemoedsrust',
+  instantAccess: 'Direct Toegang',
+  instantAccessDesc: 'Krijg directe toegang tot contactinformatie na aankoop',
+  
+  // Browse Page
+  profilesFound: 'profielen gevonden',
+  noProfilesFound: 'Geen profielen gevonden die voldoen aan je criteria.',
+  searchPlaceholder: 'Zoeken op naam of beschrijving...',
+  ageRange: 'Leeftijdsbereik',
+  location: 'Locatie',
+  sortBy: 'Sorteren Op',
+  allAges: 'Alle Leeftijden',
+  allLocations: 'Alle Locaties',
+  newest: 'Nieuwste',
+  oldest: 'Oudste',
+  youngestFirst: 'Jongste Eerst',
+  oldestFirst: 'Oudste Eerst',
+  
+  // Profile Page
+  backToBrowse: 'Terug naar Bekijken',
+  profileNotFound: 'Profiel Niet Gevonden',
+  profileNotFoundDesc: 'Het profiel dat je zoekt bestaat niet of is niet beschikbaar.',
+  addToCart: 'Toevoegen aan Winkelwagen',
+  alreadyInCart: 'In Winkelwagen',
+  profileDetails: 'Profieldetails',
+  height: 'Lengte',
+  profession: 'Beroep',
+  education: 'Opleiding',
+  relationshipStatus: 'Relatiestatus',
+  interests: 'Interesses',
+  lookingFor: 'Zoekt Naar',
+  contactInformation: 'Contactinformatie',
+  purchaseRequired: 'Aankoop vereist om contactinformatie te bekijken',
+  purchaseContact: 'Contactinfo Kopen',
+  
+  // Contact Methods
+  whatsapp: 'WhatsApp',
+  instagram: 'Instagram',
+  email: 'E-mail',
+  telegram: 'Telegram',
+  facebook: 'Facebook',
+  tiktok: 'TikTok',
+  
+  // Cart & Checkout
+  cart: 'Winkelwagen',
+  emptyCart: 'Je winkelwagen is leeg',
+  total: 'Totaal',
+  checkout: 'Afrekenen',
+  proceedToCheckout: 'Doorgaan naar Afrekenen',
+  
+  // Authentication
+  username: 'Gebruikersnaam',
+  password: 'Wachtwoord',
+  loginToAccount: 'Inloggen op Je Account',
+  dontHaveAccount: 'Geen account?',
+  signUp: 'Registreren',
+  createAccount: 'Account Aanmaken',
+  alreadyHaveAccount: 'Al een account?',
+  
+  // About Page
+  aboutTitle: 'Over HolaCupid',
+  aboutSubtitle: 'Harten verbinden over culturen heen met authentieke Dominicaanse dating',
+  ourMission: 'Onze Missie',
+  ourMissionText: 'HolaCupid wijdt zich aan het creëren van betekenisvolle verbindingen tussen mensen wereldwijd en authentieke Dominicaanse vrouwen. We geloven in de kracht van interculturele relaties en bieden een veilig platform voor echte romantiek.',
+  whyDominican: 'Waarom Dominicaanse Vrouwen?',
+  whyDominicanText: 'Dominicaanse vrouwen staan bekend om hun warmte, familiewaarden en levendige cultuur. Ze brengen passie, loyaliteit en levensvreugde in relaties. Ons platform viert deze kwaliteiten en zorgt ervoor dat elk profiel een echte persoon vertegenwoordigt die oprechte liefde zoekt.',
+  safetyFirst: 'Veiligheid & Verificatie',
+  safetyFirstText: 'Elk profiel ondergaat handmatige verificatie om authenticiteit te waarborgen. We gebruiken veilige betalingsverwerking en beschermen je privacy tijdens je reis naar liefde.',
+  
+  // Contact Page
+  contactTitle: 'Neem Contact Op',
+  contactSubtitle: 'Neem contact op met ons team',
+  getInTouch: 'Contact Opnemen',
+  getInTouchText: 'Heb je vragen over ons platform of heb je hulp nodig met je account? Ons klantenserviceteam is er om je te helpen je perfecte match te vinden.',
+  customerSupport: 'Klantenservice',
+  technicalSupport: 'Technische Ondersteuning',
+  partnershipInquiries: 'Partnerschapsvragen',
+  
+  // Common
+  loading: 'Laden...',
+  error: 'Fout',
+  tryAgain: 'Opnieuw Proberen',
+  submit: 'Verzenden',
+  cancel: 'Annuleren',
+  save: 'Opslaan',
+  delete: 'Verwijderen',
+  edit: 'Bewerken',
+  close: 'Sluiten',
+  
+  // Success Messages
+  addedToCart: 'Toegevoegd aan winkelwagen',
+  addedToFavorites: 'Toegevoegd aan favorieten',
+  removedFromFavorites: 'Verwijderd van favorieten',
+  
+  // Language
+  language: 'Taal',
+  changeLanguage: 'Taal Wijzigen',
+  languageChanged: 'Taal succesvol gewijzigd',
+};
