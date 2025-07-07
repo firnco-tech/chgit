@@ -22,6 +22,8 @@ import {
 
 export function AdminNavbar() {
   const [location, navigate] = useLocation();
+  
+  console.log('AdminNavbar rendering at location:', location);
 
   // Logout mutation
   const logoutMutation = useMutation({
@@ -108,7 +110,7 @@ export function AdminNavbar() {
           
           <Button 
             variant="ghost" 
-            className="text-gray-300 hover:text-white hover:bg-gray-800"
+            className="text-gray-300 hover:text-white hover:bg-gray-800 border border-gray-600"
             onClick={handleLogout}
             disabled={logoutMutation.isPending}
           >
