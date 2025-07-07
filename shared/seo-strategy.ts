@@ -53,6 +53,27 @@ export const pageSEOConfig = {
     }
   },
   
+  profile: {
+    title: 'Meet {name} from {location} | HolaCupid Profile',
+    description: 'Connect with {name}, a {age}-year-old Dominican woman from {location}. View verified photos and contact information to start your conversation.',
+    keywords: seoKeywords.pageKeywords.profiles,
+    h1: '{name} - Dominican Woman from {location}',
+    h2: [
+      'About {name}',
+      'Photo Gallery',
+      'Contact Information'
+    ],
+    content: {
+      intro: 'Get to know {name}, a beautiful Dominican woman from {location}',
+      details: [
+        'Age: {age}',
+        'Location: {location}',
+        'Verified profile',
+        'Direct contact available'
+      ]
+    }
+  },
+  
   about: {
     title: 'About HolaCupid - Premier Dominican Dating Platform',
     description: 'HolaCupid is the premier Dominican dating platform connecting singles worldwide. Learn about our mission to create authentic, lasting relationships with Dominican women.',

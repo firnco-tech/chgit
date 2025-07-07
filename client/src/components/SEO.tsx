@@ -123,7 +123,7 @@ export function SEO({
   let keywords = customKeywords || multilingualConfig?.keywords || config.keywords;
   
   // Dynamic content replacement for profile pages
-  if (profileData && page === 'profile') {
+  if (profileData && (page === 'profile' || page === 'browse')) {
     title = title.replace('{name}', profileData.name || 'Dominican Woman')
                  .replace('{location}', profileData.location || 'Dominican Republic')
                  .replace('{age}', profileData.age?.toString() || '');

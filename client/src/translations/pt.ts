@@ -45,6 +45,8 @@ export const pt = {
   ageRange: 'Faixa Etária',
   location: 'Localização',
   sortBy: 'Ordenar Por',
+  sortByNewest: 'Mais Recentes',
+  sortByAge: 'Idade',
   allAges: 'Todas as Idades',
   allLocations: 'Todas as Localizações',
   newest: 'Mais Recentes',

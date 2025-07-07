@@ -45,6 +45,8 @@ export const es = {
   ageRange: 'Rango de Edad',
   location: 'Ubicación',
   sortBy: 'Ordenar Por',
+  sortByNewest: 'Más Recientes',
+  sortByAge: 'Edad',
   allAges: 'Todas las Edades',
   allLocations: 'Todas las Ubicaciones',
   newest: 'Más Recientes',

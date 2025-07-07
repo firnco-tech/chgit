@@ -45,6 +45,8 @@ export const nl = {
   ageRange: 'Leeftijdsbereik',
   location: 'Locatie',
   sortBy: 'Sorteren Op',
+  sortByNewest: 'Nieuwste',
+  sortByAge: 'Leeftijd',
   allAges: 'Alle Leeftijden',
   allLocations: 'Alle Locaties',
   newest: 'Nieuwste',

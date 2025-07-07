@@ -77,11 +77,13 @@ export function LazyImage({
     onLoad?.();
     
     // Track successful image loads for analytics
-    analytics.gtag('event', 'image_load_success', {
-      event_category: 'Performance',
-      event_action: 'Image Loaded',
-      image_src: src,
-    });
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'image_load_success', {
+        event_category: 'Performance',
+        event_action: 'Image Loaded',
+        image_src: src,
+      });
+    }
   };
 
   // Handle image load error

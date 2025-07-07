@@ -9,6 +9,7 @@ import { LanguageSuggestionBanner } from "@/components/LanguageSuggestionBanner"
 import { getBestLanguageForUser, addLanguageToPath } from "@/lib/i18n";
 import { useEffect } from "react";
 import Analytics from "@/components/Analytics";
+import { initializeAnalytics } from "@/lib/analytics";
 import Home from "@/pages/home";
 import Browse from "@/pages/browse";
 import ProfilePage from "@/pages/profile";
@@ -86,6 +87,14 @@ function RedirectToLanguage({ path }: { path: string }) {
 }
 
 function App() {
+  useEffect(() => {
+    // Initialize analytics on app load
+    const gaId = import.meta.env.VITE_GA_MEASUREMENT_ID;
+    if (gaId) {
+      initializeAnalytics(gaId);
+    }
+  }, []);
+
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>

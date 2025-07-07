@@ -45,6 +45,8 @@ export const en = {
   ageRange: 'Age Range',
   location: 'Location',
   sortBy: 'Sort By',
+  sortByNewest: 'Newest',
+  sortByAge: 'Age',
   allAges: 'All Ages',
   allLocations: 'All Locations',
   newest: 'Newest',

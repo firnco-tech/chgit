@@ -89,7 +89,7 @@ export default function ProfilePage() {
           name: profile.firstName,
           age: profile.age,
           location: profile.location,
-          photos: profile.photos
+          photos: profile.photos || undefined
         }}
         structuredData={{
           "@type": "Person",
@@ -203,7 +203,7 @@ export default function ProfilePage() {
             
             {/* Media Thumbnails (Photos + Videos) */}
             {((profile.photos && profile.photos.length > 0) || (profile.videos && profile.videos.length > 0)) && 
-             (profile.photos?.length + profile.videos?.length) > 1 && (
+             ((profile.photos?.length || 0) + (profile.videos?.length || 0)) > 1 && (
               <div className="space-y-2">
                 <div className="text-center flex gap-2 justify-center">
                   {profile.photos && profile.photos.length > 0 && (
@@ -307,10 +307,10 @@ export default function ProfilePage() {
                     </div>
                   ))}
                 </div>
-                {(profile.photos?.length + profile.videos?.length) > 8 && (
+                {((profile.photos?.length || 0) + (profile.videos?.length || 0)) > 8 && (
                   <div className="text-center">
                     <Badge variant="outline" className="text-xs">
-                      +{(profile.photos?.length + profile.videos?.length) - 8} more media
+                      +{((profile.photos?.length || 0) + (profile.videos?.length || 0)) - 8} more media
                     </Badge>
                   </div>
                 )}
@@ -383,7 +383,7 @@ export default function ProfilePage() {
                 <div className="border-t pt-6">
                   <h3 className="font-semibold text-gray-900 mb-4">Available Contact Methods</h3>
                   <div className="grid grid-cols-3 gap-4 mb-6">
-                    {profile.contactMethods?.whatsapp && (
+                    {(profile.contactMethods as any)?.whatsapp && (
                       <div className="text-center">
                         <div className="bg-green-100 text-green-600 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
                           <MessageCircle className="h-6 w-6" />
@@ -391,7 +391,7 @@ export default function ProfilePage() {
                         <span className="text-sm text-gray-600">WhatsApp</span>
                       </div>
                     )}
-                    {profile.contactMethods?.instagram && (
+                    {(profile.contactMethods as any)?.instagram && (
                       <div className="text-center">
                         <div className="bg-pink-100 text-pink-600 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
                           <Instagram className="h-6 w-6" />
@@ -399,7 +399,7 @@ export default function ProfilePage() {
                         <span className="text-sm text-gray-600">Instagram</span>
                       </div>
                     )}
-                    {profile.contactMethods?.email && (
+                    {(profile.contactMethods as any)?.email && (
                       <div className="text-center">
                         <div className="bg-blue-100 text-blue-600 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
                           <Mail className="h-6 w-6" />
@@ -407,7 +407,7 @@ export default function ProfilePage() {
                         <span className="text-sm text-gray-600">Email</span>
                       </div>
                     )}
-                    {profile.contactMethods?.telegram && (
+                    {(profile.contactMethods as any)?.telegram && (
                       <div className="text-center">
                         <div className="bg-blue-100 text-blue-600 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
                           <Send className="h-6 w-6" />
@@ -415,7 +415,7 @@ export default function ProfilePage() {
                         <span className="text-sm text-gray-600">Telegram</span>
                       </div>
                     )}
-                    {profile.contactMethods?.facebook && (
+                    {(profile.contactMethods as any)?.facebook && (
                       <div className="text-center">
                         <div className="bg-blue-100 text-blue-600 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
                           <Facebook className="h-6 w-6" />
@@ -423,7 +423,7 @@ export default function ProfilePage() {
                         <span className="text-sm text-gray-600">Facebook</span>
                       </div>
                     )}
-                    {profile.contactMethods?.tiktok && (
+                    {(profile.contactMethods as any)?.tiktok && (
                       <div className="text-center">
                         <div className="bg-black text-white p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
                           <Video className="h-6 w-6" />
