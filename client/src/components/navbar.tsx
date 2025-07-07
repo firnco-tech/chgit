@@ -71,23 +71,23 @@ export function Navbar() {
                     {t.browse}
                   </span>
                 </Link>
-                <a href="/#how-it-works">
+                <a href={`${addLanguageToPath('/', currentLanguage)}#how-it-works`}>
                   <span className="px-3 py-2 rounded-md text-sm font-medium cursor-pointer text-gray-500 hover:text-primary">
-                    How It Works
+                    {t.howItWorks}
                   </span>
                 </a>
-                <Link href="/about">
+                <Link href={addLanguageToPath('/about', currentLanguage)}>
                   <span className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer ${
                     isActive('/about') ? 'text-primary' : 'text-gray-500 hover:text-primary'
                   }`}>
-                    About
+                    {t.about}
                   </span>
                 </Link>
-                <Link href="/contact">
+                <Link href={addLanguageToPath('/contact', currentLanguage)}>
                   <span className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer ${
                     isActive('/contact') ? 'text-primary' : 'text-gray-500 hover:text-primary'
                   }`}>
-                    Contact
+                    {t.contact}
                   </span>
                 </Link>
                 {isAuthenticated ? (
@@ -213,23 +213,23 @@ export function Navbar() {
                       
                       {/* Navigation Links */}
                       <div className="space-y-1">
-                        <Link href="/">
+                        <Link href={addLanguageToPath('/', currentLanguage)}>
                           <Button 
                             variant="ghost" 
                             className={`w-full justify-start ${isActive('/') ? 'bg-primary/10 text-primary' : ''}`}
                             onClick={() => setIsMobileMenuOpen(false)}
                           >
-                            Home
+                            {t.home}
                           </Button>
                         </Link>
                         
-                        <Link href="/browse">
+                        <Link href={addLanguageToPath('/browse', currentLanguage)}>
                           <Button 
                             variant="ghost" 
                             className={`w-full justify-start ${isActive('/browse') ? 'bg-primary/10 text-primary' : ''}`}
                             onClick={() => setIsMobileMenuOpen(false)}
                           >
-                            Browse Profiles
+                            {t.browse}
                           </Button>
                         </Link>
                         

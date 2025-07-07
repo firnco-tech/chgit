@@ -33,20 +33,35 @@ import AdminManagement from "@/pages/admin/AdminManagement";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/browse" component={Browse} />
-      <Route path="/profile/:id" component={ProfilePage} />
-      <Route path="/submit-profile" component={SubmitProfile} />
-      <Route path="/about" component={About} />
-      <Route path="/contact" component={Contact} />
-      <Route path="/help" component={Help} />
-      <Route path="/safety" component={Safety} />
-      <Route path="/checkout" component={Checkout} />
-      <Route path="/cart" component={Cart} />
-      <Route path="/favorites" component={Favorites} />
-      <Route path="/payment-success" component={PaymentSuccess} />
+      {/* Language-prefixed routes */}
+      <Route path="/:lang" component={Home} />
+      <Route path="/:lang/browse" component={Browse} />
+      <Route path="/:lang/profile/:id" component={ProfilePage} />
+      <Route path="/:lang/submit-profile" component={SubmitProfile} />
+      <Route path="/:lang/about" component={About} />
+      <Route path="/:lang/contact" component={Contact} />
+      <Route path="/:lang/help" component={Help} />
+      <Route path="/:lang/safety" component={Safety} />
+      <Route path="/:lang/checkout" component={Checkout} />
+      <Route path="/:lang/cart" component={Cart} />
+      <Route path="/:lang/favorites" component={Favorites} />
+      <Route path="/:lang/payment-success" component={PaymentSuccess} />
       
-      {/* Admin Panel Routes - Isolated section */}
+      {/* Default routes without language prefix - redirect to language version */}
+      <Route path="/" component={() => <RedirectToLanguage path="/" />} />
+      <Route path="/browse" component={() => <RedirectToLanguage path="/browse" />} />
+      <Route path="/profile/:id" component={(params: any) => <RedirectToLanguage path={`/profile/${params.id}`} />} />
+      <Route path="/submit-profile" component={() => <RedirectToLanguage path="/submit-profile" />} />
+      <Route path="/about" component={() => <RedirectToLanguage path="/about" />} />
+      <Route path="/contact" component={() => <RedirectToLanguage path="/contact" />} />
+      <Route path="/help" component={() => <RedirectToLanguage path="/help" />} />
+      <Route path="/safety" component={() => <RedirectToLanguage path="/safety" />} />
+      <Route path="/checkout" component={() => <RedirectToLanguage path="/checkout" />} />
+      <Route path="/cart" component={() => <RedirectToLanguage path="/cart" />} />
+      <Route path="/favorites" component={() => <RedirectToLanguage path="/favorites" />} />
+      <Route path="/payment-success" component={() => <RedirectToLanguage path="/payment-success" />} />
+      
+      {/* Admin Panel Routes - No language prefix needed */}
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/users" component={AdminUsers} />
