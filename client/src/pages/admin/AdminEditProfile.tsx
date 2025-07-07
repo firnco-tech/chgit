@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
+import { AdminFooterLogout } from "@/components/admin/AdminFooterLogout";
 import { ArrowLeft, Save, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -1053,6 +1054,7 @@ export default function AdminEditProfile() {
           </div>
         </form>
       </div>
+      <AdminFooterLogout />
     </div>
   );
 }

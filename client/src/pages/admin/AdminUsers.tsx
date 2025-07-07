@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
+import { AdminFooterLogout } from "@/components/admin/AdminFooterLogout";
 import { Users, Calendar, Mail, User, Shield, Ban, Eye, X, Heart, ShoppingCart, DollarSign } from "lucide-react";
 import { User as UserType } from "@shared/schema";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -449,6 +450,7 @@ export default function AdminUsers() {
           )}
         </DialogContent>
       </Dialog>
+      <AdminFooterLogout />
     </div>
   );
 }

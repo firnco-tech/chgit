@@ -29,6 +29,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
+import { AdminFooterLogout } from "@/components/admin/AdminFooterLogout";
 
 // Icons
 import { Plus, Edit, Trash2, Shield, ShieldCheck, UserX, UserCheck, Search } from "lucide-react";
@@ -581,6 +582,7 @@ export default function AdminManagement() {
         </CardContent>
       </Card>
       </div>
+      <AdminFooterLogout />
     </div>
   );
 }
