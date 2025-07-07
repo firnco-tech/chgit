@@ -13,10 +13,13 @@ import { useCart } from "@/lib/cart";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { getMediaUrl } from "@/lib/mediaUtils";
+import { addLanguageToPath, getCurrentLanguage } from "@/lib/i18n";
 import type { Profile } from "@shared/schema";
 
 export default function ProfilePage() {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams<{ lang: string; id: string }>();
+  const id = params.id;
+  const currentLanguage = getCurrentLanguage();
   const { addItem } = useCart();
   const { toast } = useToast();
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
@@ -61,7 +64,7 @@ export default function ProfilePage() {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Profile Not Found</h1>
           <p className="text-gray-600 mb-4">The profile you're looking for doesn't exist or isn't available.</p>
-          <Link href="/browse">
+          <Link href={addLanguageToPath('/browse', currentLanguage)}>
             <Button>Back to Browse</Button>
           </Link>
         </div>
@@ -73,7 +76,7 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
-          <Link href="/browse">
+          <Link href={addLanguageToPath('/browse', currentLanguage)}>
             <Button variant="ghost" className="text-primary hover:text-primary/80">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Browse

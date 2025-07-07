@@ -4,10 +4,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ProfileCard } from "@/components/profile-card";
 import { Link } from "wouter";
 import { Loader2, Shield, Clock, Heart, CheckCircle, Star, Users } from "lucide-react";
+import { addLanguageToPath, getCurrentLanguage } from "@/lib/i18n";
 import type { Profile } from "@shared/schema";
 import SEO, { structuredDataSchemas } from "@/components/SEO";
 
 export default function Home() {
+  const currentLanguage = getCurrentLanguage();
   const { data: featuredProfiles, isLoading } = useQuery<Profile[]>({
     queryKey: ['/api/profiles/featured'],
   });
@@ -59,7 +61,7 @@ export default function Home() {
               Connect with authentic, verified Dominican women seeking serious relationships. Browse genuine profiles, discover cultural connections, and find your perfect match today.
             </p>
             <div className="flex justify-center">
-              <Link href="/browse">
+              <Link href={addLanguageToPath('/browse', currentLanguage)}>
                 <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
                   Browse Profiles
                 </Button>
@@ -94,7 +96,7 @@ export default function Home() {
           )}
           
           <div className="text-center mt-12">
-            <Link href="/browse">
+            <Link href={addLanguageToPath('/browse', currentLanguage)}>
               <Button size="lg" className="bg-primary hover:bg-primary/90">
                 View All Profiles
               </Button>

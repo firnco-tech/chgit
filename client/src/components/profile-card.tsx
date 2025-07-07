@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { Play } from "lucide-react";
 import { getMediaUrl } from "@/lib/mediaUtils";
+import { addLanguageToPath, getCurrentLanguage } from "@/lib/i18n";
 import type { Profile } from "@shared/schema";
 
 interface ProfileCardProps {
@@ -15,6 +16,7 @@ interface ProfileCardProps {
 export function ProfileCard({ profile }: ProfileCardProps) {
   const { addItem, items } = useCart();
   const { toast } = useToast();
+  const currentLanguage = getCurrentLanguage();
 
   const isInCart = items.some(item => item.id === profile.id);
 
@@ -40,7 +42,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-      <Link href={`/profile/${profile.id}`}>
+      <Link href={addLanguageToPath(`/profile/${profile.id}`, currentLanguage)}>
         <div className="aspect-[3/4] overflow-hidden relative">
           <img 
             src={profile.photos?.[0] ? getMediaUrl(profile.photos[0], 'image') : `data:image/svg+xml;base64,${btoa(`
@@ -86,7 +88,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-2">
           <div className="flex-1">
-            <Link href={`/profile/${profile.id}`}>
+            <Link href={addLanguageToPath(`/profile/${profile.id}`, currentLanguage)}>
               <h3 className="text-xl font-semibold text-gray-900 mb-2 hover:text-primary">
                 {profile.firstName}, {profile.age}
               </h3>

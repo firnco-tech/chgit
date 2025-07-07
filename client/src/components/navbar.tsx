@@ -91,7 +91,7 @@ export function Navbar() {
                   </span>
                 </Link>
                 {isAuthenticated ? (
-                  <Link href="/favorites">
+                  <Link href={addLanguageToPath('/favorites', currentLanguage)}>
                     <span className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer flex items-center gap-1 ${
                       isActive('/favorites') ? 'text-primary' : 'text-gray-500 hover:text-primary'
                     }`}>
@@ -145,19 +145,19 @@ export function Navbar() {
                       <DropdownMenuLabel>My Account</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
-                        <Link href="/favorites" className="flex items-center gap-2 cursor-pointer">
+                        <Link href={addLanguageToPath('/favorites', currentLanguage)} className="flex items-center gap-2 cursor-pointer">
                           <Heart className="h-4 w-4" />
                           <span>Favorites</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/submit-profile" className="flex items-center gap-2 cursor-pointer">
+                        <Link href={addLanguageToPath('/submit-profile', currentLanguage)} className="flex items-center gap-2 cursor-pointer">
                           <FileText className="h-4 w-4" />
                           <span>Submit Profile</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/contact" className="flex items-center gap-2 cursor-pointer">
+                        <Link href={addLanguageToPath('/contact', currentLanguage)} className="flex items-center gap-2 cursor-pointer">
                           <Mail className="h-4 w-4" />
                           <span>Contact</span>
                         </Link>
@@ -235,7 +235,7 @@ export function Navbar() {
                         
                         {isAuthenticated ? (
                           <>
-                            <Link href="/favorites">
+                            <Link href={addLanguageToPath('/favorites', currentLanguage)}>
                               <Button 
                                 variant="ghost" 
                                 className={`w-full justify-start ${isActive('/favorites') ? 'bg-primary/10 text-primary' : ''}`}
@@ -272,7 +272,7 @@ export function Navbar() {
                           </Button>
                         )}
                         
-                        <Link href="/about">
+                        <Link href={addLanguageToPath('/about', currentLanguage)}>
                           <Button 
                             variant="ghost" 
                             className={`w-full justify-start ${isActive('/about') ? 'bg-primary/10 text-primary' : ''}`}
@@ -282,7 +282,7 @@ export function Navbar() {
                           </Button>
                         </Link>
                         
-                        <Link href="/contact">
+                        <Link href={addLanguageToPath('/contact', currentLanguage)}>
                           <Button 
                             variant="ghost" 
                             className={`w-full justify-start ${isActive('/contact') ? 'bg-primary/10 text-primary' : ''}`}
