@@ -5,15 +5,15 @@
  * Redirects to appropriate dashboard after successful login
  */
 
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Shield, Lock, User } from "lucide-react";
 
 interface LoginRequest {
@@ -32,12 +32,27 @@ interface LoginResponse {
 }
 
 export default function AdminLogin() {
-  const [, navigate] = useLocation();
+  const [location, navigate] = useLocation();
   const [formData, setFormData] = useState<LoginRequest>({
     username: '',
     password: ''
   });
   const [error, setError] = useState<string>('');
+
+  // Check if already authenticated and redirect to dashboard
+  const { data: currentUser, isLoading: checkingAuth } = useQuery({
+    queryKey: ['/api/admin/user'],
+    retry: false,
+    staleTime: 0,
+  });
+
+  // Redirect to dashboard if already authenticated
+  useEffect(() => {
+    if (!checkingAuth && currentUser) {
+      console.log('AdminLogin: Already authenticated, redirecting to dashboard');
+      navigate('/admin');
+    }
+  }, [checkingAuth, currentUser, navigate]);
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginRequest): Promise<LoginResponse> => {
@@ -54,9 +69,15 @@ export default function AdminLogin() {
     onSuccess: (response) => {
       console.log('Login onSuccess called with:', response);
       if (response.success) {
-        console.log('Login successful, forcing navigation to /admin');
-        // Force redirect to admin dashboard
-        window.location.href = '/admin';
+        console.log('Login successful, invalidating queries and navigating to /admin');
+        
+        // Clear all admin-related cache to ensure fresh data
+        queryClient.invalidateQueries({ queryKey: ['/api/admin'] });
+        
+        // Small delay to ensure cookie is set before navigation
+        setTimeout(() => {
+          navigate('/admin');
+        }, 100);
       } else {
         console.log('Login response indicates failure');
         setError('Login failed. Please check your credentials.');

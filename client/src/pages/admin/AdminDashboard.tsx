@@ -6,9 +6,8 @@
  * Completely separate from user-facing site functionality
  */
 
-import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useLocation } from "wouter";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 
@@ -63,20 +62,8 @@ function getStatusBadgeClass(status: 'PENDING' | 'ACTIVE' | 'INACTIVE'): string 
 }
 
 export default function AdminDashboard() {
-  const [, navigate] = useLocation();
-
-  // Check admin authentication status
-  const { data: adminUser, isLoading: authLoading, error: authError } = useQuery({
-    queryKey: ["/api/admin/user"],
-    retry: false,
-  });
-
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!authLoading && (authError || !adminUser)) {
-      navigate('/admin/login');
-    }
-  }, [authLoading, authError, adminUser, navigate]);
+  // Use centralized admin authentication hook
+  const { adminUser, isLoading: authLoading, isAuthenticated } = useAdminAuth();
 
   // Fetch dashboard statistics (only if authenticated)
   const { data: stats = {} as DashboardStats, isLoading: statsLoading } = useQuery<DashboardStats>({
@@ -102,8 +89,8 @@ export default function AdminDashboard() {
     );
   }
 
-  // Don't render content if not authenticated (will redirect)
-  if (!adminUser) {
+  // Don't render content if not authenticated (will redirect)  
+  if (!isAuthenticated) {
     return null;
   }
 
