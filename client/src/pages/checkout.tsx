@@ -146,8 +146,11 @@ const CheckoutForm = () => {
 
 export default function Checkout() {
   const [clientSecret, setClientSecret] = useState("");
+  const [stripeError, setStripeError] = useState<string | null>(null);
+  const [paymentLoading, setPaymentLoading] = useState(true);
   const { items, getTotal } = useCart();
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (items.length === 0) {
@@ -156,6 +159,9 @@ export default function Checkout() {
     }
 
     // Create PaymentIntent as soon as the page loads
+    console.log('💳 Creating payment intent for amount:', getTotal());
+    setPaymentLoading(true);
+    
     apiRequest("/api/create-payment-intent", {
       method: "POST",
       body: {
@@ -166,12 +172,21 @@ export default function Checkout() {
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log('✅ Payment intent created:', data.clientSecret.substring(0, 20) + '...');
         setClientSecret(data.clientSecret);
+        setPaymentLoading(false);
       })
       .catch((error) => {
-        console.error('Error creating payment intent:', error);
+        console.error('❌ Error creating payment intent:', error);
+        setStripeError('Failed to initialize payment. Please try again.');
+        setPaymentLoading(false);
+        toast({
+          title: "Payment Error",
+          description: "Failed to initialize payment. Please refresh and try again.",
+          variant: "destructive",
+        });
       });
-  }, [items, getTotal, setLocation]);
+  }, [items, getTotal, setLocation, toast]);
 
   if (items.length === 0) {
     return (
@@ -187,10 +202,39 @@ export default function Checkout() {
     );
   }
 
-  if (!clientSecret) {
+  if (paymentLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
+          <p>Initializing secure payment...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (stripeError || !clientSecret) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-red-800 mb-2">Payment Error</h2>
+            <p className="text-red-600 mb-4">
+              {stripeError || 'Failed to initialize payment system.'}
+            </p>
+            <p className="text-sm text-red-500 mb-4">
+              This may be due to ad blockers blocking Stripe. Please disable ad blockers and try again.
+            </p>
+            <div className="space-x-2">
+              <Button onClick={() => window.location.reload()}>
+                Retry Payment
+              </Button>
+              <Button variant="outline" onClick={() => setLocation('/browse')}>
+                Back to Browse
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -237,7 +281,12 @@ export default function Checkout() {
 
           {/* Payment Form */}
           <div className="lg:col-span-2">
-            <Elements stripe={stripePromise} options={{ clientSecret }}>
+            <Elements 
+              stripe={stripePromise} 
+              options={{ 
+                clientSecret
+              }}
+            >
               <CheckoutForm />
             </Elements>
           </div>
