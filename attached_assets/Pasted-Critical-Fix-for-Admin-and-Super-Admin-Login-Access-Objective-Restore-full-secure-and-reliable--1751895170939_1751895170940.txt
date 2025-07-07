@@ -1,0 +1,59 @@
+Critical Fix for Admin and Super Admin Login Access
+Objective:
+Restore full, secure, and reliable login and dashboard access for both super admin and standard admin users.
+Do not break or regress any existing site structure, SEO enhancements, or admin/user flows.
+
+Step 1: Diagnose Session and Cookie Handling for All Admin Roles
+Carefully review the current session and cookie logic for both super admin and standard admin logins.
+
+Identify any mismatches or conflicts in:
+
+Cookie names (superAdminSession, adminSession)
+
+Session creation, storage, and expiration in the database
+
+Authorization middleware checks for both roles
+
+Ensure that both super admin and standard admin sessions are being set, stored, and validated consistently and securely.
+
+Step 2: Repair Admin and Super Admin Login Flows
+Update the login logic so that:
+
+Super admin login sets and checks the correct session/cookie and always redirects to the super admin dashboard.
+
+Standard admin login sets and checks the correct session/cookie and always redirects to the standard admin dashboard.
+
+Ensure that after login, the user is always routed to the appropriate dashboard based on their role (not to browse profiles or other unintended pages).
+
+Confirm that session authentication works for both roles and does not conflict with any SEO or frontend routing enhancements.
+
+Step 3: Test and Validate All Admin Access Scenarios
+Test the following scenarios:
+
+Super admin login: access to all super admin and admin features, dashboard loads correctly.
+
+Standard admin login: access to standard admin dashboard and features only.
+
+Attempted access to admin routes without authentication: must redirect to login.
+
+Attempted access to super admin routes by standard admin: must be denied.
+
+Ensure session persistence and correct dashboard access after login for both roles.
+
+Step 4: Regression Safeguards
+Confirm that no SEO routes, user-facing flows, or previously completed enhancements are broken or regressed.
+
+Test all language versions and URL structures to ensure admin access is not affected by recent SEO or multilingual changes.
+
+Provide before/after screenshots of successful login and dashboard access for both super admin and standard admin.
+
+Critical Instructions
+Do not break or alter any existing site structure, user data, or admin/user experience outside this fix.
+
+All code changes must be clearly commented and documented.
+
+If you encounter a blocking issue or uncertainty, STOP and report before proceeding.
+
+Wait for my review and approval after each step before moving to the next.
+
+Begin with Step 1 (Session and Cookie Handling Diagnosis), and wait for my review before proceeding.
