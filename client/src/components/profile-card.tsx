@@ -20,6 +20,23 @@ export function ProfileCard({ profile }: ProfileCardProps) {
 
   const isInCart = items.some(item => item.id === profile.id);
 
+  // Get the appropriate slug for the current language with fallback to ID
+  const getProfileSlug = () => {
+    let slug;
+    switch (currentLanguage) {
+      case 'es': slug = profile.slugEs; break;
+      case 'de': slug = profile.slugDe; break;
+      case 'it': slug = profile.slugIt; break;
+      case 'nl': slug = profile.slugNl; break;
+      case 'pt': slug = profile.slugPt; break;
+      default: slug = profile.slugEn; break;
+    }
+    // Fallback to profile ID if slug is not available
+    return slug || profile.id.toString();
+  };
+
+  const profileSlug = getProfileSlug();
+
   const handleAddToCart = () => {
     if (isInCart) {
       return; // Don't add if already in cart
@@ -42,7 +59,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-      <Link href={addLanguageToPath(`/profile/${profile.id}`, currentLanguage)}>
+      <Link href={addLanguageToPath(`/profile/${profileSlug}`, currentLanguage)}>
         <div className="aspect-[3/4] overflow-hidden relative">
           <img 
             src={profile.photos?.[0] ? getMediaUrl(profile.photos[0], 'image') : `data:image/svg+xml;base64,${btoa(`
@@ -88,7 +105,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-2">
           <div className="flex-1">
-            <Link href={addLanguageToPath(`/profile/${profile.id}`, currentLanguage)}>
+            <Link href={addLanguageToPath(`/profile/${profileSlug}`, currentLanguage)}>
               <h3 className="text-xl font-semibold text-gray-900 mb-2 hover:text-primary">
                 {profile.firstName}, {profile.age}
               </h3>

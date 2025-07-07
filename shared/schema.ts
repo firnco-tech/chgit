@@ -37,6 +37,14 @@ export const profiles = pgTable("profiles", {
   height: text("height"),
   location: text("location").notNull(),
   
+  // SEO-friendly multilingual slugs
+  slugEn: text("slug_en").unique(),
+  slugEs: text("slug_es").unique(),
+  slugDe: text("slug_de").unique(),
+  slugIt: text("slug_it").unique(),
+  slugNl: text("slug_nl").unique(),
+  slugPt: text("slug_pt").unique(),
+  
   // Profile Details
   education: text("education"),
   occupation: text("occupation"),

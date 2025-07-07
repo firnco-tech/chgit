@@ -136,10 +136,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get individual profile
+  // Get individual profile by ID
   app.get("/api/profiles/:id", async (req, res) => {
     try {
       const profile = await storage.getProfile(parseInt(req.params.id));
+      if (!profile) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      if (!profile.isApproved) {
+        return res.status(403).json({ message: "Profile not approved" });
+      }
+      res.json(profile);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching profile: " + error.message });
+    }
+  });
+
+  // Get individual profile by slug
+  app.get("/api/profiles/by-slug/:slug/:language", async (req, res) => {
+    try {
+      const { slug, language } = req.params;
+      const profile = await storage.getProfileBySlug(slug, language);
       if (!profile) {
         return res.status(404).json({ message: "Profile not found" });
       }

@@ -1,0 +1,82 @@
+Objective
+Update the current profile URLs from numeric IDs (e.g., /profile/17) to SEO-friendly, multilingual slug-based URLs (e.g., /en/katy-from-santiago-dominican-republic) while preserving the existing site structure, flow, and all completed SEO enhancements.  Do not break or regress any existing code or user/admin flows. Proceed step-by-step, and wait for my review after each step.
+
+Task Details
+1. Implement SEO-Friendly Slug URLs for Profiles
+Generate unique, descriptive slugs for each profile based on:
+
+User’s name
+
+City
+
+Country
+
+Slugs must be localized per language version (English, Spanish, Italian, German, Dutch, Portuguese).
+
+Example URL formats:
+
+English: /en/katy-from-santiago-dominican-republic
+
+Spanish: /es/katy-de-santiago-republica-dominicana
+
+Italian: /it/katy-da-santiago-repubblica-dominicana
+
+German: /de/katy-aus-santiago-dominikanische-republik
+
+Dutch: /nl/katy-uit-santiago-dominicaanse-republiek
+
+Portuguese: /pt/katy-de-santiago-republica-dominicana
+
+Ensure slug uniqueness (append numeric suffix if duplicates occur).
+
+2. Update Internal Site References
+Modify all internal links, navigation, and routing to use the new slug-based URLs.
+
+Update admin panel links and any backend-generated URLs accordingly.
+
+Ensure backward compatibility or graceful redirects from old numeric URLs to new slug URLs to avoid broken links and preserve SEO equity.
+
+3. Update SEO-Related Artifacts
+Regenerate and update the multilingual sitemap.xml to include all slug URLs for every language.
+
+Update all <link rel="alternate" hreflang="..."> tags to reference the new slug URLs for each language version.
+
+Ensure canonical URLs reflect the slug-based structure.
+
+Verify that dynamic meta tags and structured data components correctly reference the new URLs.
+
+4. Testing and Validation
+Thoroughly test URL routing for all languages and profiles, confirming:
+
+Profiles load correctly via slug URLs.
+
+No broken links or 404 errors occur.
+
+Redirects from old numeric URLs work properly if implemented.
+
+Validate that all SEO enhancements previously completed remain intact and functional.
+
+Confirm that Google Analytics and Core Web Vitals tracking continue to operate correctly.
+
+Additional SEO Recommendations Beyond Completed Tasks
+Implement 301 Redirects: From old numeric URLs to new slug URLs to preserve link equity and prevent SEO loss.
+
+Ensure URL Consistency: Avoid trailing slashes or inconsistent casing in URLs.
+
+Optimize URL Length: Keep slugs concise but descriptive; avoid unnecessary stop words.
+
+Use HTTPS Everywhere: Ensure all URLs are served securely.
+
+Improve Crawl Budget Efficiency: Block or noindex any duplicate or low-value URLs.
+
+Leverage Canonical Tags: To prevent duplicate content issues if multiple URL versions exist.
+
+Monitor Google Search Console: Watch for crawl errors or indexing issues after URL changes.
+
+Implement Breadcrumb Schema: To improve navigation and rich snippet appearance in search results.
+
+Continue Performance Optimization: Maintain and improve Core Web Vitals metrics as URLs change.
+
+Enhance Social Sharing: Confirm Open Graph and Twitter Card tags use the new URLs for better sharing previews.
+
+Critical Instructions:Do not break or alter any existing site structure, user data, or user/admin experience outside these enhancements.All new or changed code must be clearly commented and documented.If you encounter a blocking issue or uncertainty, STOP and report before proceeding.Site stability and user experience take priority over new features.

@@ -19,8 +19,8 @@ import SEO, { structuredDataSchemas } from "@/components/SEO";
 import type { Profile } from "@shared/schema";
 
 export default function ProfilePage() {
-  const params = useParams<{ lang: string; id: string }>();
-  const id = params.id;
+  const params = useParams<{ lang: string; slug: string }>();
+  const slug = params.slug;
   const currentLanguage = getCurrentLanguage();
   const { t } = useTranslation();
   const { addItem } = useCart();
@@ -30,9 +30,15 @@ export default function ProfilePage() {
   const [selectedVideo, setSelectedVideo] = useState<string>('');
   const [selectedVideoIndex, setSelectedVideoIndex] = useState(0);
 
+  // Determine if the slug is actually a numeric ID (for backward compatibility)
+  const isNumericId = slug && /^\d+$/.test(slug);
+  const apiEndpoint = isNumericId 
+    ? `/api/profiles/${slug}` 
+    : `/api/profiles/by-slug/${slug}/${currentLanguage}`;
+
   const { data: profile, isLoading, error } = useQuery<Profile>({
-    queryKey: [`/api/profiles/${id}`],
-    enabled: !!id,
+    queryKey: [apiEndpoint],
+    enabled: !!slug,
   });
 
   const handleAddToCart = () => {

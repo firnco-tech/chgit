@@ -63,6 +63,7 @@ export interface IStorage {
   
   // Profile methods
   getProfile(id: number): Promise<Profile | undefined>;
+  getProfileBySlug(slug: string, language: string): Promise<Profile | undefined>;
   getProfiles(filters?: {
     ageMin?: number;
     ageMax?: number;
@@ -241,6 +242,28 @@ export class DatabaseStorage implements IStorage {
 
   async getProfile(id: number): Promise<Profile | undefined> {
     const [profile] = await db.select().from(profiles).where(eq(profiles.id, id));
+    return profile || undefined;
+  }
+
+  async getProfileBySlug(slug: string, language: string): Promise<Profile | undefined> {
+    // Map language codes to slug field names
+    const slugFieldMap: Record<string, any> = {
+      'en': profiles.slugEn,
+      'es': profiles.slugEs, 
+      'de': profiles.slugDe,
+      'it': profiles.slugIt,
+      'nl': profiles.slugNl,
+      'pt': profiles.slugPt
+    };
+    
+    const slugField = slugFieldMap[language];
+    if (!slugField) {
+      // Fallback to English if language not supported
+      const [profile] = await db.select().from(profiles).where(eq(profiles.slugEn, slug));
+      return profile || undefined;
+    }
+    
+    const [profile] = await db.select().from(profiles).where(eq(slugField, slug));
     return profile || undefined;
   }
 

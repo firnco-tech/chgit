@@ -36,7 +36,7 @@ function Router() {
       {/* Language-prefixed routes */}
       <Route path="/:lang" component={Home} />
       <Route path="/:lang/browse" component={Browse} />
-      <Route path="/:lang/profile/:id" component={ProfilePage} />
+      <Route path="/:lang/profile/:slug" component={ProfilePage} />
       <Route path="/:lang/submit-profile" component={SubmitProfile} />
       <Route path="/:lang/about" component={About} />
       <Route path="/:lang/contact" component={Contact} />
@@ -50,7 +50,7 @@ function Router() {
       {/* Default routes without language prefix - redirect to language version */}
       <Route path="/" component={() => <RedirectToLanguage path="/" />} />
       <Route path="/browse" component={() => <RedirectToLanguage path="/browse" />} />
-      <Route path="/profile/:id" component={(params: any) => <RedirectToLanguage path={`/profile/${params.id}`} />} />
+      <Route path="/profile/:slug" component={(params: any) => <RedirectToLanguage path={`/profile/${params.slug}`} />} />
       <Route path="/submit-profile" component={() => <RedirectToLanguage path="/submit-profile" />} />
       <Route path="/about" component={() => <RedirectToLanguage path="/about" />} />
       <Route path="/contact" component={() => <RedirectToLanguage path="/contact" />} />
