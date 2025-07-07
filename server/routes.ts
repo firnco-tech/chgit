@@ -836,14 +836,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const superAdminSessionId = req.cookies.superAdminSession;
       const sessionId = adminSessionId || superAdminSessionId;
       
+      console.log('🔥 ADMIN LOGOUT DEBUG:', {
+        adminSessionId: adminSessionId ? 'FOUND' : 'NOT_FOUND',
+        superAdminSessionId: superAdminSessionId ? 'FOUND' : 'NOT_FOUND',
+        sessionId: sessionId ? 'FOUND' : 'NOT_FOUND'
+      });
+      
       if (sessionId) {
         // Delete admin session
         await storage.deleteAdminSession(sessionId);
+        console.log('🗑️ SESSION DELETED:', sessionId);
       }
 
-      // Clear both possible session cookies
-      res.clearCookie('adminSession');
-      res.clearCookie('superAdminSession');
+      // Clear both possible session cookies with proper settings
+      res.clearCookie('adminSession', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/'
+      });
+      res.clearCookie('superAdminSession', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/'
+      });
+      
+      console.log('✅ ADMIN LOGOUT SUCCESS - Cookies cleared');
       res.json({ success: true });
 
     } catch (error: any) {

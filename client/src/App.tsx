@@ -41,7 +41,6 @@ import AdminManagement from "@/pages/admin/AdminManagement";
 function AdminRoutes() {
   return (
     <Switch>
-      <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/users" component={AdminUsers} />
       <Route path="/admin/admins" component={AdminManagement} />
@@ -109,6 +108,8 @@ function MainSiteRouter() {
 function Router() {
   return (
     <Switch>
+      {/* Admin login route - no layout */}
+      <Route path="/admin/login" component={AdminLogin} />
       {/* Admin routes - separate layout */}
       <Route path="/admin*" component={AdminRoutes} />
       {/* All other routes - main site layout */}

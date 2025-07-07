@@ -31,17 +31,18 @@ export function AdminNavbar() {
       });
     },
     onSuccess: () => {
-      // Clear all admin-related cache
-      queryClient.invalidateQueries({ queryKey: ['/api/admin'] });
+      console.log('🔥 LOGOUT SUCCESS - Clearing cache and redirecting');
+      // Clear all cached data
       queryClient.clear();
       
-      // Navigate to login page
-      navigate('/admin/login');
+      // Force reload to ensure clean state
+      window.location.href = '/admin/login';
     },
     onError: (error) => {
       console.error('Logout error:', error);
       // Force navigation to login even if logout fails
-      navigate('/admin/login');
+      queryClient.clear();
+      window.location.href = '/admin/login';
     }
   });
 

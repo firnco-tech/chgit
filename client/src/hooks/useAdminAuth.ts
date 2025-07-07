@@ -28,7 +28,7 @@ export function useAdminAuth(redirectOnFailure: boolean = true) {
   } = useQuery<AdminUser>({
     queryKey: ["/api/admin/user"],
     retry: 1,
-    staleTime: 30000, // 30 seconds
+    staleTime: 0, // Always fresh
     refetchOnWindowFocus: true,
     refetchOnMount: true,
   });

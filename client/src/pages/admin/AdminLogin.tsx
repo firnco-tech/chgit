@@ -44,6 +44,8 @@ export default function AdminLogin() {
     queryKey: ['/api/admin/user'],
     retry: false,
     staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   // Redirect to dashboard if already authenticated
