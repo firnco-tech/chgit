@@ -14,12 +14,14 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { getMediaUrl } from "@/lib/mediaUtils";
 import { addLanguageToPath, getCurrentLanguage } from "@/lib/i18n";
+import { useTranslation } from "@/hooks/useTranslation";
 import type { Profile } from "@shared/schema";
 
 export default function ProfilePage() {
   const params = useParams<{ lang: string; id: string }>();
   const id = params.id;
   const currentLanguage = getCurrentLanguage();
+  const { t } = useTranslation();
   const { addItem } = useCart();
   const { toast } = useToast();
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
@@ -45,8 +47,8 @@ export default function ProfilePage() {
     });
     
     toast({
-      title: "Added to cart",
-      description: `${profile.firstName}'s contact information has been added to your cart.`
+      title: t.addedToCart,
+      description: `${profile.firstName}'s ${t.contactInfo} has been added to your cart.`
     });
   };
 
@@ -62,10 +64,10 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Profile Not Found</h1>
-          <p className="text-gray-600 mb-4">The profile you're looking for doesn't exist or isn't available.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">{t.profileNotFound}</h1>
+          <p className="text-gray-600 mb-4">{t.profileNotFoundDesc}</p>
           <Link href={addLanguageToPath('/browse', currentLanguage)}>
-            <Button>Back to Browse</Button>
+            <Button>{t.backToBrowse}</Button>
           </Link>
         </div>
       </div>
@@ -79,7 +81,7 @@ export default function ProfilePage() {
           <Link href={addLanguageToPath('/browse', currentLanguage)}>
             <Button variant="ghost" className="text-primary hover:text-primary/80">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Browse
+              {t.backToBrowse}
             </Button>
           </Link>
         </div>
