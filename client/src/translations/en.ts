@@ -180,4 +180,23 @@ export const en = {
   videos: 'Videos',
   noPhotos: 'No photos available',
   noVideos: 'No videos available',
+
+  // Footer translations
+  footerBrandDescription: "Connect with amazing people from the Dominican Republic. Safe, secure, and authentic connections.",
+  quickLinks: "Quick Links",
+  support: "Support",
+  legal: "Legal",
+  faq: "FAQ",
+  contactUs: "Contact Us",
+  helpCenter: "Help Center",
+  safetyTips: "Safety Tips",
+  reportIssue: "Report Issue",
+  privacyPolicy: "Privacy Policy",
+  termsOfService: "Terms of Service",
+  cookiePolicy: "Cookie Policy",
+  disclaimer: "Disclaimer",
+  stillNeedHelp: "Still need help?",
+  contactSupportDescription: "Can't find what you're looking for? Our support team is here to help.",
+  contactSupport: "Contact Support",
+  allRightsReserved: "All rights reserved",
 };

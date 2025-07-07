@@ -137,6 +137,111 @@ export const pageSEOConfig = {
         'Professional support'
       ]
     }
+  },
+  
+  privacy: {
+    title: 'Privacy Policy | HolaCupid - Data Protection & Privacy Rights',
+    description: 'Learn how HolaCupid protects your privacy and personal information. Comprehensive privacy policy covering data collection, usage, sharing, and your rights.',
+    keywords: seoKeywords.pageKeywords.about,
+    h1: 'Privacy Policy',
+    h2: [
+      'Information We Collect',
+      'How We Use Your Information',
+      'Data Security & Protection'
+    ],
+    content: {
+      intro: 'Your privacy is important to us. Learn how we protect and handle your personal information.',
+      sections: [
+        'Data collection practices',
+        'Information usage policies',
+        'Security measures',
+        'User rights and controls'
+      ]
+    }
+  },
+  
+  terms: {
+    title: 'Terms of Service | HolaCupid - User Agreement & Platform Rules',
+    description: 'Read HolaCupid\'s Terms of Service to understand platform rules, user responsibilities, and service limitations for our Dominican dating platform.',
+    keywords: seoKeywords.pageKeywords.about,
+    h1: 'Terms of Service',
+    h2: [
+      'Service Description',
+      'User Responsibilities',
+      'Platform Rules'
+    ],
+    content: {
+      intro: 'By using HolaCupid, you agree to these terms and conditions.',
+      sections: [
+        'Platform usage rules',
+        'User responsibilities',
+        'Service limitations',
+        'Account termination policies'
+      ]
+    }
+  },
+  
+  cookies: {
+    title: 'Cookie Policy | HolaCupid - Website Cookies & Tracking',
+    description: 'Learn about HolaCupid\'s use of cookies and tracking technologies. Manage your cookie preferences and understand data collection practices.',
+    keywords: seoKeywords.pageKeywords.about,
+    h1: 'Cookie Policy',
+    h2: [
+      'What Are Cookies',
+      'How We Use Cookies',
+      'Managing Your Preferences'
+    ],
+    content: {
+      intro: 'Understand how we use cookies to improve your browsing experience.',
+      sections: [
+        'Cookie types and purposes',
+        'Third-party cookies',
+        'Cookie management options',
+        'Privacy controls'
+      ]
+    }
+  },
+  
+  disclaimer: {
+    title: 'Disclaimer | HolaCupid - Service Limitations & User Responsibilities',
+    description: 'Important disclaimers about HolaCupid services, limitations of liability, and user responsibilities when using our platform.',
+    keywords: seoKeywords.pageKeywords.about,
+    h1: 'Disclaimer',
+    h2: [
+      'Service Nature',
+      'User Responsibilities',
+      'Limitation of Liability'
+    ],
+    content: {
+      intro: 'Important information about service limitations and user responsibilities.',
+      sections: [
+        'Platform nature and scope',
+        'User accountability',
+        'Liability limitations',
+        'Third-party content'
+      ]
+    }
+  },
+  
+  report: {
+    title: 'Report an Issue | HolaCupid - Safety & Support Reporting',
+    description: 'Report inappropriate behavior, safety concerns, or technical issues on HolaCupid. Our team reviews all reports within 24 hours.',
+    keywords: seoKeywords.pageKeywords.contact,
+    h1: 'Report an Issue',
+    h2: [
+      'Report Categories',
+      'Submit a Report',
+      'What Happens Next'
+    ],
+    content: {
+      intro: 'Help us maintain a safe community by reporting issues and concerns.',
+      sections: [
+        'Harassment and threats',
+        'Inappropriate content',
+        'Safety concerns',
+        'Technical problems'
+      ]
+    }
   }
 };
 

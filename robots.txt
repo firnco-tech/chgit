@@ -4,6 +4,13 @@ Allow: /browse
 Allow: /about
 Allow: /contact
 Allow: /profile/*
+Allow: /help
+Allow: /safety
+Allow: /privacy
+Allow: /terms
+Allow: /cookies
+Allow: /disclaimer
+Allow: /report
 
 # Disallow admin and private areas
 Disallow: /admin/
