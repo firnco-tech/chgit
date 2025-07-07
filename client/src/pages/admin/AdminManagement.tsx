@@ -28,6 +28,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AdminNavbar } from "@/components/admin/AdminNavbar";
 
 // Icons
 import { Plus, Edit, Trash2, Shield, ShieldCheck, UserX, UserCheck, Search } from "lucide-react";
@@ -244,7 +245,9 @@ export default function AdminManagement() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="min-h-screen bg-gray-50">
+      <AdminNavbar />
+      <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -577,6 +580,7 @@ export default function AdminManagement() {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

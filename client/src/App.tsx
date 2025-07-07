@@ -110,10 +110,10 @@ function Router() {
     <Switch>
       {/* Admin login route - no layout */}
       <Route path="/admin/login" component={AdminLogin} />
-      {/* Specific admin routes with navbar */}
-      <Route path="/admin/users" component={() => <><AdminNavbar /><AdminUsers /></>} />
-      <Route path="/admin/admins" component={() => <><AdminNavbar /><AdminManagement /></>} />
-      <Route path="/admin/edit-profile/:id" component={() => <><AdminNavbar /><AdminEditProfile /></>} />
+      {/* Admin routes - all use consistent layout */}
+      <Route path="/admin/users" component={AdminUsers} />
+      <Route path="/admin/admins" component={AdminManagement} />
+      <Route path="/admin/edit-profile/:id" component={AdminEditProfile} />
       {/* Admin dashboard */}
       <Route path="/admin" component={AdminDashboard} />
       {/* All other routes - main site layout */}
