@@ -7,6 +7,8 @@
 
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   Settings, 
   Users, 
@@ -19,7 +21,33 @@ import {
 } from "lucide-react";
 
 export function AdminNavbar() {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
+
+  // Logout mutation
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest('/api/admin/logout', {
+        method: 'POST'
+      });
+    },
+    onSuccess: () => {
+      // Clear all admin-related cache
+      queryClient.invalidateQueries({ queryKey: ['/api/admin'] });
+      queryClient.clear();
+      
+      // Navigate to login page
+      navigate('/admin/login');
+    },
+    onError: (error) => {
+      console.error('Logout error:', error);
+      // Force navigation to login even if logout fails
+      navigate('/admin/login');
+    }
+  });
+
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
 
   const navItems = [
     { href: "/admin", label: "Dashboard", icon: Home },
@@ -79,9 +107,11 @@ export function AdminNavbar() {
           <Button 
             variant="ghost" 
             className="text-gray-300 hover:text-white hover:bg-gray-800"
+            onClick={handleLogout}
+            disabled={logoutMutation.isPending}
           >
             <LogOut className="h-4 w-4 mr-2" />
-            Logout
+            {logoutMutation.isPending ? 'Logging out...' : 'Logout'}
           </Button>
         </div>
       </div>
