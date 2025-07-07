@@ -131,12 +131,22 @@ export function requireAdminRole(
             const admin = await storage.getAdminUser(adminSession.adminId);
             
             if (admin && (admin.role === 'admin' || admin.role === 'superadmin')) {
-              req.admin = {
-                id: admin.id,
-                username: admin.username,
-                email: admin.email,
-                role: admin.role
-              };
+              // Set the appropriate request object based on role
+              if (admin.role === 'superadmin') {
+                req.superAdmin = {
+                  id: admin.id,
+                  username: admin.username,
+                  email: admin.email,
+                  role: admin.role
+                };
+              } else {
+                req.admin = {
+                  id: admin.id,
+                  username: admin.username,
+                  email: admin.email,
+                  role: admin.role
+                };
+              }
               
               // Log admin access
               await storage.logAdminActivity({

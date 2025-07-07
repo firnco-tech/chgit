@@ -828,18 +828,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin logout
+  // Admin logout (handles both admin and superadmin)
   app.post("/api/admin/logout", async (req, res) => {
     try {
-      const sessionId = req.cookies.adminSession;
+      // Check both possible cookie names
+      const adminSessionId = req.cookies.adminSession;
+      const superAdminSessionId = req.cookies.superAdminSession;
+      const sessionId = adminSessionId || superAdminSessionId;
       
       if (sessionId) {
         // Delete admin session
         await storage.deleteAdminSession(sessionId);
       }
 
-      // Clear session cookie
+      // Clear both possible session cookies
       res.clearCookie('adminSession');
+      res.clearCookie('superAdminSession');
       res.json({ success: true });
 
     } catch (error: any) {
