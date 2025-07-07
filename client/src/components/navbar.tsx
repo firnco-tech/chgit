@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingCart, Heart, User, LogOut, LogIn, Menu, ChevronDown, FileText, Mail } from "lucide-react";
+import { ShoppingCart, Heart, User, LogOut, LogIn, Menu, ChevronDown, FileText, Mail, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/hooks/useAuth";
@@ -66,13 +66,11 @@ export function Navbar() {
                     Browse Profiles
                   </span>
                 </Link>
-                <Link href="/submit-profile">
-                  <span className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer ${
-                    isActive('/submit-profile') ? 'text-primary' : 'text-gray-500 hover:text-primary'
-                  }`}>
-                    Submit Profile
+                <a href="/#how-it-works">
+                  <span className="px-3 py-2 rounded-md text-sm font-medium cursor-pointer text-gray-500 hover:text-primary">
+                    How It Works
                   </span>
-                </Link>
+                </a>
                 <Link href="/about">
                   <span className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer ${
                     isActive('/about') ? 'text-primary' : 'text-gray-500 hover:text-primary'
@@ -240,16 +238,17 @@ export function Navbar() {
                               </Button>
                             </Link>
                             
-                            <Link href="/submit-profile">
-                              <Button 
-                                variant="ghost" 
-                                className={`w-full justify-start ${isActive('/submit-profile') ? 'bg-primary/10 text-primary' : ''}`}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                              >
-                                <FileText className="h-4 w-4 mr-2" />
-                                Submit Profile
-                              </Button>
-                            </Link>
+                            <Button 
+                              variant="ghost" 
+                              className="w-full justify-start"
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                window.location.href = '/#how-it-works';
+                              }}
+                            >
+                              <HelpCircle className="h-4 w-4 mr-2" />
+                              How It Works
+                            </Button>
                           </>
                         ) : (
                           <Button 
