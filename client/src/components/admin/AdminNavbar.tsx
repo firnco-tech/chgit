@@ -54,6 +54,7 @@ export function AdminNavbar() {
     { href: "/admin", label: "Dashboard", icon: Home },
     { href: "/admin/profiles", label: "Profiles", icon: FileText },
     { href: "/admin/users", label: "Users", icon: Users },
+    { href: "/admin/admins", label: "Admin Management", icon: Shield },
     { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
     { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
     { href: "/admin/settings", label: "Settings", icon: Settings },

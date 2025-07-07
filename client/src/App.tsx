@@ -41,11 +41,10 @@ import AdminManagement from "@/pages/admin/AdminManagement";
 function AdminRoutes() {
   return (
     <Switch>
-      <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/users" component={AdminUsers} />
       <Route path="/admin/admins" component={AdminManagement} />
       <Route path="/admin/edit-profile/:id" component={AdminEditProfile} />
-      <Route path="/admin/*" component={AdminDashboard} />
+      <Route path="/admin" component={AdminDashboard} />
     </Switch>
   );
 }
