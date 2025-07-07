@@ -54,9 +54,9 @@ export default function AdminLogin() {
     onSuccess: (response) => {
       console.log('Login onSuccess called with:', response);
       if (response.success) {
-        console.log('Login successful, navigating to /admin');
-        // Redirect to admin dashboard on successful login
-        navigate('/admin');
+        console.log('Login successful, forcing navigation to /admin');
+        // Force redirect to admin dashboard
+        window.location.href = '/admin';
       } else {
         console.log('Login response indicates failure');
         setError('Login failed. Please check your credentials.');
