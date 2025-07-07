@@ -132,4 +132,21 @@ export const nl = {
   language: 'Taal',
   changeLanguage: 'Taal Wijzigen',
   languageChanged: 'Taal succesvol gewijzigd',
+  
+  // Features section
+  authenticConnections: 'Authentieke Verbindingen',
+  authenticConnectionsDesc: 'Echte contactinformatie van authentieke Dominicaanse vrouwen',
+  
+  // Dominican culture section
+  discoverDominican: 'Ontdek de Dominicaanse Cultuur & Persoonlijkheid',
+  discoverDominicanDesc: 'Ons unieke CupidTags systeem helpt je Dominicaanse vrouwen te vinden die passen bij jouw levensstijl en waarden',
+  whyDominicanWomen: 'Waarom Dominicaanse Vrouwen?',
+  familyValues: 'Familiewaarden',
+  familyValuesDesc: 'Diepe verbondenheid met familie, loyaliteit en langdurige relaties',
+  passionateCaring: 'Gepassioneerd & Zorgzaam',
+  passionateCaringDesc: 'Bekend om hun warmte, genegenheid en toewijding aan relaties',
+  culturalAuthenticity: 'Culturele Authenticiteit',
+  culturalAuthenticityDesc: 'Rijke Dominicaanse erfenis met sterke traditionele waarden en moderne kijk',
+  cupidTagsSystem: 'CupidTags™ Persoonlijkheidssysteem',
+  cupidTagsDesc: 'Elk profiel is getagd met persoonlijkheidseigenschappen om je te helpen je perfecte partner te vinden gebaseerd op compatibiliteit en gedeelde waarden',
 };

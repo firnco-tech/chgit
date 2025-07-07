@@ -5,11 +5,13 @@ import { ProfileCard } from "@/components/profile-card";
 import { Link } from "wouter";
 import { Loader2, Shield, Clock, Heart, CheckCircle, Star, Users } from "lucide-react";
 import { addLanguageToPath, getCurrentLanguage } from "@/lib/i18n";
+import { useTranslation } from "@/hooks/useTranslation";
 import type { Profile } from "@shared/schema";
 import SEO, { structuredDataSchemas } from "@/components/SEO";
 
 export default function Home() {
   const currentLanguage = getCurrentLanguage();
+  const { t } = useTranslation();
   const { data: featuredProfiles, isLoading } = useQuery<Profile[]>({
     queryKey: ['/api/profiles/featured'],
   });
@@ -55,15 +57,15 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Find Your Perfect Dominican Match
+              {t.heroTitle}
             </h1>
             <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-              Connect with authentic, verified Dominican women seeking serious relationships. Browse genuine profiles, discover cultural connections, and find your perfect match today.
+              {t.heroSubtitle}
             </p>
             <div className="flex justify-center">
               <Link href={addLanguageToPath('/browse', currentLanguage)}>
                 <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
-                  Browse Profiles
+                  {t.browseProfiles}
                 </Button>
               </Link>
             </div>
@@ -76,10 +78,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Featured Profiles
+              {t.featuredProfiles}
             </h2>
             <p className="text-xl text-gray-600">
-              Meet our most popular verified members
+              {t.featuredProfilesSubtitle}
             </p>
           </div>
           
@@ -98,7 +100,7 @@ export default function Home() {
           <div className="text-center mt-12">
             <Link href={addLanguageToPath('/browse', currentLanguage)}>
               <Button size="lg" className="bg-primary hover:bg-primary/90">
-                View All Profiles
+                {t.viewAllProfiles}
               </Button>
             </Link>
           </div>
@@ -110,23 +112,23 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              How It Works
+              {t.howItWorksTitle}
             </h2>
             <p className="text-xl text-gray-600">
-              Simple, secure, and instant connection process
+              {t.howItWorksSubtitle}
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center text-2xl font-bold mx-auto mb-4">
                 1
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                Browse Profiles
+                {t.step1Title}
               </h3>
               <p className="text-gray-600">
-                Explore verified profiles of beautiful Dominican women. View photos, read descriptions, and see available contact methods.
+                {t.step1Description}
               </p>
             </div>
             
@@ -135,10 +137,10 @@ export default function Home() {
                 2
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                Add to Cart & Purchase
+                {t.step2Title}
               </h3>
               <p className="text-gray-600">
-                Select the profiles you're interested in, add them to your cart, and complete secure checkout. Bulk discounts available.
+                {t.step2Description}
               </p>
             </div>
             
@@ -147,10 +149,22 @@ export default function Home() {
                 3
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                Get Contact Info
+                {t.step3Title}
               </h3>
               <p className="text-gray-600">
-                Receive verified contact information instantly after payment. WhatsApp, Instagram, email, and more.
+                {t.step3Description}
+              </p>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                4
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                {t.step4Title}
+              </h3>
+              <p className="text-gray-600">
+                {t.step4Description}
               </p>
             </div>
           </div>
@@ -162,37 +176,37 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Discover Dominican Culture & Personality
+              {t.discoverDominican}
             </h2>
             <p className="text-xl text-gray-600">
-              Our unique CupidTags system helps you find Dominican women who match your lifestyle and values
+              {t.discoverDominicanDesc}
             </p>
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Cultural Highlights */}
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Why Dominican Women?</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">{t.whyDominicanWomen}</h3>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
                   <CheckCircle className="h-6 w-6 text-green-500 mt-1 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Family-Oriented Values</h4>
-                    <p className="text-gray-600">Deep commitment to family, loyalty, and long-term relationships</p>
+                    <h4 className="font-semibold text-gray-900">{t.familyValues}</h4>
+                    <p className="text-gray-600">{t.familyValuesDesc}</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
                   <CheckCircle className="h-6 w-6 text-green-500 mt-1 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Passionate & Caring</h4>
-                    <p className="text-gray-600">Known for their warmth, affection, and dedication to relationships</p>
+                    <h4 className="font-semibold text-gray-900">{t.passionateCaring}</h4>
+                    <p className="text-gray-600">{t.passionateCaringDesc}</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
                   <CheckCircle className="h-6 w-6 text-green-500 mt-1 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Cultural Authenticity</h4>
-                    <p className="text-gray-600">Rich Dominican heritage with strong traditional values and modern outlook</p>
+                    <h4 className="font-semibold text-gray-900">{t.culturalAuthenticity}</h4>
+                    <p className="text-gray-600">{t.culturalAuthenticityDesc}</p>
                   </div>
                 </div>
               </div>
@@ -200,7 +214,7 @@ export default function Home() {
             
             {/* CupidTags System */}
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">CupidTags™ Personality System</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">{t.cupidTagsSystem}</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
                   <Star className="h-5 w-5 text-yellow-500 mb-2" />
@@ -228,7 +242,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-sm text-gray-600 mt-4">
-                Each profile is tagged with personality traits to help you find your perfect match based on compatibility and shared values.
+                {t.cupidTagsDesc}
               </p>
             </div>
           </div>
@@ -240,7 +254,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose HolaCupid?
+              {t.whyChooseUs}
             </h2>
           </div>
           
@@ -248,9 +262,9 @@ export default function Home() {
             <Card>
               <CardContent className="p-6 text-center">
                 <Shield className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Verified Profiles</h3>
+                <h3 className="text-xl font-semibold mb-2">{t.verifiedProfiles}</h3>
                 <p className="text-gray-600">
-                  All profiles are manually verified and approved by our team
+                  {t.verifiedProfilesDesc}
                 </p>
               </CardContent>
             </Card>
@@ -258,9 +272,9 @@ export default function Home() {
             <Card>
               <CardContent className="p-6 text-center">
                 <Clock className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Instant Delivery</h3>
+                <h3 className="text-xl font-semibold mb-2">{t.instantAccess}</h3>
                 <p className="text-gray-600">
-                  Get contact information immediately after payment
+                  {t.instantAccessDesc}
                 </p>
               </CardContent>
             </Card>
@@ -268,9 +282,9 @@ export default function Home() {
             <Card>
               <CardContent className="p-6 text-center">
                 <Heart className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Authentic Connections</h3>
+                <h3 className="text-xl font-semibold mb-2">{t.authenticConnections}</h3>
                 <p className="text-gray-600">
-                  Real contact information from genuine Dominican women
+                  {t.authenticConnectionsDesc}
                 </p>
               </CardContent>
             </Card>

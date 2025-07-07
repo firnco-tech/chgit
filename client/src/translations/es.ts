@@ -132,4 +132,21 @@ export const es = {
   language: 'Idioma',
   changeLanguage: 'Cambiar Idioma',
   languageChanged: 'Idioma cambiado exitosamente',
+  
+  // Features section
+  authenticConnections: 'Conexiones Auténticas',
+  authenticConnectionsDesc: 'Información de contacto real de mujeres dominicanas genuinas',
+  
+  // Dominican culture section
+  discoverDominican: 'Descubre la Cultura y Personalidad Dominicana',
+  discoverDominicanDesc: 'Nuestro sistema único CupidTags te ayuda a encontrar mujeres dominicanas que coincidan con tu estilo de vida y valores',
+  whyDominicanWomen: '¿Por qué Mujeres Dominicanas?',
+  familyValues: 'Valores Familiares',
+  familyValuesDesc: 'Compromiso profundo con la familia, lealtad y relaciones a largo plazo',
+  passionateCaring: 'Apasionadas y Cariñosas',
+  passionateCaringDesc: 'Conocidas por su calidez, afecto y dedicación a las relaciones',
+  culturalAuthenticity: 'Autenticidad Cultural',
+  culturalAuthenticityDesc: 'Rica herencia dominicana con valores tradicionales sólidos y perspectiva moderna',
+  cupidTagsSystem: 'Sistema de Personalidad CupidTags™',
+  cupidTagsDesc: 'Cada perfil está etiquetado con rasgos de personalidad para ayudarte a encontrar tu pareja perfecta basada en compatibilidad y valores compartidos',
 };
