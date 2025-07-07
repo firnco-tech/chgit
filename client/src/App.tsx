@@ -37,55 +37,81 @@ import AdminEditProfile from "@/pages/admin/AdminEditProfile";
 import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminManagement from "@/pages/admin/AdminManagement";
 
-function Router() {
+// Admin Route Wrapper - No main site layout for admin routes
+function AdminRoutes() {
   return (
     <Switch>
-      {/* Language-prefixed routes */}
-      <Route path="/:lang" component={Home} />
-      <Route path="/:lang/browse" component={Browse} />
-      <Route path="/:lang/profile/:slug" component={ProfilePage} />
-      <Route path="/:lang/submit-profile" component={SubmitProfile} />
-      <Route path="/:lang/about" component={About} />
-      <Route path="/:lang/contact" component={Contact} />
-      <Route path="/:lang/help" component={Help} />
-      <Route path="/:lang/safety" component={Safety} />
-      <Route path="/:lang/privacy" component={Privacy} />
-      <Route path="/:lang/terms" component={Terms} />
-      <Route path="/:lang/cookies" component={Cookies} />
-      <Route path="/:lang/disclaimer" component={Disclaimer} />
-      <Route path="/:lang/report" component={Report} />
-      <Route path="/:lang/checkout" component={Checkout} />
-      <Route path="/:lang/cart" component={Cart} />
-      <Route path="/:lang/favorites" component={Favorites} />
-      <Route path="/:lang/payment-success" component={PaymentSuccess} />
-      
-      {/* Default routes without language prefix - redirect to language version */}
-      <Route path="/" component={() => <RedirectToLanguage path="/" />} />
-      <Route path="/browse" component={() => <RedirectToLanguage path="/browse" />} />
-      <Route path="/profile/:slug" component={(params: any) => <RedirectToLanguage path={`/profile/${params.slug}`} />} />
-      <Route path="/submit-profile" component={() => <RedirectToLanguage path="/submit-profile" />} />
-      <Route path="/about" component={() => <RedirectToLanguage path="/about" />} />
-      <Route path="/contact" component={() => <RedirectToLanguage path="/contact" />} />
-      <Route path="/help" component={() => <RedirectToLanguage path="/help" />} />
-      <Route path="/safety" component={() => <RedirectToLanguage path="/safety" />} />
-      <Route path="/privacy" component={() => <RedirectToLanguage path="/privacy" />} />
-      <Route path="/terms" component={() => <RedirectToLanguage path="/terms" />} />
-      <Route path="/cookies" component={() => <RedirectToLanguage path="/cookies" />} />
-      <Route path="/disclaimer" component={() => <RedirectToLanguage path="/disclaimer" />} />
-      <Route path="/report" component={() => <RedirectToLanguage path="/report" />} />
-      <Route path="/checkout" component={() => <RedirectToLanguage path="/checkout" />} />
-      <Route path="/cart" component={() => <RedirectToLanguage path="/cart" />} />
-      <Route path="/favorites" component={() => <RedirectToLanguage path="/favorites" />} />
-      <Route path="/payment-success" component={() => <RedirectToLanguage path="/payment-success" />} />
-      
-      {/* Admin Panel Routes - No language prefix needed */}
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/users" component={AdminUsers} />
       <Route path="/admin/admins" component={AdminManagement} />
       <Route path="/admin/edit-profile/:id" component={AdminEditProfile} />
-      
-      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
+// Main Site Router - With main site layout
+function MainSiteRouter() {
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      <Analytics />
+      <LanguageSuggestionBanner />
+      <Navbar />
+      <main className="flex-1">
+        <Switch>
+          {/* Language-prefixed routes */}
+          <Route path="/:lang" component={Home} />
+          <Route path="/:lang/browse" component={Browse} />
+          <Route path="/:lang/profile/:slug" component={ProfilePage} />
+          <Route path="/:lang/submit-profile" component={SubmitProfile} />
+          <Route path="/:lang/about" component={About} />
+          <Route path="/:lang/contact" component={Contact} />
+          <Route path="/:lang/help" component={Help} />
+          <Route path="/:lang/safety" component={Safety} />
+          <Route path="/:lang/privacy" component={Privacy} />
+          <Route path="/:lang/terms" component={Terms} />
+          <Route path="/:lang/cookies" component={Cookies} />
+          <Route path="/:lang/disclaimer" component={Disclaimer} />
+          <Route path="/:lang/report" component={Report} />
+          <Route path="/:lang/checkout" component={Checkout} />
+          <Route path="/:lang/cart" component={Cart} />
+          <Route path="/:lang/favorites" component={Favorites} />
+          <Route path="/:lang/payment-success" component={PaymentSuccess} />
+          
+          {/* Default routes without language prefix - redirect to language version */}
+          <Route path="/" component={() => <RedirectToLanguage path="/" />} />
+          <Route path="/browse" component={() => <RedirectToLanguage path="/browse" />} />
+          <Route path="/profile/:slug" component={(params: any) => <RedirectToLanguage path={`/profile/${params.slug}`} />} />
+          <Route path="/submit-profile" component={() => <RedirectToLanguage path="/submit-profile" />} />
+          <Route path="/about" component={() => <RedirectToLanguage path="/about" />} />
+          <Route path="/contact" component={() => <RedirectToLanguage path="/contact" />} />
+          <Route path="/help" component={() => <RedirectToLanguage path="/help" />} />
+          <Route path="/safety" component={() => <RedirectToLanguage path="/safety" />} />
+          <Route path="/privacy" component={() => <RedirectToLanguage path="/privacy" />} />
+          <Route path="/terms" component={() => <RedirectToLanguage path="/terms" />} />
+          <Route path="/cookies" component={() => <RedirectToLanguage path="/cookies" />} />
+          <Route path="/disclaimer" component={() => <RedirectToLanguage path="/disclaimer" />} />
+          <Route path="/report" component={() => <RedirectToLanguage path="/report" />} />
+          <Route path="/checkout" component={() => <RedirectToLanguage path="/checkout" />} />
+          <Route path="/cart" component={() => <RedirectToLanguage path="/cart" />} />
+          <Route path="/favorites" component={() => <RedirectToLanguage path="/favorites" />} />
+          <Route path="/payment-success" component={() => <RedirectToLanguage path="/payment-success" />} />
+          
+          <Route component={NotFound} />
+        </Switch>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+function Router() {
+  return (
+    <Switch>
+      {/* Admin routes - separate layout */}
+      <Route path="/admin*" component={AdminRoutes} />
+      {/* All other routes - main site layout */}
+      <Route component={MainSiteRouter} />
     </Switch>
   );
 }
@@ -115,16 +141,8 @@ function App() {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <div className="min-h-screen bg-background flex flex-col">
-            <Analytics />
-            <LanguageSuggestionBanner />
-            <Navbar />
-            <main className="flex-1">
-              <Router />
-            </main>
-            <Footer />
-            <Toaster />
-          </div>
+          <Router />
+          <Toaster />
         </TooltipProvider>
       </QueryClientProvider>
     </HelmetProvider>
