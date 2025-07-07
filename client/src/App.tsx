@@ -36,6 +36,7 @@ import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminEditProfile from "@/pages/admin/AdminEditProfile";
 import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminManagement from "@/pages/admin/AdminManagement";
+import { AdminNavbar } from "@/components/admin/AdminNavbar";
 
 // Admin Route Wrapper - No main site layout for admin routes
 function AdminRoutes() {
@@ -109,8 +110,12 @@ function Router() {
     <Switch>
       {/* Admin login route - no layout */}
       <Route path="/admin/login" component={AdminLogin} />
-      {/* Admin routes - separate layout */}
-      <Route path="/admin*" component={AdminRoutes} />
+      {/* Specific admin routes with navbar */}
+      <Route path="/admin/users" component={() => <><AdminNavbar /><AdminUsers /></>} />
+      <Route path="/admin/admins" component={() => <><AdminNavbar /><AdminManagement /></>} />
+      <Route path="/admin/edit-profile/:id" component={() => <><AdminNavbar /><AdminEditProfile /></>} />
+      {/* Admin dashboard */}
+      <Route path="/admin" component={AdminDashboard} />
       {/* All other routes - main site layout */}
       <Route component={MainSiteRouter} />
     </Switch>
