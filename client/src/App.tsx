@@ -5,6 +5,8 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Navbar } from "@/components/navbar";
+import { useEffect } from "react";
+import { initializeAnalytics } from "@/lib/analytics";
 import Home from "@/pages/home";
 import Browse from "@/pages/browse";
 import ProfilePage from "@/pages/profile";
@@ -55,6 +57,13 @@ function Router() {
 }
 
 function App() {
+  // Initialize analytics on app load
+  useEffect(() => {
+    // Initialize analytics with Google Analytics ID (when available)
+    // For now, initialize without GA to set up performance monitoring
+    initializeAnalytics();
+  }, []);
+
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>

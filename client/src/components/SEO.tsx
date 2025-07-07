@@ -76,12 +76,73 @@ export function SEO({
       <meta httpEquiv="Content-Language" content="en" />
       <meta name="content-language" content="en" />
       
+      {/* Performance Optimizations */}
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link rel="dns-prefetch" href="//api.stripe.com" />
+      <link rel="dns-prefetch" href="//checkout.stripe.com" />
+      
+      {/* Mobile App Meta Tags */}
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      <meta name="apple-mobile-web-app-title" content="HolaCupid" />
+      <meta name="mobile-web-app-capable" content="yes" />
+      
       {/* Structured Data */}
       {structuredData && (
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
       )}
+      
+      {/* Website Organization Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "HolaCupid",
+          "description": "Premium Dominican dating platform connecting international men with verified Dominican women",
+          "url": "https://holacupid.com",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://holacupid.com/logo.png",
+            "width": 200,
+            "height": 60
+          },
+          "sameAs": [
+            "https://facebook.com/holacupid",
+            "https://instagram.com/holacupid",
+            "https://twitter.com/holacupid"
+          ],
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "Customer Service",
+            "availableLanguage": ["English", "Spanish"],
+            "areaServed": "Worldwide"
+          }
+        })}
+      </script>
+      
+      {/* Website Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "HolaCupid",
+          "alternateName": "Hola Cupid Dating",
+          "url": "https://holacupid.com",
+          "description": "Find your perfect Dominican match with verified profiles, authentic connections, and secure communication",
+          "inLanguage": "en-US",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://holacupid.com/browse?search={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        })}
+      </script>
     </Helmet>
   );
 }

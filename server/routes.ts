@@ -1165,6 +1165,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // =============================================================================
+  // SEO ROUTES - Sitemap and robots.txt for search engine optimization
+  // =============================================================================
+
+  // Dynamic sitemap generation
+  app.get("/sitemap.xml", async (req, res) => {
+    try {
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const currentDate = new Date().toISOString().split('T')[0];
+      
+      // Get approved profiles for individual profile pages
+      const profiles = await storage.getProfiles({ approved: true });
+      
+      let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main pages -->
+  <url>
+    <loc>${baseUrl}/</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/browse</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/about</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/contact</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+
+      // Add individual profile pages
+      profiles.forEach(profile => {
+        const profileDate = profile.updatedAt ? new Date(profile.updatedAt).toISOString().split('T')[0] : currentDate;
+        sitemap += `
+  <url>
+    <loc>${baseUrl}/profile/${profile.id}</loc>
+    <lastmod>${profileDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`;
+      });
+
+      sitemap += `
+</urlset>`;
+
+      res.set('Content-Type', 'text/xml');
+      res.send(sitemap);
+    } catch (error: any) {
+      console.error('Error generating sitemap:', error);
+      res.status(500).send('Error generating sitemap');
+    }
+  });
+
+  // Serve robots.txt
+  app.get("/robots.txt", (req, res) => {
+    res.set('Content-Type', 'text/plain');
+    res.sendFile(path.resolve(process.cwd(), 'robots.txt'));
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

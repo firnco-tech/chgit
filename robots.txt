@@ -1,0 +1,45 @@
+User-agent: *
+Allow: /
+Allow: /browse
+Allow: /about
+Allow: /contact
+Allow: /profile/*
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /admin/*
+Disallow: /api/
+Disallow: /api/*
+Disallow: /submit-profile
+Disallow: /checkout
+Disallow: /payment-success
+Disallow: /favorites
+
+# Allow search engines to crawl media files
+Allow: /uploads/*
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.png
+Allow: /*.gif
+Allow: /*.webp
+Allow: /*.mp4
+Allow: /*.mov
+
+# Sitemap location
+Sitemap: https://holacupid.com/sitemap.xml
+
+# Crawl delay for politeness
+Crawl-delay: 1
+
+# Specific rules for different bots
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: facebookexternalhit
+Allow: /
+Allow: /profile/*
