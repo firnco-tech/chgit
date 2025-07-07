@@ -5,6 +5,9 @@ import { useCart } from "@/lib/cart";
 import { useAuth } from "@/hooks/useAuth";
 import { CartSidebar } from "./cart-sidebar";
 import { AuthModal } from "./auth/AuthModal";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useTranslation } from "@/hooks/useTranslation";
+import { addLanguageToPath, getCurrentLanguage } from "@/lib/i18n";
 import { useState } from "react";
 import {
   DropdownMenu,
@@ -30,6 +33,8 @@ export function Navbar() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const itemCount = getItemCount();
+  const { t } = useTranslation();
+  const currentLanguage = getCurrentLanguage();
 
   const isActive = (path: string) => location === path;
   
@@ -59,11 +64,11 @@ export function Navbar() {
                     Home
                   </span>
                 </Link>
-                <Link href="/browse">
+                <Link href={addLanguageToPath('/browse', currentLanguage)}>
                   <span className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer ${
                     isActive('/browse') ? 'text-primary' : 'text-gray-500 hover:text-primary'
                   }`}>
-                    Browse Profiles
+                    {t.browse}
                   </span>
                 </Link>
                 <a href="/#how-it-works">
@@ -107,6 +112,9 @@ export function Navbar() {
             </div>
 
             <div className="flex items-center space-x-2">
+              {/* Language Switcher */}
+              <LanguageSwitcher variant="minimal" />
+              
               {/* Cart Button */}
               <Button
                 variant="ghost"
@@ -314,6 +322,14 @@ export function Navbar() {
                             Login
                           </Button>
                         )}
+                      </div>
+                      
+                      {/* Mobile Language Switcher */}
+                      <div className="pt-4 border-t">
+                        <div className="flex items-center justify-between px-2 py-2">
+                          <span className="text-sm font-medium text-gray-700">Language</span>
+                          <LanguageSwitcher variant="default" className="flex-shrink-0" />
+                        </div>
                       </div>
                     </div>
                   </SheetContent>

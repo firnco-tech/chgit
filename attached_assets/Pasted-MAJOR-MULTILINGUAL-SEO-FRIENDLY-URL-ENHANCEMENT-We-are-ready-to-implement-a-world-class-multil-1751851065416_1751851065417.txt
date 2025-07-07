@@ -1,0 +1,74 @@
+MAJOR MULTILINGUAL & SEO-FRIENDLY URL ENHANCEMENT
+
+We are ready to implement a world-class, multilingual user experience and SEO-friendly URL structure.
+Do not break or regress any existing code or user/admin flows. Proceed step-by-step, and wait for my review after each step.
+
+STEP 1: Visible Language Menu Implementation
+Add a visible language switcher/menu on every page (header or top-right corner recommended).
+
+The menu should display all supported languages: English, Spanish, Italian, German, Dutch, and Portuguese.
+
+When a user selects a language, update the URL structure to include the language code (e.g., /en/, /es/, /it/, /de/, /nl/, /pt/) and load the correct translations for all content and meta tags.
+
+Ensure the language choice persists as the user navigates the site.
+
+STEP 2: SEO-Friendly Profile URL Structure with Multilingual Slugs
+Update profile URLs to use descriptive, SEO-friendly slugs generated from the profile’s name, city, and country, instead of numeric IDs.
+
+For multilingual support, generate slugs in the correct language for each version of the site.
+
+Ensure all slugs are unique (add a numeric suffix if needed).
+
+Update all internal links, sitemaps, and hreflang tags to use the new slug-based URLs.
+
+Examples:
+
+English:
+holacupid.com/en/katy-from-santiago-dominican-republic
+
+Spanish:
+holacupid.com/es/katy-de-santiago-republica-dominicana
+
+Italian:
+holacupid.com/it/katy-da-santiago-repubblica-dominicana
+
+German:
+holacupid.com/de/katy-aus-santiago-dominikanische-republik
+
+Dutch:
+holacupid.com/nl/katy-uit-santiago-dominicaanse-republiek
+
+Portuguese:
+holacupid.com/pt/katy-de-santiago-republica-dominicana
+
+STEP 3: Internal Linking, Sitemap, and Hreflang Updates
+Update all internal links, navigation, and breadcrumbs to use the new multilingual slug URLs.
+
+Generate a multilingual sitemap.xml including all language versions of each profile and page.
+
+Add <link rel="alternate" hreflang="xx" href="URL" /> tags to every page, referencing all language versions (including self-referential).
+
+Ensure Google and other search engines can crawl and index all language versions.
+
+STEP 4: Testing & Verification
+Test the language menu and URL structure in every supported language.
+
+Confirm that switching languages updates both the content and the URL.
+
+Verify that all profile pages are accessible via their new SEO-friendly slugs in each language.
+
+Check that sitemaps and hreflang tags are correct and complete.
+
+Provide before/after screenshots or screencasts for each step.
+
+Critical Instructions:
+
+Do not break or alter any existing site structure, user data, or user/admin experience outside these enhancements.
+
+All new or changed code must be clearly commented and documented.
+
+If you encounter a blocking issue or uncertainty, STOP and report before proceeding.
+
+Site stability and user experience take priority over new features.
+
+Begin with Step 1 (Language Menu), and wait for my review before moving to Step 2.
