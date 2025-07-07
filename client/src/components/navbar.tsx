@@ -73,6 +73,13 @@ export function Navbar() {
                     Submit Profile
                   </span>
                 </Link>
+                <Link href="/about">
+                  <span className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer ${
+                    isActive('/about') ? 'text-primary' : 'text-gray-500 hover:text-primary'
+                  }`}>
+                    About
+                  </span>
+                </Link>
                 <Link href="/contact">
                   <span className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer ${
                     isActive('/contact') ? 'text-primary' : 'text-gray-500 hover:text-primary'
@@ -257,6 +264,16 @@ export function Navbar() {
                             Favorites (Login Required)
                           </Button>
                         )}
+                        
+                        <Link href="/about">
+                          <Button 
+                            variant="ghost" 
+                            className={`w-full justify-start ${isActive('/about') ? 'bg-primary/10 text-primary' : ''}`}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                          >
+                            About
+                          </Button>
+                        </Link>
                         
                         <Link href="/contact">
                           <Button 

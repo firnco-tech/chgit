@@ -8,6 +8,7 @@ import { ProfileCard } from "@/components/profile-card";
 import { FavoriteHeart } from "@/components/FavoriteHeart";
 import { Loader2, Search } from "lucide-react";
 import type { Profile } from "@shared/schema";
+import SEO, { structuredDataSchemas } from "@/components/SEO";
 
 export default function Browse() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -40,6 +41,10 @@ export default function Browse() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO 
+        page="browse" 
+        structuredData={structuredDataSchemas.website}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}

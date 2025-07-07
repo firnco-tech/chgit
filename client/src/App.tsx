@@ -1,6 +1,7 @@
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Navbar } from "@/components/navbar";
@@ -8,6 +9,7 @@ import Home from "@/pages/home";
 import Browse from "@/pages/browse";
 import ProfilePage from "@/pages/profile";
 import SubmitProfile from "@/pages/submit-profile";
+import About from "@/pages/about";
 import Contact from "@/pages/contact";
 import Help from "@/pages/help";
 import Safety from "@/pages/safety";
@@ -31,6 +33,7 @@ function Router() {
       <Route path="/browse" component={Browse} />
       <Route path="/profile/:id" component={ProfilePage} />
       <Route path="/submit-profile" component={SubmitProfile} />
+      <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
       <Route path="/help" component={Help} />
       <Route path="/safety" component={Safety} />
@@ -53,15 +56,17 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <div className="min-h-screen bg-background">
-          <Navbar />
-          <Router />
-          <Toaster />
-        </div>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <div className="min-h-screen bg-background">
+            <Navbar />
+            <Router />
+            <Toaster />
+          </div>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 

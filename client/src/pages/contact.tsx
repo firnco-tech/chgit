@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Mail, MapPin, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import SEO, { structuredDataSchemas } from "@/components/SEO";
 
 const contactSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
@@ -59,10 +60,18 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 py-12 px-4">
+      <SEO 
+        page="contact" 
+        structuredData={structuredDataSchemas.website}
+      />
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Get in Touch</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Contact HolaCupid - Dominican Dating Support</h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Get help with your Dominican dating experience. Our expert team is here to assist with profile verification, 
+            payment questions, and connecting you with beautiful Dominican women.
+          </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12">
