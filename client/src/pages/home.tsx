@@ -43,7 +43,7 @@ export default function Home() {
               <h3 className="text-lg font-semibold">Are you a beautiful Dominican woman?</h3>
               <p className="text-sm opacity-90">Join our verified community and start earning money today!</p>
             </div>
-            <Link href="/submit-profile">
+            <Link href={addLanguageToPath("/submit-profile", currentLanguage)}>
               <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100 font-semibold px-8">
                 Submit Your Profile
               </Button>
@@ -339,12 +339,12 @@ export default function Home() {
               Join thousands of satisfied customers who found love through HolaCupid
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/browse">
+              <Link href={addLanguageToPath("/browse", currentLanguage)}>
                 <Button size="lg" className="bg-primary text-white hover:bg-primary/90 px-8">
                   Browse Profiles Now
                 </Button>
               </Link>
-              <Link href="/submit-profile">
+              <Link href={addLanguageToPath("/submit-profile", currentLanguage)}>
                 <Button variant="outline" size="lg" className="px-8">
                   Join as a Model
                 </Button>
