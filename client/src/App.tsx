@@ -5,6 +5,8 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Navbar } from "@/components/navbar";
+import { LanguageSuggestionBanner } from "@/components/LanguageSuggestionBanner";
+import { getBestLanguageForUser, addLanguageToPath } from "@/lib/i18n";
 import { useEffect } from "react";
 import { initializeAnalytics } from "@/lib/analytics";
 import Home from "@/pages/home";
@@ -56,6 +58,18 @@ function Router() {
   );
 }
 
+// Component to redirect to language-prefixed version
+function RedirectToLanguage({ path }: { path: string }) {
+  useEffect(() => {
+    const bestLanguage = getBestLanguageForUser();
+    const newPath = addLanguageToPath(path, bestLanguage);
+    window.history.replaceState({}, '', newPath);
+    window.location.reload();
+  }, [path]);
+  
+  return null;
+}
+
 function App() {
   // Initialize analytics on app load
   useEffect(() => {
@@ -69,6 +83,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <div className="min-h-screen bg-background">
+            <LanguageSuggestionBanner />
             <Navbar />
             <Router />
             <Toaster />

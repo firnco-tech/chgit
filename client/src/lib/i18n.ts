@@ -113,23 +113,125 @@ export const getSavedLanguagePreference = (): SupportedLanguage | null => {
   return null;
 };
 
-// Detect browser language
-export const detectBrowserLanguage = (): SupportedLanguage => {
-  if (typeof window === 'undefined') return DEFAULT_LANGUAGE;
-  
-  const browserLang = navigator.language.split('-')[0] as SupportedLanguage;
-  
-  if (SUPPORTED_LANGUAGES[browserLang]) {
-    return browserLang;
-  }
-  
-  return DEFAULT_LANGUAGE;
+// Browser language mapping to supported languages
+const LANGUAGE_MAPPING: Record<string, SupportedLanguage> = {
+  'en': 'en',
+  'en-US': 'en',
+  'en-GB': 'en',
+  'es': 'es',
+  'es-ES': 'es',
+  'es-MX': 'es',
+  'es-AR': 'es',
+  'es-CO': 'es',
+  'it': 'it',
+  'it-IT': 'it',
+  'de': 'de',
+  'de-DE': 'de',
+  'de-AT': 'de',
+  'de-CH': 'de',
+  'nl': 'nl',
+  'nl-NL': 'nl',
+  'nl-BE': 'nl',
+  'pt': 'pt',
+  'pt-BR': 'pt',
+  'pt-PT': 'pt'
 };
 
-// Get best language for user (priority: URL > saved > browser > default)
+// Detect browser language with comprehensive mapping
+export const detectBrowserLanguage = (): SupportedLanguage | null => {
+  if (typeof window === 'undefined') return null;
+  
+  const browserLang = navigator.language || navigator.languages?.[0];
+  if (!browserLang) return null;
+  
+  // Try exact match first
+  if (browserLang in LANGUAGE_MAPPING) {
+    return LANGUAGE_MAPPING[browserLang];
+  }
+  
+  // Try language code only (e.g., 'es' from 'es-MX')
+  const langCode = browserLang.split('-')[0];
+  if (langCode in LANGUAGE_MAPPING) {
+    return LANGUAGE_MAPPING[langCode];
+  }
+  
+  return null;
+};
+
+// Check if user has made an explicit language choice
+export const hasUserLanguageChoice = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return localStorage.getItem('holacupid_language_choice') === 'true';
+};
+
+// Mark that user has made a language choice
+export const markUserLanguageChoice = (): void => {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem('holacupid_language_choice', 'true');
+};
+
+// Check if language suggestion should be shown
+export const shouldShowLanguageSuggestion = (): { show: boolean; suggestedLanguage?: SupportedLanguage } => {
+  if (typeof window === 'undefined') return { show: false };
+  
+  // Don't show if user has already made a choice
+  if (hasUserLanguageChoice()) {
+    return { show: false };
+  }
+  
+  // Don't show if suggestion was dismissed
+  if (localStorage.getItem('holacupid_language_suggestion_dismissed')) {
+    return { show: false };
+  }
+  
+  // Detect browser language
+  const browserLang = detectBrowserLanguage();
+  if (!browserLang || browserLang === DEFAULT_LANGUAGE) {
+    return { show: false };
+  }
+  
+  // Check if current language is different from browser language
+  const currentLang = getCurrentLanguage();
+  if (currentLang === browserLang) {
+    return { show: false };
+  }
+  
+  return { show: true, suggestedLanguage: browserLang };
+};
+
+// Dismiss language suggestion
+export const dismissLanguageSuggestion = (): void => {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem('holacupid_language_suggestion_dismissed', 'true');
+};
+
+// Navigate to language version of current page
+export const navigateToLanguage = (language: SupportedLanguage): void => {
+  if (typeof window === 'undefined') return;
+  
+  const currentPath = window.location.pathname;
+  const newPath = addLanguageToPath(currentPath, language);
+  
+  // Update language preference and mark as user choice
+  saveLanguagePreference(language);
+  markUserLanguageChoice();
+  
+  // Navigate to new URL
+  window.history.pushState({}, '', newPath);
+  
+  // Trigger page reload to update content
+  window.location.reload();
+};
+
+// Get best language for user (priority: User choice > URL > saved > browser > default)
 export const getBestLanguageForUser = (): SupportedLanguage => {
+  // If user has made a choice, respect it
+  if (hasUserLanguageChoice()) {
+    const savedLang = getSavedLanguagePreference();
+    if (savedLang) return savedLang;
+  }
+  
   const urlLang = getCurrentLanguage();
-  const savedLang = getSavedLanguagePreference();
   const browserLang = detectBrowserLanguage();
   
   // If URL has valid language, use it
@@ -137,6 +239,6 @@ export const getBestLanguageForUser = (): SupportedLanguage => {
     return urlLang;
   }
   
-  // Otherwise use saved preference or browser language
-  return savedLang || browserLang;
+  // Fall back to browser language or default
+  return browserLang || DEFAULT_LANGUAGE;
 };

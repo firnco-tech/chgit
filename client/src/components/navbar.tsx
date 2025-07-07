@@ -57,11 +57,11 @@ export function Navbar() {
             
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                <Link href="/">
+                <Link href={addLanguageToPath('/', currentLanguage)}>
                   <span className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer ${
                     isActive('/') ? 'text-primary' : 'text-gray-500 hover:text-primary'
                   }`}>
-                    Home
+                    {t.home}
                   </span>
                 </Link>
                 <Link href={addLanguageToPath('/browse', currentLanguage)}>

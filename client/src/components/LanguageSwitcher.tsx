@@ -6,7 +6,6 @@
  */
 
 import { useState } from 'react';
-import { useLocation } from 'wouter';
 import { ChevronDown, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,9 +18,7 @@ import {
   SUPPORTED_LANGUAGES,
   type SupportedLanguage,
   getCurrentLanguage,
-  addLanguageToPath,
-  getPathWithoutLanguage,
-  saveLanguagePreference,
+  navigateToLanguage,
 } from '@/lib/i18n';
 
 interface LanguageSwitcherProps {
@@ -30,25 +27,11 @@ interface LanguageSwitcherProps {
 }
 
 export function LanguageSwitcher({ className = '', variant = 'default' }: LanguageSwitcherProps) {
-  const [, setLocation] = useLocation();
   const currentLanguage = getCurrentLanguage();
   const currentLangConfig = SUPPORTED_LANGUAGES[currentLanguage];
 
   const handleLanguageChange = (newLanguage: SupportedLanguage) => {
-    // Save preference
-    saveLanguagePreference(newLanguage);
-    
-    // Get current path without language prefix
-    const currentPath = getPathWithoutLanguage();
-    
-    // Create new path with language prefix
-    const newPath = addLanguageToPath(currentPath, newLanguage);
-    
-    // Navigate to new path
-    setLocation(newPath);
-    
-    // Update document language attribute
-    document.documentElement.lang = newLanguage;
+    navigateToLanguage(newLanguage);
   };
 
   if (variant === 'minimal') {
