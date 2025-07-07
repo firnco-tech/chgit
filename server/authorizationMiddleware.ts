@@ -109,13 +109,14 @@ export function requireAdminRole(
       
       // Check for regular admin authentication if super admin not found
       if (!requireSuperAdmin && allowedRoles.includes('admin')) {
-        // Check for admin session with enhanced debugging
-        const adminSessionId = req.cookies?.adminSession;
+        // Check for admin session with enhanced debugging - check both cookie types
+        const adminSessionId = req.cookies?.adminSession || req.cookies?.superAdminSession;
         console.log('🔍 ADMIN SESSION DEBUG:', {
           path: req.path,
           method: req.method,
           cookiesReceived: Object.keys(req.cookies || {}),
-          adminSessionId: adminSessionId ? `${adminSessionId.substring(0, 10)}...` : 'NOT_FOUND'
+          adminSessionId: adminSessionId ? `${adminSessionId.substring(0, 10)}...` : 'NOT_FOUND',
+          foundInCookie: req.cookies?.adminSession ? 'adminSession' : req.cookies?.superAdminSession ? 'superAdminSession' : 'NONE'
         });
         
         if (adminSessionId) {
@@ -129,7 +130,7 @@ export function requireAdminRole(
           if (adminSession && adminSession.expiresAt > new Date()) {
             const admin = await storage.getAdminUser(adminSession.adminId);
             
-            if (admin && admin.role === 'admin') {
+            if (admin && (admin.role === 'admin' || admin.role === 'superadmin')) {
               req.admin = {
                 id: admin.id,
                 username: admin.username,
