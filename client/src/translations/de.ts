@@ -149,4 +149,33 @@ export const de = {
   culturalAuthenticityDesc: 'Reiches dominikanisches Erbe mit starken traditionellen Werten und moderner Sichtweise',
   cupidTagsSystem: 'CupidTags™ Persönlichkeitssystem',
   cupidTagsDesc: 'Jedes Profil ist mit Persönlichkeitsmerkmalen gekennzeichnet, um dir zu helfen, deinen perfekten Partner basierend auf Kompatibilität und gemeinsamen Werten zu finden',
+  
+  // Browse page - new keys only
+  browsePageTitle: 'Profile durchsuchen',
+  filters: 'Filter',
+  age18to25: '18-25',
+  age26to30: '26-30',
+  age31to35: '31-35',
+  age36plus: '36+',
+  
+  // Profile page - new keys only
+  viewProfile: 'Profil ansehen',
+  addToFavorites: 'Zu Favoriten hinzufügen',
+  removeFromFavorites: 'Aus Favoriten entfernen',
+  contactInfo: 'Kontaktinformationen',
+  personalInfo: 'Persönliche Informationen',
+  lifestyle: 'Lebensstil',
+  appearance: 'Aussehen',
+  occupation: 'Beruf',
+  bodyType: 'Körpertyp',
+  ethnicity: 'Ethnizität',
+  religion: 'Religion',
+  smoking: 'Rauchen',
+  drinking: 'Trinken',
+  children: 'Kinder',
+  languages: 'Sprachen',
+  photos: 'Fotos',
+  videos: 'Videos',
+  noPhotos: 'Keine Fotos verfügbar',
+  noVideos: 'Keine Videos verfügbar',
 };

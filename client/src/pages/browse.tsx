@@ -9,8 +9,10 @@ import { FavoriteHeart } from "@/components/FavoriteHeart";
 import { Loader2, Search } from "lucide-react";
 import type { Profile } from "@shared/schema";
 import SEO, { structuredDataSchemas } from "@/components/SEO";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function Browse() {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [ageFilter, setAgeFilter] = useState("all");
   const [locationFilter, setLocationFilter] = useState("all");
@@ -46,7 +48,7 @@ export default function Browse() {
         structuredData={structuredDataSchemas.website}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Browse Profiles</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">{t.browsePageTitle}</h2>
         
         {/* Desktop Horizontal Filters */}
         <div className="hidden lg:block mb-8">
@@ -61,7 +63,7 @@ export default function Browse() {
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                     <Input
-                      placeholder="Search profiles..."
+                      placeholder={t.searchPlaceholder}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-10"
@@ -72,18 +74,18 @@ export default function Browse() {
                 {/* Age Range */}
                 <div className="min-w-48">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Age Range
+                    {t.ageRange}
                   </label>
                   <Select value={ageFilter} onValueChange={setAgeFilter}>
                     <SelectTrigger>
-                      <SelectValue placeholder="All Ages" />
+                      <SelectValue placeholder={t.allAges} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Ages</SelectItem>
-                      <SelectItem value="18-25">18-25</SelectItem>
-                      <SelectItem value="26-30">26-30</SelectItem>
-                      <SelectItem value="31-35">31-35</SelectItem>
-                      <SelectItem value="36-99">36+</SelectItem>
+                      <SelectItem value="all">{t.allAges}</SelectItem>
+                      <SelectItem value="18-25">{t.age18to25}</SelectItem>
+                      <SelectItem value="26-30">{t.age26to30}</SelectItem>
+                      <SelectItem value="31-35">{t.age31to35}</SelectItem>
+                      <SelectItem value="36-99">{t.age36plus}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -91,14 +93,14 @@ export default function Browse() {
                 {/* Location */}
                 <div className="min-w-48">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Location
+                    {t.location}
                   </label>
                   <Select value={locationFilter} onValueChange={setLocationFilter}>
                     <SelectTrigger>
-                      <SelectValue placeholder="All Locations" />
+                      <SelectValue placeholder={t.allLocations} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Locations</SelectItem>
+                      <SelectItem value="all">{t.allLocations}</SelectItem>
                       <SelectItem value="Santo Domingo">Santo Domingo</SelectItem>
                       <SelectItem value="Santiago">Santiago</SelectItem>
                       <SelectItem value="Puerto Plata">Puerto Plata</SelectItem>
@@ -111,15 +113,15 @@ export default function Browse() {
                 {/* Sort */}
                 <div className="min-w-48">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Sort By
+                    {t.sortBy}
                   </label>
                   <Select value={sortBy} onValueChange={setSortBy}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="newest">Sort by newest</SelectItem>
-                      <SelectItem value="age">Sort by age</SelectItem>
+                      <SelectItem value="newest">{t.sortByNewest}</SelectItem>
+                      <SelectItem value="age">{t.sortByAge}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -132,7 +134,7 @@ export default function Browse() {
         <div className="lg:hidden mb-8">
           <Card>
             <CardContent className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Filters</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.filters}</h3>
               
               <div className="space-y-4">
                 {/* Search */}

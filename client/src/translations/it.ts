@@ -149,4 +149,33 @@ export const it = {
   culturalAuthenticityDesc: 'Ricca eredità dominicana con forti valori tradizionali e prospettiva moderna',
   cupidTagsSystem: 'Sistema di Personalità CupidTags™',
   cupidTagsDesc: 'Ogni profilo è etichettato con tratti della personalità per aiutarti a trovare il tuo partner perfetto basato su compatibilità e valori condivisi',
+  
+  // Browse page - new keys only
+  browsePageTitle: 'Sfoglia Profili',
+  filters: 'Filtri',
+  age18to25: '18-25',
+  age26to30: '26-30',
+  age31to35: '31-35',
+  age36plus: '36+',
+  
+  // Profile page - new keys only
+  viewProfile: 'Visualizza Profilo',
+  addToFavorites: 'Aggiungi ai Preferiti',
+  removeFromFavorites: 'Rimuovi dai Preferiti',
+  contactInfo: 'Informazioni di Contatto',
+  personalInfo: 'Informazioni Personali',
+  lifestyle: 'Stile di Vita',
+  appearance: 'Aspetto',
+  occupation: 'Occupazione',
+  bodyType: 'Tipo di Corpo',
+  ethnicity: 'Etnia',
+  religion: 'Religione',
+  smoking: 'Fumare',
+  drinking: 'Bere',
+  children: 'Figli',
+  languages: 'Lingue',
+  photos: 'Foto',
+  videos: 'Video',
+  noPhotos: 'Nessuna foto disponibile',
+  noVideos: 'Nessun video disponibile',
 };

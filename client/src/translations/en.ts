@@ -149,4 +149,33 @@ export const en = {
   culturalAuthenticityDesc: 'Rich Dominican heritage with strong traditional values and modern outlook',
   cupidTagsSystem: 'CupidTags™ Personality System',
   cupidTagsDesc: 'Each profile is tagged with personality traits to help you find your perfect match based on compatibility and shared values',
+  
+  // Browse page - new keys only
+  browsePageTitle: 'Browse Profiles',
+  filters: 'Filters',
+  age18to25: '18-25',
+  age26to30: '26-30',
+  age31to35: '31-35',
+  age36plus: '36+',
+  
+  // Profile page - new keys only
+  viewProfile: 'View Profile',
+  addToFavorites: 'Add to Favorites',
+  removeFromFavorites: 'Remove from Favorites',
+  contactInfo: 'Contact Information',
+  personalInfo: 'Personal Information',
+  lifestyle: 'Lifestyle',
+  appearance: 'Appearance',
+  occupation: 'Occupation',
+  bodyType: 'Body Type',
+  ethnicity: 'Ethnicity',
+  religion: 'Religion',
+  smoking: 'Smoking',
+  drinking: 'Drinking',
+  children: 'Children',
+  languages: 'Languages',
+  photos: 'Photos',
+  videos: 'Videos',
+  noPhotos: 'No photos available',
+  noVideos: 'No videos available',
 };

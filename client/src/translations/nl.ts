@@ -149,4 +149,33 @@ export const nl = {
   culturalAuthenticityDesc: 'Rijke Dominicaanse erfenis met sterke traditionele waarden en moderne kijk',
   cupidTagsSystem: 'CupidTags™ Persoonlijkheidssysteem',
   cupidTagsDesc: 'Elk profiel is getagd met persoonlijkheidseigenschappen om je te helpen je perfecte partner te vinden gebaseerd op compatibiliteit en gedeelde waarden',
+  
+  // Browse page - new keys only
+  browsePageTitle: 'Profielen Bekijken',
+  filters: 'Filters',
+  age18to25: '18-25',
+  age26to30: '26-30',
+  age31to35: '31-35',
+  age36plus: '36+',
+  
+  // Profile page - new keys only
+  viewProfile: 'Profiel Bekijken',
+  addToFavorites: 'Toevoegen aan Favorieten',
+  removeFromFavorites: 'Verwijderen uit Favorieten',
+  contactInfo: 'Contactinformatie',
+  personalInfo: 'Persoonlijke Informatie',
+  lifestyle: 'Levensstijl',
+  appearance: 'Uiterlijk',
+  occupation: 'Beroep',
+  bodyType: 'Lichaamstype',
+  ethnicity: 'Etniciteit',
+  religion: 'Religie',
+  smoking: 'Roken',
+  drinking: 'Drinken',
+  children: 'Kinderen',
+  languages: 'Talen',
+  photos: 'Foto\'s',
+  videos: 'Video\'s',
+  noPhotos: 'Geen foto\'s beschikbaar',
+  noVideos: 'Geen video\'s beschikbaar',
 };
