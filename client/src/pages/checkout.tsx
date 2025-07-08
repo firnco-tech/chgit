@@ -14,7 +14,7 @@ const CheckoutForm = () => {
   const { toast } = useToast();
   const { items, clearCart, getTotal } = useCart();
   const [, setLocation] = useLocation();
-  const { currentLanguage } = useTranslation();
+  const { t, currentLanguage } = useTranslation();
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -25,8 +25,8 @@ const CheckoutForm = () => {
 
     if (!customerEmail) {
       toast({
-        title: "Email required",
-        description: "Please enter your email address",
+        title: t.emailRequired,
+        description: t.enterEmailAddress,
         variant: "destructive",
       });
       setIsProcessing(false);
@@ -61,7 +61,7 @@ const CheckoutForm = () => {
     } catch (error) {
       console.error('Checkout error:', error);
       toast({
-        title: "Checkout failed",
+        title: t.checkoutFailed,
         description: error instanceof Error ? error.message : "An unexpected error occurred",
         variant: "destructive",
       });
@@ -73,7 +73,7 @@ const CheckoutForm = () => {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
         <div>
-          <Label htmlFor="email">Email Address *</Label>
+          <Label htmlFor="email">{t.emailAddress} *</Label>
           <Input
             id="email"
             type="email"
@@ -85,18 +85,18 @@ const CheckoutForm = () => {
         </div>
 
         <div>
-          <Label htmlFor="name">Full Name (Optional)</Label>
+          <Label htmlFor="name">{t.fullNameOptional}</Label>
           <Input
             id="name"
             type="text"
-            placeholder="Your full name"
+            placeholder={t.fullName}
             value={customerName}
             onChange={(e) => setCustomerName(e.target.value)}
           />
         </div>
 
         <div className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-semibold mb-2">Order Summary</h3>
+          <h3 className="font-semibold mb-2">{t.orderSummary}</h3>
           <div className="space-y-2">
             {items.map(item => (
               <div key={item.id} className="flex justify-between text-sm">
@@ -106,7 +106,7 @@ const CheckoutForm = () => {
             ))}
             <div className="border-t pt-2 font-semibold">
               <div className="flex justify-between">
-                <span>Total:</span>
+                <span>{t.total}:</span>
                 <span>${getTotal()}</span>
               </div>
             </div>
@@ -120,8 +120,8 @@ const CheckoutForm = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
               </svg>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Secure Checkout</h3>
-                <p className="text-sm text-gray-600">Powered by Stripe - Industry-leading payment security</p>
+                <h3 className="text-lg font-semibold text-gray-900">{t.secureCheckout}</h3>
+                <p className="text-sm text-gray-600">{t.poweredByStripe}</p>
               </div>
             </div>
             
@@ -130,25 +130,25 @@ const CheckoutForm = () => {
                 <svg className="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-gray-700">SSL Encrypted</span>
+                <span className="text-gray-700">{t.sslEncrypted}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <svg className="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-gray-700">PCI Compliant</span>
+                <span className="text-gray-700">{t.pciCompliant}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <svg className="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-gray-700">Live Processing</span>
+                <span className="text-gray-700">{t.liveProcessing}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <svg className="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-gray-700">All Cards Accepted</span>
+                <span className="text-gray-700">{t.allCardsAccepted}</span>
               </div>
             </div>
           </div>
@@ -160,8 +160,8 @@ const CheckoutForm = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <div>
-              <p className="text-sm font-medium text-blue-800">Live Payment Processing</p>
-              <p className="text-xs text-blue-600">You'll be redirected to Stripe's secure payment page</p>
+              <p className="text-sm font-medium text-blue-800">{t.livePaymentProcessing}</p>
+              <p className="text-xs text-blue-600">{t.redirectToStripe}</p>
             </div>
           </div>
         </div>
@@ -174,14 +174,14 @@ const CheckoutForm = () => {
           {isProcessing ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              Redirecting to Stripe...
+              {t.redirectingToStripe}
             </>
           ) : (
             <>
               <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
-              Continue to Secure Checkout - ${getTotal()}
+              {t.continueToSecureCheckout} - ${getTotal()}
             </>
           )}
         </Button>
@@ -193,15 +193,15 @@ const CheckoutForm = () => {
 export default function Checkout() {
   const { items, getTotal } = useCart();
   const [, setLocation] = useLocation();
-  const { currentLanguage } = useTranslation();
+  const { t, currentLanguage } = useTranslation();
 
   if (items.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
+          <h2 className="text-2xl font-bold mb-4">{t.emptyCart}</h2>
           <Button onClick={() => setLocation(addLanguageToPath('/browse', currentLanguage))}>
-            Browse Profiles
+            {t.browse}
           </Button>
         </div>
       </div>
@@ -213,8 +213,8 @@ export default function Checkout() {
       <div className="max-w-2xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">Checkout</h1>
-            <p className="text-gray-600 mt-1">Complete your purchase to access contact information</p>
+            <h1 className="text-2xl font-bold text-gray-900">{t.checkoutTitle}</h1>
+            <p className="text-gray-600 mt-1">{t.checkoutSubtitle}</p>
           </div>
           
           <CheckoutForm />
