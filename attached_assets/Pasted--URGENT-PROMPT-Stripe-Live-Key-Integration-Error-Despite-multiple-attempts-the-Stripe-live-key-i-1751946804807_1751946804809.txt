@@ -1,0 +1,68 @@
+
+URGENT PROMPT: Stripe Live Key Integration Error
+Despite multiple attempts, the Stripe live key integration continues to fail. Please follow these steps to urgently and safely resolve the issue:
+
+1. Audit Environment Variables and Code for Stripe Keys
+Check all environment variables in Replit and the codebase for any lingering test keys (sk_test_, pk_test_) or incorrect variable names.
+
+Ensure only the correct live keys are present:
+
+STRIPE_SECRET_KEY (should start with sk_live_)
+
+VITE_STRIPE_PUBLIC_KEY (should start with pk_live_)
+
+Remove any duplicate, concatenated, or incorrectly named variables (e.g., VITE_STRIPE_PUBLIC_KEYVITE_STRIPE_PUBLIC is invalid and should not exist).
+
+2. Update Stripe Key Usage in Code
+Frontend:
+
+Reference the publishable key using import.meta.env.VITE_STRIPE_PUBLIC_KEY.
+
+Do not hardcode or use any other variable for the public key.
+
+Backend:
+
+Reference the secret key using process.env.STRIPE_SECRET_KEY.
+
+Ensure there is no fallback to test keys anywhere in the backend code.
+
+3. Check Stripe Mode Consistency
+Test and Live Keys Must Match the Environment:
+
+In production, only use live keys and live products/prices.
+
+Do not mix test keys with live products or vice versa, as this will cause authentication errors.
+
+4. Secure and Correct Key Storage
+Store all Stripe keys in Replit's Secrets Manager or environment variables.
+
+Never expose the secret key to the frontend or commit it to the repository.
+
+5. Restart/Rebuild the Application
+After updating environment variables, restart or redeploy the Replit application to ensure all changes take effect.
+
+6. Test Payment Flow in Live Mode
+Process a real payment using a live card to confirm the integration is working.
+
+Monitor for errors and check the browser console and backend logs for any authentication or key-related issues.
+
+7. Error Handling and Logging
+Add clear error handling for Stripe API failures.
+
+Log the exact error messages for any failed payment attempts to help diagnose issues quickly.
+
+8. If the Error Persists
+Double-check that the Stripe account is fully activated and not restricted.
+
+Make sure the live secret key is copied in full (not truncated or partially hidden with dots).
+
+If using Stripe Connect or additional features, ensure all required branding and business information is set in the Stripe dashboard.
+
+Critical Instructions
+Do not break or alter any other site functionality.
+
+All changes must be clearly commented and documented.
+
+If any uncertainty or a blocking issue arises, pause and report before proceeding.
+
+Wait for my review and confirmation after updating the credentials and before making any further changes.
