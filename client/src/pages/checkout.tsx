@@ -198,8 +198,12 @@ export default function Checkout() {
           }
         });
         
+        if (!response.ok) {
+          throw new Error(`Payment intent creation failed: ${response.status}`);
+        }
+        
         const data = await response.json();
-        console.log('✅ Payment intent created');
+        console.log('✅ Payment intent created:', data.clientSecret);
         setClientSecret(data.clientSecret);
         setPaymentLoading(false);
         
