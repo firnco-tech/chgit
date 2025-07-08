@@ -23,8 +23,9 @@ const CheckoutForm = () => {
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentElementError, setPaymentElementError] = useState(false);
 
-  // Debug logging
+  // Debug logging and error detection
   useEffect(() => {
     console.log('🔍 CheckoutForm Debug:', {
       stripe: !!stripe,
@@ -32,6 +33,15 @@ const CheckoutForm = () => {
       stripeReady: stripe !== null,
       elementsReady: elements !== null
     });
+
+    // Check for Stripe loading errors after a delay
+    const timer = setTimeout(() => {
+      if (!stripe || !elements) {
+        setPaymentElementError(true);
+      }
+    }, 5000);
+
+    return () => clearTimeout(timer);
   }, [stripe, elements]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -132,9 +142,47 @@ const CheckoutForm = () => {
             <div className="border-t pt-4">
               <Label>Payment Information</Label>
               <div className="mt-2">
-                {!stripe ? (
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-600">Loading payment form...</p>
+                {paymentElementError ? (
+                  <div className="p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <div className="flex items-start space-x-3">
+                      <div className="flex-shrink-0">
+                        <svg className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-sm font-medium text-yellow-800">Ad Blocker Detected</h3>
+                        <div className="mt-2 text-sm text-yellow-700">
+                          <p>The payment form cannot load due to ad blocker interference. Please:</p>
+                          <ul className="mt-2 list-disc list-inside space-y-1">
+                            <li>Disable your ad blocker for this site</li>
+                            <li>Allow third-party cookies for secure payment processing</li>
+                            <li>Refresh the page after making changes</li>
+                          </ul>
+                        </div>
+                        <div className="mt-4 flex space-x-2">
+                          <Button 
+                            size="sm" 
+                            onClick={() => window.location.reload()}
+                            className="bg-yellow-600 hover:bg-yellow-700 text-white"
+                          >
+                            Refresh Page
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => setPaymentElementError(false)}
+                          >
+                            Try Again
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : !stripe ? (
+                  <div className="p-4 bg-gray-50 rounded-lg flex items-center space-x-3">
+                    <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                    <p className="text-sm text-gray-600">Loading secure payment form...</p>
                   </div>
                 ) : (
                   <PaymentElement 
@@ -144,6 +192,14 @@ const CheckoutForm = () => {
                         billingDetails: 'auto'
                       }
                     }}
+                    onReady={() => {
+                      console.log('✅ PaymentElement loaded successfully');
+                      setPaymentElementError(false);
+                    }}
+                    onLoadError={(error) => {
+                      console.error('❌ PaymentElement failed to load:', error);
+                      setPaymentElementError(true);
+                    }}
                   />
                 )}
               </div>
@@ -151,7 +207,7 @@ const CheckoutForm = () => {
 
             <Button 
               type="submit"
-              disabled={!stripe || isProcessing}
+              disabled={!stripe || isProcessing || paymentElementError}
               className="w-full bg-primary hover:bg-primary/90"
             >
               {isProcessing ? (
@@ -159,6 +215,8 @@ const CheckoutForm = () => {
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Processing...
                 </>
+              ) : paymentElementError ? (
+                "Fix Payment Form Issues Above"
               ) : (
                 `Pay $${getTotal().toFixed(2)}`
               )}
@@ -242,24 +300,55 @@ export default function Checkout() {
 
   if (stripeError || !clientSecret) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <h2 className="text-lg font-semibold text-red-800 mb-2">Payment Error</h2>
-            <p className="text-red-600 mb-4">
-              {stripeError || 'Failed to initialize payment system.'}
-            </p>
-            <p className="text-sm text-red-500 mb-4">
-              This may be due to ad blockers blocking Stripe. Please disable ad blockers and try again.
-            </p>
-            <div className="space-x-2">
-              <Button onClick={() => window.location.reload()}>
-                Retry Payment
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-8">
+            <div className="text-center mb-6">
+              <svg className="h-12 w-12 text-red-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.996-.833-2.464 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+              <h2 className="text-xl font-semibold text-red-800 mb-2">Payment System Blocked</h2>
+              <p className="text-red-600 mb-4">
+                {stripeError || 'Unable to initialize secure payment processing.'}
+              </p>
+            </div>
+
+            <div className="bg-white rounded-lg p-4 mb-6">
+              <h3 className="font-medium text-gray-900 mb-3">Quick Fix Instructions:</h3>
+              <div className="space-y-3 text-sm text-gray-700">
+                <div className="flex items-start space-x-2">
+                  <span className="font-semibold text-red-600">1.</span>
+                  <span>Disable ad blockers (uBlock Origin, AdBlock Plus, Ghostery)</span>
+                </div>
+                <div className="flex items-start space-x-2">
+                  <span className="font-semibold text-red-600">2.</span>
+                  <span>Allow third-party cookies for secure payment processing</span>
+                </div>
+                <div className="flex items-start space-x-2">
+                  <span className="font-semibold text-red-600">3.</span>
+                  <span>Refresh this page after making changes</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button 
+                onClick={() => window.location.reload()}
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
+                Refresh & Try Again
               </Button>
-              <Button variant="outline" onClick={() => setLocation(addLanguageToPath('/browse', currentLanguage))}>
+              <Button 
+                variant="outline" 
+                onClick={() => setLocation(addLanguageToPath('/browse', currentLanguage))}
+              >
                 Back to Browse
               </Button>
             </div>
+
+            <p className="text-xs text-gray-500 text-center mt-4">
+              Need help? Contact support with error: "Payment initialization failed"
+            </p>
           </div>
         </div>
       </div>
@@ -331,19 +420,63 @@ export default function Checkout() {
           </div>
         </div>
         
-        {/* Live Mode Notice */}
-        <div className="mt-8 bg-green-50 border border-green-200 rounded-lg p-4">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
+        {/* Live Mode Notice & Troubleshooting */}
+        <div className="mt-8 space-y-4">
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-green-800">Secure Payment Processing</h3>
+                <div className="mt-2 text-sm text-green-700">
+                  <p>All payments are processed securely through Stripe. Your card information is never stored on our servers.</p>
+                  <p className="mt-1 text-xs">We accept all major credit and debit cards.</p>
+                </div>
+              </div>
             </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-green-800">Secure Payment Processing</h3>
-              <div className="mt-2 text-sm text-green-700">
-                <p>All payments are processed securely through Stripe. Your card information is never stored on our servers.</p>
-                <p className="mt-1 text-xs">We accept all major credit and debit cards.</p>
+          </div>
+
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-blue-800">Payment Form Not Loading?</h3>
+                <div className="mt-2 text-sm text-blue-700">
+                  <p className="mb-2">If the payment form doesn't appear, try these steps:</p>
+                  <div className="space-y-2">
+                    <details className="cursor-pointer">
+                      <summary className="font-medium">Chrome/Edge Users</summary>
+                      <ul className="mt-1 ml-4 list-disc text-xs">
+                        <li>Click the shield icon in the address bar</li>
+                        <li>Select "Allow all cookies" or "Allow third-party cookies"</li>
+                        <li>Disable any ad blockers (uBlock Origin, AdBlock Plus)</li>
+                      </ul>
+                    </details>
+                    <details className="cursor-pointer">
+                      <summary className="font-medium">Firefox Users</summary>
+                      <ul className="mt-1 ml-4 list-disc text-xs">
+                        <li>Click the shield icon next to the address bar</li>
+                        <li>Turn off Enhanced Tracking Protection for this site</li>
+                        <li>Disable any ad blocking extensions</li>
+                      </ul>
+                    </details>
+                    <details className="cursor-pointer">
+                      <summary className="font-medium">Safari Users</summary>
+                      <ul className="mt-1 ml-4 list-disc text-xs">
+                        <li>Go to Safari → Preferences → Privacy</li>
+                        <li>Uncheck "Prevent cross-site tracking"</li>
+                        <li>Refresh the page</li>
+                      </ul>
+                    </details>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

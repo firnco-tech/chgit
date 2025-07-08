@@ -1,0 +1,235 @@
+Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+stripe.ts:7 🔑 Loading Stripe with key: pk_live_51Rhc06P1m3M...
+/api/auth/user:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)
+stripe.ts:14 ✅ Stripe loaded successfully
+/api/auth/user:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+shared-efebc4b1e0d70…cc34d8a254878d.js:1 Uncaught (in promise) FetchError: Error fetching https://r.stripe.com/b: Failed to fetch
+    at shared-efebc4b1e0d7027177cc34d8a254878d.js:1:217106
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+shared-efebc4b1e0d70…cc34d8a254878d.js:1 Uncaught (in promise) FetchError: Error fetching https://r.stripe.com/b: Failed to fetch
+    at shared-efebc4b1e0d7027177cc34d8a254878d.js:1:217106
+checkout.tsx:189 💳 Creating payment intent for amount: 2
+checkout.tsx:202 ✅ Payment intent created: pi_3RiTDeP1m3MSNBBp0...
+checkout.tsx:29 🔍 CheckoutForm Debug: Object
+checkout.tsx:29 🔍 CheckoutForm Debug: Object
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+shared-efebc4b1e0d70…cc34d8a254878d.js:1 Uncaught (in promise) FetchError: Error fetching https://r.stripe.com/b: Failed to fetch
+    at shared-efebc4b1e0d7027177cc34d8a254878d.js:1:217106
+api.stripe.com/v1/elements/sessions?client_secret=pi_3RiTDeP1m3MSNBBp0f4EbgMM_secret_DaEYmP39Hw0ghebecLN0qjMFE&key=pk_live_51Rhc06P1m3MSNBBpiUWWBDJ4R0G1Gr93T7GGkhQRGJnPdaCR3unOnsMfrpt3d4Wsp2LzFJG3gl903XSPCxmln3PV00nSHFpV4Y&_stripe_version=2025-03-31.basil&elements_init_source=stripe.elements&referrer_host=9d7c96eb-8766-49bd-b12c-9c356e65d628-00-1f5lro4z3btn.spock.replit.dev&stripe_js_id=ce7f19a9-4171-40c9-b51c-3ea0c2255fdc&locale=en-US&expand[0]=payment_method_preference.payment_intent.payment_method&type=payment_intent:1 
+            
+            
+           Failed to load resource: the server responded with a status of 400 ()
+api.stripe.com/v1/elements/sessions?client_secret=pi_3RiTDeP1m3MSNBBp0f4EbgMM_secret_DaEYmP39Hw0ghebecLN0qjMFE&key=pk_live_51Rhc06P1m3MSNBBpiUWWBDJ4R0G1Gr93T7GGkhQRGJnPdaCR3unOnsMfrpt3d4Wsp2LzFJG3gl903XSPCxmln3PV00nSHFpV4Y&_stripe_version=2025-03-31.basil&elements_init_source=stripe.elements&referrer_host=9d7c96eb-8766-49bd-b12c-9c356e65d628-00-1f5lro4z3btn.spock.replit.dev&stripe_js_id=ce7f19a9-4171-40c9-b51c-3ea0c2255fdc&locale=en-US&expand[0]=payment_method_preference.payment_intent.payment_method&type=payment_intent:1 
+            
+            
+           Failed to load resource: the server responded with a status of 400 ()
+api.stripe.com/v1/elements/sessions?client_secret=pi_3RiTDeP1m3MSNBBp0f4EbgMM_secret_DaEYmP39Hw0ghebecLN0qjMFE&key=pk_live_51Rhc06P1m3MSNBBpiUWWBDJ4R0G1Gr93T7GGkhQRGJnPdaCR3unOnsMfrpt3d4Wsp2LzFJG3gl903XSPCxmln3PV00nSHFpV4Y&_stripe_version=2025-03-31.basil&elements_init_source=stripe.elements&referrer_host=9d7c96eb-8766-49bd-b12c-9c356e65d628-00-1f5lro4z3btn.spock.replit.dev&stripe_js_id=ce7f19a9-4171-40c9-b51c-3ea0c2255fdc&locale=en-US&expand[0]=payment_method_preference.payment_intent.payment_method&type=payment_intent:1 
+            
+            
+           Failed to load resource: the server responded with a status of 400 ()
+2shared-efebc4b1e0d70…cc34d8a254878d.js:1 Uncaught (in promise) FetchError: Error fetching https://r.stripe.com/b: Failed to fetch
+    at shared-efebc4b1e0d7027177cc34d8a254878d.js:1:217106
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+shared-efebc4b1e0d70…cc34d8a254878d.js:1 Uncaught (in promise) FetchError: Error fetching https://r.stripe.com/b: Failed to fetch
+    at shared-efebc4b1e0d7027177cc34d8a254878d.js:1:217106
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+shared-efebc4b1e0d70…cc34d8a254878d.js:1 Uncaught (in promise) FetchError: Error fetching https://r.stripe.com/b: Failed to fetch
+    at shared-efebc4b1e0d7027177cc34d8a254878d.js:1:217106
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+r.stripe.com/b:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+shared-efebc4b1e0d70…cc34d8a254878d.js:1 Uncaught (in promise) FetchError: Error fetching https://r.stripe.com/b: Failed to fetch
+    at shared-efebc4b1e0d7027177cc34d8a254878d.js:1:217106
+
+                
+          
+          
+          
+         Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.
+ 
+            
+            
+           POST https://r.stripe.com/b net::ERR_BLOCKED_BY_CLIENT
+(anonymous) @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+e @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+c @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+(anonymous) @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+log @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+log @ controller-with-preconnect-0459f724e9afe5cd8a990d4c668f672b.js:1
+value @ controller-with-preconnect-0459f724e9afe5cd8a990d4c668f672b.js:1
+value @ controller-with-preconnect-0459f724e9afe5cd8a990d4c668f672b.js:1
+(anonymous) @ controller-with-preconnect-0459f724e9afe5cd8a990d4c668f672b.js:1
+shared-efebc4b1e0d70…cc34d8a254878d.js:1 Uncaught (in promise) FetchError: Error fetching https://r.stripe.com/b: Failed to fetch
+    at shared-efebc4b1e0d70…254878d.js:1:217106
+(anonymous) @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+Promise.catch
+(anonymous) @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+e @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+c @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+(anonymous) @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+log @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+log @ controller-with-preconnect-0459f724e9afe5cd8a990d4c668f672b.js:1
+value @ controller-with-preconnect-0459f724e9afe5cd8a990d4c668f672b.js:1
+value @ controller-with-preconnect-0459f724e9afe5cd8a990d4c668f672b.js:1
+(anonymous) @ controller-with-preconnect-0459f724e9afe5cd8a990d4c668f672b.js:1
+ 
+            
+            
+           POST https://r.stripe.com/b net::ERR_BLOCKED_BY_CLIENT
+(anonymous) @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+e @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+c @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+(anonymous) @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+setTimeout
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+(anonymous) @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+log @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+log @ controller-with-preconnect-0459f724e9afe5cd8a990d4c668f672b.js:1
+value @ controller-with-preconnect-0459f724e9afe5cd8a990d4c668f672b.js:1
+value @ controller-with-preconnect-0459f724e9afe5cd8a990d4c668f672b.js:1
+(anonymous) @ controller-with-preconnect-0459f724e9afe5cd8a990d4c668f672b.js:1
+shared-efebc4b1e0d70…cc34d8a254878d.js:1 Uncaught (in promise) FetchError: Error fetching https://r.stripe.com/b: Failed to fetch
+    at shared-efebc4b1e0d70…254878d.js:1:217106
+(anonymous) @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+Promise.catch
+(anonymous) @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+e @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+c @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+(anonymous) @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+setTimeout
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+(anonymous) @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+value @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+log @ shared-efebc4b1e0d70…cc34d8a254878d.js:1
+log @ controller-with-preconnect-0459f724e9afe5cd8a990d4c668f672b.js:1
+value @ controller-with-preconnect-0459f724e9afe5cd8a990d4c668f672b.js:1
+value @ controller-with-preconnect-0459f724e9afe5cd8a990d4c668f672b.js:1
+(anonymous) @ controller-with-preconnect-0459f724e9afe5cd8a990d4c668f672b.js:1
