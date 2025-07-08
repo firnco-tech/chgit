@@ -706,31 +706,7 @@ export default function SubmitProfile() {
               </CardContent>
             </Card>
 
-            {/* Photos & Videos */}
-            <Card>
-              <CardContent className="p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Photos & Videos *</h2>
-                <p className="text-sm text-gray-600 mb-4">Upload Photos and Videos (3-10 files required)</p>
-                
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                  <Button type="button" variant="outline" className="mb-4">
-                    Upload Photos & Videos
-                  </Button>
-                  
-                  <div className="text-sm text-gray-600">
-                    <h4 className="font-medium mb-2">Photo & Video Guidelines:</h4>
-                    <ul className="text-left space-y-1">
-                      <li>• Upload 3-10 high-quality photos and videos</li>
-                      <li>• Include at least one clear face photo</li>
-                      <li>• Photos and videos should be recent (within 1 year)</li>
-                      <li>• No inappropriate or explicit content</li>
-                      <li>• You must be the only person in the photos/videos</li>
-                      <li>• Videos should be under 30 seconds</li>
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+
 
             {/* Contact Methods */}
             <Card>
