@@ -13,7 +13,7 @@ import { useLocation } from 'wouter';
 import { useTranslation } from "@/hooks/useTranslation";
 import { addLanguageToPath } from "@/lib/i18n";
 
-const CheckoutForm = () => {
+const CheckoutForm = ({ useHostedCheckout }: { useHostedCheckout?: boolean }) => {
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
@@ -23,35 +23,10 @@ const CheckoutForm = () => {
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentElementError, setPaymentElementError] = useState(false);
-
-  // Debug logging and error detection
-  useEffect(() => {
-    console.log('🔍 CheckoutForm Debug:', {
-      stripe: !!stripe,
-      elements: !!elements,
-      stripeReady: stripe !== null,
-      elementsReady: elements !== null
-    });
-
-    // Check for Stripe loading errors after a delay
-    const timer = setTimeout(() => {
-      if (!stripe || !elements) {
-        setPaymentElementError(true);
-      }
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, [stripe, elements]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
-
-    if (!stripe || !elements) {
-      setIsProcessing(false);
-      return;
-    }
 
     if (!customerEmail) {
       toast({
@@ -64,46 +39,79 @@ const CheckoutForm = () => {
     }
 
     try {
-      // Update customer details before confirming payment
-      await apiRequest("/api/update-payment-intent", {
-        method: "POST",
-        body: {
-          customerEmail,
-          customerName: customerName || "Guest Customer",
-          profileIds: items.map(item => item.id),
+      if (useHostedCheckout) {
+        // Use hosted checkout (fallback for ad blockers)
+        console.log('🔄 Processing with hosted checkout');
+        
+        const response = await apiRequest("/api/create-checkout-session", {
+          method: "POST",
+          body: {
+            amount: getTotal(),
+            profileIds: items.map(item => item.id),
+            customerEmail,
+            profileNames: items.map(item => `${item.firstName} ${item.lastName}`)
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (data.url) {
+          // Redirect to Stripe hosted checkout
+          console.log('✅ Redirecting to hosted checkout');
+          window.location.href = data.url;
+          return;
         }
-      });
-
-      const { error } = await stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: `${window.location.origin}${addLanguageToPath('/payment-success', currentLanguage)}?email=${encodeURIComponent(customerEmail)}`,
-        },
-      });
-
-      if (error) {
-        toast({
-          title: "Payment Failed",
-          description: error.message,
-          variant: "destructive",
-        });
       } else {
-        clearCart();
-        toast({
-          title: "Payment Successful",
-          description: "Thank you for your purchase! You will receive your contact information shortly.",
+        // Use Stripe Elements (normal flow)
+        if (!stripe || !elements) {
+          throw new Error('Stripe not initialized');
+        }
+
+        console.log('💳 Processing with Stripe Elements');
+        
+        // Update payment intent with customer details
+        await apiRequest("/api/update-payment-intent", {
+          method: "POST",
+          body: {
+            customerEmail,
+            customerName: customerName || "Guest Customer",
+            profileIds: items.map(item => item.id),
+          }
         });
+
+        const { error } = await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: `${window.location.origin}${addLanguageToPath('/payment-success', currentLanguage)}?email=${encodeURIComponent(customerEmail)}`,
+          },
+        });
+
+        if (error) {
+          console.error('Payment failed:', error);
+          toast({
+            title: "Payment Failed",
+            description: error.message || "There was an error processing your payment.",
+            variant: "destructive",
+          });
+        } else {
+          console.log('✅ Payment succeeded, clearing cart');
+          clearCart();
+          toast({
+            title: "Payment Successful",
+            description: "Thank you for your purchase! You will receive your contact information shortly.",
+          });
+        }
       }
-    } catch (updateError) {
-      console.error('Error updating payment details:', updateError);
+    } catch (error: any) {
+      console.error('Error during payment:', error);
       toast({
-        title: "Error",
-        description: "There was an issue processing your order. Please try again.",
+        title: "Payment Error",
+        description: "There was an error processing your payment. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsProcessing(false);
     }
-    
-    setIsProcessing(false);
   };
 
   return (
@@ -139,75 +147,56 @@ const CheckoutForm = () => {
               </div>
             </div>
 
-            <div className="border-t pt-4">
-              <Label>Payment Information</Label>
-              <div className="mt-2">
-                {paymentElementError ? (
-                  <div className="p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <div className="flex items-start space-x-3">
-                      <div className="flex-shrink-0">
-                        <svg className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-sm font-medium text-yellow-800">Ad Blocker Detected</h3>
-                        <div className="mt-2 text-sm text-yellow-700">
-                          <p>The payment form cannot load due to ad blocker interference. Please:</p>
-                          <ul className="mt-2 list-disc list-inside space-y-1">
-                            <li>Disable your ad blocker for this site</li>
-                            <li>Allow third-party cookies for secure payment processing</li>
-                            <li>Refresh the page after making changes</li>
-                          </ul>
-                        </div>
-                        <div className="mt-4 flex space-x-2">
-                          <Button 
-                            size="sm" 
-                            onClick={() => window.location.reload()}
-                            className="bg-yellow-600 hover:bg-yellow-700 text-white"
-                          >
-                            Refresh Page
-                          </Button>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => setPaymentElementError(false)}
-                          >
-                            Try Again
-                          </Button>
+            {useHostedCheckout ? (
+              <div className="border-t pt-4">
+                <div className="p-6 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0">
+                      <svg className="h-6 w-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-sm font-medium text-blue-800">Secure Hosted Checkout</h3>
+                      <div className="mt-2 text-sm text-blue-700">
+                        <p>You'll be redirected to Stripe's secure checkout page to complete your payment. This ensures maximum security and compatibility with all browsers and extensions.</p>
+                        <div className="mt-3 flex items-center space-x-2">
+                          <svg className="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                          <span className="text-xs text-blue-600">256-bit SSL encryption</span>
                         </div>
                       </div>
                     </div>
                   </div>
-                ) : !stripe ? (
-                  <div className="p-4 bg-gray-50 rounded-lg flex items-center space-x-3">
-                    <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                    <p className="text-sm text-gray-600">Loading secure payment form...</p>
-                  </div>
-                ) : (
-                  <PaymentElement 
-                    options={{
-                      layout: 'tabs',
-                      fields: {
-                        billingDetails: 'auto'
-                      }
-                    }}
-                    onReady={() => {
-                      console.log('✅ PaymentElement loaded successfully');
-                      setPaymentElementError(false);
-                    }}
-                    onLoadError={(error) => {
-                      console.error('❌ PaymentElement failed to load:', error);
-                      setPaymentElementError(true);
-                    }}
-                  />
-                )}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="border-t pt-4">
+                <Label>Payment Information</Label>
+                <div className="mt-2">
+                  {!stripe ? (
+                    <div className="p-4 bg-gray-50 rounded-lg flex items-center space-x-3">
+                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                      <p className="text-sm text-gray-600">Loading secure payment form...</p>
+                    </div>
+                  ) : (
+                    <PaymentElement 
+                      options={{
+                        layout: 'tabs',
+                        fields: {
+                          billingDetails: 'auto'
+                        }
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
 
             <Button 
               type="submit"
-              disabled={!stripe || isProcessing || paymentElementError}
+              disabled={isProcessing || (!useHostedCheckout && !stripe)}
               className="w-full bg-primary hover:bg-primary/90"
             >
               {isProcessing ? (
@@ -215,8 +204,8 @@ const CheckoutForm = () => {
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Processing...
                 </>
-              ) : paymentElementError ? (
-                "Fix Payment Form Issues Above"
+              ) : useHostedCheckout ? (
+                `Continue to Secure Checkout - $${getTotal().toFixed(2)}`
               ) : (
                 `Pay $${getTotal().toFixed(2)}`
               )}
@@ -232,6 +221,7 @@ export default function Checkout() {
   const [clientSecret, setClientSecret] = useState("");
   const [stripeError, setStripeError] = useState<string | null>(null);
   const [paymentLoading, setPaymentLoading] = useState(true);
+  const [useHostedCheckout, setUseHostedCheckout] = useState(false);
   const { items, getTotal } = useCart();
   const [, setLocation] = useLocation();
   const { currentLanguage } = useTranslation();
@@ -243,35 +233,46 @@ export default function Checkout() {
       return;
     }
 
-    // Create PaymentIntent as soon as the page loads
-    console.log('💳 Creating payment intent for amount:', getTotal());
-    setPaymentLoading(true);
-    
-    apiRequest("/api/create-payment-intent", {
-      method: "POST",
-      body: {
-        amount: getTotal(),
-        profileIds: items.map(item => item.id),
-        customerEmail: "placeholder@email.com", // Will be updated when form is submitted
-      }
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log('✅ Payment intent created:', data.clientSecret.substring(0, 20) + '...');
+    // Check if Stripe Elements will work
+    const checkStripeAndInitialize = async () => {
+      console.log('💳 Initializing payment for amount:', getTotal());
+      setPaymentLoading(true);
+      
+      try {
+        const stripe = await stripePromise;
+        
+        if (!stripe) {
+          // Stripe Elements is blocked, use hosted checkout
+          console.log('🔄 Stripe Elements blocked - using hosted checkout');
+          setUseHostedCheckout(true);
+          setPaymentLoading(false);
+          return;
+        }
+
+        // Stripe Elements available, create payment intent
+        const response = await apiRequest("/api/create-payment-intent", {
+          method: "POST",
+          body: {
+            amount: getTotal(),
+            profileIds: items.map(item => item.id),
+            customerEmail: "placeholder@email.com",
+          }
+        });
+        
+        const data = await response.json();
+        console.log('✅ Payment intent created for Elements');
         setClientSecret(data.clientSecret);
         setPaymentLoading(false);
-      })
-      .catch((error) => {
-        console.error('❌ Error creating payment intent:', error);
-        setStripeError('Failed to initialize payment. Please try again.');
+        
+      } catch (error) {
+        console.warn('⚠️ Elements failed, falling back to hosted checkout:', error);
+        setUseHostedCheckout(true);
         setPaymentLoading(false);
-        toast({
-          title: "Payment Error",
-          description: "Failed to initialize payment. Please refresh and try again.",
-          variant: "destructive",
-        });
-      });
-  }, [items, getTotal, setLocation, toast, currentLanguage]);
+      }
+    };
+
+    checkStripeAndInitialize();
+  }, [items, getTotal, setLocation, currentLanguage]);
 
   if (items.length === 0) {
     return (
@@ -397,26 +398,30 @@ export default function Checkout() {
 
           {/* Payment Form */}
           <div className="lg:col-span-2">
-            <Elements 
-              stripe={stripePromise} 
-              options={{ 
-                clientSecret,
-                appearance: {
-                  theme: 'stripe',
-                  variables: {
-                    colorPrimary: '#e91e63',
-                    colorBackground: '#ffffff',
-                    colorText: '#000000',
-                    colorDanger: '#df1b41',
-                    fontFamily: 'system-ui, -apple-system, sans-serif',
-                    spacingUnit: '2px',
-                    borderRadius: '4px',
+            {useHostedCheckout ? (
+              <CheckoutForm useHostedCheckout={true} />
+            ) : (
+              <Elements 
+                stripe={stripePromise} 
+                options={{ 
+                  clientSecret,
+                  appearance: {
+                    theme: 'stripe',
+                    variables: {
+                      colorPrimary: '#e91e63',
+                      colorBackground: '#ffffff',
+                      colorText: '#000000',
+                      colorDanger: '#df1b41',
+                      fontFamily: 'system-ui, -apple-system, sans-serif',
+                      spacingUnit: '2px',
+                      borderRadius: '4px',
+                    }
                   }
-                }
-              }}
-            >
-              <CheckoutForm />
-            </Elements>
+                }}
+              >
+                <CheckoutForm useHostedCheckout={false} />
+              </Elements>
+            )}
           </div>
         </div>
         

@@ -231,6 +231,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create hosted checkout session (fallback for ad blockers)
+  app.post("/api/create-checkout-session", async (req, res) => {
+    try {
+      const { amount, profileIds, customerEmail, profileNames } = req.body;
+      
+      console.log('Creating hosted checkout session for:', { amount, profileIds, customerEmail });
+      
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price_data: {
+              currency: 'usd',
+              product_data: {
+                name: `Contact Information - ${profileNames.join(', ')}`,
+                description: `Access to contact details for ${profileIds.length} profile(s)`,
+              },
+              unit_amount: Math.round(amount * 100),
+            },
+            quantity: 1,
+          },
+        ],
+        mode: 'payment',
+        success_url: `${req.headers.origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${req.headers.origin}/checkout`,
+        customer_email: customerEmail,
+        metadata: {
+          profileIds: JSON.stringify(profileIds),
+          orderType: 'contact_purchase'
+        }
+      });
+
+      // Create order for hosted checkout
+      const order = await storage.createOrder({
+        customerEmail: customerEmail || "placeholder@email.com", 
+        totalAmount: amount.toString(),
+        stripePaymentIntentId: session.id, // Use session ID for hosted checkout
+        status: "pending"
+      });
+      
+      res.json({ url: session.url, sessionId: session.id, orderId: order.id });
+    } catch (error: any) {
+      console.error('Error creating checkout session:', error);
+      res.status(500).json({ message: "Error creating checkout session" });
+    }
+  });
+
   // Update payment intent with customer details
   app.post("/api/update-payment-intent", async (req, res) => {
     try {
@@ -271,33 +318,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Handle payment success and deliver contact info
+  // Handle payment success and deliver contact info (Elements and Hosted Checkout)
   app.post("/api/payment-success", async (req, res) => {
     try {
-      const { paymentIntentId } = req.body;
+      const { paymentIntentId, sessionId } = req.body;
       
-      if (!paymentIntentId) {
-        return res.status(400).json({ message: "Payment intent ID required" });
+      if (!paymentIntentId && !sessionId) {
+        return res.status(400).json({ message: "Payment intent ID or session ID required" });
       }
 
-      // Get the payment intent from Stripe
-      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-      
-      if (paymentIntent.status !== "succeeded") {
-        return res.status(400).json({ message: "Payment not successful" });
+      let paymentData;
+      let profileIds;
+
+      if (sessionId) {
+        // Handle hosted checkout session
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
+        
+        if (session.payment_status !== "paid") {
+          return res.status(400).json({ message: "Payment not successful" });
+        }
+
+        profileIds = JSON.parse(session.metadata?.profileIds || "[]");
+        paymentData = { id: sessionId, metadata: session.metadata };
+      } else {
+        // Handle payment intent (Elements)
+        const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+        
+        if (paymentIntent.status !== "succeeded") {
+          return res.status(400).json({ message: "Payment not successful" });
+        }
+
+        profileIds = JSON.parse(paymentIntent.metadata.profileIds || "[]");
+        paymentData = paymentIntent;
       }
 
       // Find the order
-      const order = await storage.getOrderByPaymentIntent(paymentIntentId);
+      const order = await storage.getOrderByPaymentIntent(paymentData.id);
       if (!order) {
         return res.status(404).json({ message: "Order not found" });
       }
 
       // Update order status
       await storage.updateOrderStatus(order.id, "completed");
-
-      // Get profile IDs from metadata
-      const profileIds = JSON.parse(paymentIntent.metadata.profileIds || "[]");
       
       // Create order items with contact info
       const orderItemsData = [];
