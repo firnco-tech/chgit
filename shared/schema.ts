@@ -51,7 +51,7 @@ export const profiles = pgTable("profiles", {
   occupationDetails: text("occupation_details"), // For specific occupation selection
   languages: text("languages").array(),
   relationshipStatus: text("relationship_status"),
-  children: text("children"),
+  children: text("children").array(),
   smoking: text("smoking"),
   bodyType: text("body_type"),
   appearance: text("appearance"),

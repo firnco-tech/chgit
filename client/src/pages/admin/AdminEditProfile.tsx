@@ -39,7 +39,7 @@ interface Profile {
   occupation?: string;
   occupationDetails?: string;
   relationshipStatus?: string;
-  children?: string;
+  children?: string[];
   smoking?: string;
   drinking?: string;
   aboutMe?: string;
@@ -456,20 +456,37 @@ export default function AdminEditProfile() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="children">Children Status</Label>
-                  <Select
-                    value={formData.children || ''}
-                    onValueChange={(value) => handleInputChange('children', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select children status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="No children">No children</SelectItem>
-                      <SelectItem value="Have children">Have children</SelectItem>
-                      <SelectItem value="Want children">Want children</SelectItem>
-                      <SelectItem value="Don't want children">Don't want children</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="grid grid-cols-2 gap-2 mt-2">
+                    {[
+                      'No children',
+                      'Have children',
+                      'Want children',
+                      "Don't want children"
+                    ].map((option) => (
+                      <div key={option} className="flex items-center space-x-2">
+                        <Checkbox 
+                          id={`children-${option}`}
+                          checked={Array.isArray(formData.children) ? formData.children.includes(option) : false}
+                          onCheckedChange={(checked) => {
+                            const currentChildren = Array.isArray(formData.children) ? formData.children : [];
+                            const newChildren = checked 
+                              ? [...currentChildren, option]
+                              : currentChildren.filter(c => c !== option);
+                            handleInputChange('children', newChildren);
+                          }}
+                        />
+                        <label 
+                          htmlFor={`children-${option}`} 
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          {option}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                  {Array.isArray(formData.children) && formData.children.length > 0 && (
+                    <p className="text-sm text-gray-600 mt-2">Selected: {formData.children.join(', ')}</p>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="smoking">Smoking Status</Label>

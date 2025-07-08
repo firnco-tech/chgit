@@ -61,6 +61,7 @@ export default function SubmitProfile() {
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [selectedLookingFor, setSelectedLookingFor] = useState<string[]>([]);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [selectedChildren, setSelectedChildren] = useState<string[]>([]);
   const [uploadingFiles, setUploadingFiles] = useState(false);
   const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
   const [uploadedVideos, setUploadedVideos] = useState<string[]>([]);
@@ -87,7 +88,7 @@ export default function SubmitProfile() {
       occupationDetails: "",
       languages: [],
       relationshipStatus: "",
-      children: "",
+      children: [],
       smoking: "",
       drinking: "",
       bodyType: "",
@@ -166,6 +167,14 @@ export default function SubmitProfile() {
       : [...selectedInterests, interest];
     setSelectedInterests(newInterests);
     form.setValue("interests", newInterests);
+  };
+
+  const toggleChildren = (option: string) => {
+    const newChildren = selectedChildren.includes(option)
+      ? selectedChildren.filter(c => c !== option)
+      : [...selectedChildren, option];
+    setSelectedChildren(newChildren);
+    form.setValue("children", newChildren);
   };
 
   const toggleContactMethod = (method: keyof typeof contactMethodsEnabled) => {
@@ -497,29 +506,34 @@ export default function SubmitProfile() {
                     )}
                   />
                   
-                  <FormField
-                    control={form.control}
-                    name="children"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Children</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select option" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="No children">No children</SelectItem>
-                            <SelectItem value="Have children">Have children</SelectItem>
-                            <SelectItem value="Want children">Want children</SelectItem>
-                            <SelectItem value="Don't want children">Don't want children</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
+                  <div>
+                    <FormLabel className="text-base font-medium">Children</FormLabel>
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                      {[
+                        'No children',
+                        'Have children',
+                        'Want children',
+                        "Don't want children"
+                      ].map((option) => (
+                        <div key={option} className="flex items-center space-x-2">
+                          <Checkbox 
+                            id={`children-${option}`}
+                            checked={selectedChildren.includes(option)}
+                            onCheckedChange={() => toggleChildren(option)}
+                          />
+                          <label 
+                            htmlFor={`children-${option}`} 
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            {option}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                    {selectedChildren.length > 0 && (
+                      <p className="text-sm text-gray-600 mt-2">Selected: {selectedChildren.join(', ')}</p>
                     )}
-                  />
+                  </div>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
