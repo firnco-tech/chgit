@@ -1,0 +1,77 @@
+URGENT PROMPT: Fix Shopping Cart Layout Regression
+The shopping cart layout was recently misconfigured and remains broken despite previous attempts to fix it. I am incurring unnecessary costs due to repeated failed tasks. Please follow these explicit, step-by-step instructions to safely and fully restore the shopping cart layout:
+
+1. Restore the Previous, Working Shopping Cart Layout
+Review the last known working version of the shopping cart layout prior to the recent changes.
+
+Revert the cart page and checkout components to that state as a baseline.
+
+Ensure the following elements are present and correctly styled:
+
+Cart item list with profile images, names, and prices.
+
+Quantity controls (if applicable).
+
+Clear "Remove" or "Delete" item buttons.
+
+Order summary with subtotal, taxes/fees (if any), and total.
+
+Prominent "Proceed to Checkout" button.
+
+Match the spacing, alignment, and responsive design of the previous working layout.
+
+2. Safely Reapply Required Enhancements
+After restoring the layout, carefully reapply only the necessary enhancements:
+
+Language-aware navigation and URLs.
+
+Translation hooks and language path handling.
+
+Payment success redirect with language prefix.
+
+Updated navigation buttons ("Browse Profiles", "Back to Browse") with language support.
+
+Apply these changes incrementally, testing the cart layout after each step to ensure nothing breaks.
+
+3. Thorough Testing and Validation
+Test the cart and checkout flow in all supported languages.
+
+Add and remove profiles from the cart, ensuring all UI elements display correctly.
+
+Confirm that the checkout page displays:
+
+Email and name input fields.
+
+Payment form (credit card fields).
+
+Order summary with all cart items.
+
+Payment button with proper processing states.
+
+Test on both desktop and mobile devices for layout consistency.
+
+Verify that all navigation links and redirects work as intended.
+
+4. Regression and SEO Safeguards
+Ensure that no other site functionality, SEO optimizations, or language features are broken or regressed.
+
+Do not alter any unrelated code or components.
+
+All changes must be clearly commented and documented.
+
+5. Reporting and Approval
+Provide before/after screenshots of the cart and checkout pages.
+
+Summarize exactly what was changed and why.
+
+Wait for my review and explicit approval before making any further changes.
+
+Critical Instructions:
+
+Do NOT break or alter any existing site structure, user data, or admin/user experience outside this fix.
+
+If you encounter any blocking issue or uncertainty, STOP and report before proceeding.
+
+This prompt requires a careful, stepwise restoration and enhancement of the shopping cart layout, with rigorous testing and no further regressions.
+
+Related

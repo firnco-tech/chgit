@@ -24,6 +24,16 @@ const CheckoutForm = () => {
   const [customerName, setCustomerName] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // Debug logging
+  useEffect(() => {
+    console.log('🔍 CheckoutForm Debug:', {
+      stripe: !!stripe,
+      elements: !!elements,
+      stripeReady: stripe !== null,
+      elementsReady: elements !== null
+    });
+  }, [stripe, elements]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
@@ -122,7 +132,20 @@ const CheckoutForm = () => {
             <div className="border-t pt-4">
               <Label>Payment Information</Label>
               <div className="mt-2">
-                <PaymentElement />
+                {!stripe ? (
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-sm text-gray-600">Loading payment form...</p>
+                  </div>
+                ) : (
+                  <PaymentElement 
+                    options={{
+                      layout: 'tabs',
+                      fields: {
+                        billingDetails: 'auto'
+                      }
+                    }}
+                  />
+                )}
               </div>
             </div>
 
@@ -190,7 +213,7 @@ export default function Checkout() {
           variant: "destructive",
         });
       });
-  }, [items, getTotal, setLocation, toast]);
+  }, [items, getTotal, setLocation, toast, currentLanguage]);
 
   if (items.length === 0) {
     return (
@@ -288,7 +311,19 @@ export default function Checkout() {
             <Elements 
               stripe={stripePromise} 
               options={{ 
-                clientSecret
+                clientSecret,
+                appearance: {
+                  theme: 'stripe',
+                  variables: {
+                    colorPrimary: '#e91e63',
+                    colorBackground: '#ffffff',
+                    colorText: '#000000',
+                    colorDanger: '#df1b41',
+                    fontFamily: 'system-ui, -apple-system, sans-serif',
+                    spacingUnit: '2px',
+                    borderRadius: '4px',
+                  }
+                }
               }}
             >
               <CheckoutForm />
