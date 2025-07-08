@@ -1,5 +1,22 @@
 import dotenv from 'dotenv';
-dotenv.config();
+import fs from 'fs';
+import path from 'path';
+
+// Force load .env file and override any existing environment variables
+const envPath = path.join(process.cwd(), '.env');
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf8');
+  const envVars = envContent.split('\n').filter(line => line.trim() && !line.startsWith('#'));
+  
+  envVars.forEach(line => {
+    const [key, ...valueParts] = line.split('=');
+    if (key && valueParts.length > 0) {
+      const value = valueParts.join('=');
+      process.env[key] = value;
+      console.log(`🔧 Force loaded env var: ${key} = ${value.substring(0, 8)}***`);
+    }
+  });
+}
 
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
