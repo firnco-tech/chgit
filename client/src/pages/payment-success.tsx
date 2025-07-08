@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Download, Eye, Phone, Mail, MessageCircle, Camera, Video } from 'lucide-react';
 import { apiRequest } from "@/lib/queryClient";
 import { Navbar } from "@/components/navbar";
+import { useCart } from "@/lib/cart";
 
 interface Profile {
   id: number;
@@ -50,26 +51,33 @@ export default function PaymentSuccess() {
   const [orderData, setOrderData] = useState<PaymentSuccessData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { clearCart } = useCart();
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentIntentId = urlParams.get('payment_intent');
+    const sessionId = urlParams.get('session_id');
     
-    if (!paymentIntentId) {
+    if (!paymentIntentId && !sessionId) {
       setError('Payment information not found');
       setLoading(false);
       return;
     }
 
     // Process the successful payment and get order details
+    const requestBody = sessionId ? { sessionId } : { paymentIntentId };
+    
     apiRequest('/api/payment-success', {
       method: 'POST',
-      body: { paymentIntentId }
+      body: requestBody
     })
       .then(response => response.json())
       .then((data: PaymentSuccessData) => {
         if (data.success) {
           setOrderData(data);
+          // Clear the cart after successful payment processing
+          clearCart();
+          console.log('✅ Cart cleared after successful payment');
         } else {
           setError('Failed to process order');
         }
