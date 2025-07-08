@@ -39,10 +39,9 @@ interface Profile {
   occupation?: string;
   occupationDetails?: string;
   relationshipStatus?: string;
-  hasChildren?: boolean;
-  wantsChildren?: boolean;
-  smokingStatus?: string;
-  drinkingStatus?: string;
+  children?: string;
+  smoking?: string;
+  drinking?: string;
   aboutMe?: string;
   interests?: string[];
   languages?: string[];
@@ -51,7 +50,7 @@ interface Profile {
   videos?: string[];
   primaryPhoto?: string;
   appearance?: string;
-  contactMethods?: string[];
+  contactMethods?: any;
   contactWhatsapp?: string;
   contactInstagram?: string;
   contactEmail?: string;
@@ -150,9 +149,7 @@ export default function AdminEditProfile() {
       // Convert string values to numbers where needed
       age: typeof formData.age === 'string' ? parseInt(formData.age) : formData.age,
       price: typeof formData.price === 'string' ? parseFloat(formData.price) : formData.price,
-      // Convert string values to boolean where needed
-      hasChildren: typeof formData.hasChildren === 'string' ? formData.hasChildren === 'true' : formData.hasChildren,
-      wantsChildren: typeof formData.wantsChildren === 'string' ? formData.wantsChildren === 'true' : formData.wantsChildren,
+      // Convert string values to boolean where needed (removed old hasChildren/wantsChildren references)
       isApproved: typeof formData.isApproved === 'string' ? formData.isApproved === 'true' : formData.isApproved,
       isFeatured: typeof formData.isFeatured === 'string' ? formData.isFeatured === 'true' : formData.isFeatured,
     };
@@ -456,27 +453,28 @@ export default function AdminEditProfile() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="hasChildren"
-                    checked={formData.hasChildren || false}
-                    onCheckedChange={(checked) => handleInputChange('hasChildren', checked)}
-                  />
-                  <Label htmlFor="hasChildren">Has Children</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="wantsChildren"
-                    checked={formData.wantsChildren || false}
-                    onCheckedChange={(checked) => handleInputChange('wantsChildren', checked)}
-                  />
-                  <Label htmlFor="wantsChildren">Wants Children</Label>
+                <div>
+                  <Label htmlFor="children">Children Status</Label>
+                  <Select
+                    value={formData.children || ''}
+                    onValueChange={(value) => handleInputChange('children', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select children status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="No children">No children</SelectItem>
+                      <SelectItem value="Have children">Have children</SelectItem>
+                      <SelectItem value="Want children">Want children</SelectItem>
+                      <SelectItem value="Don't want children">Don't want children</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
-                  <Label htmlFor="smokingStatus">Smoking Status</Label>
+                  <Label htmlFor="smoking">Smoking Status</Label>
                   <Select
-                    value={formData.smokingStatus || ''}
-                    onValueChange={(value) => handleInputChange('smokingStatus', value)}
+                    value={formData.smoking || ''}
+                    onValueChange={(value) => handleInputChange('smoking', value)}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select smoking status" />
@@ -489,10 +487,10 @@ export default function AdminEditProfile() {
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="drinkingStatus">Drinking Status</Label>
+                  <Label htmlFor="drinking">Drinking Status</Label>
                   <Select
-                    value={formData.drinkingStatus || ''}
-                    onValueChange={(value) => handleInputChange('drinkingStatus', value)}
+                    value={formData.drinking || ''}
+                    onValueChange={(value) => handleInputChange('drinking', value)}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select drinking status" />

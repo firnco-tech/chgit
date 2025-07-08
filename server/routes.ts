@@ -190,13 +190,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Submit profile
   app.post("/api/profiles", async (req, res) => {
     try {
+      console.log('🔍 PROFILE CREATION - Received fields:', {
+        gender: req.body.gender,
+        height: req.body.height,
+        smoking: req.body.smoking,
+        bodyType: req.body.bodyType,
+        children: req.body.children,
+        relationshipStatus: req.body.relationshipStatus
+      });
+      
       const validatedData = insertProfileSchema.parse(req.body);
+      
+      console.log('🔍 PROFILE CREATION - After validation:', {
+        gender: validatedData.gender,
+        height: validatedData.height,
+        smoking: validatedData.smoking,
+        bodyType: validatedData.bodyType,
+        children: validatedData.children,
+        relationshipStatus: validatedData.relationshipStatus
+      });
+      
       const profile = await storage.createProfile(validatedData);
+      
+      console.log('🔍 PROFILE CREATION - Final saved profile:', {
+        id: profile.id,
+        gender: profile.gender,
+        height: profile.height,
+        smoking: profile.smoking,
+        bodyType: profile.bodyType,
+        children: profile.children,
+        relationshipStatus: profile.relationshipStatus
+      });
+      
       res.status(201).json(profile);
     } catch (error: any) {
       if (error instanceof z.ZodError) {
+        console.error('🔍 PROFILE CREATION - Validation error:', error.errors);
         return res.status(400).json({ message: "Validation error", errors: error.errors });
       }
+      console.error('🔍 PROFILE CREATION - Server error:', error);
       res.status(500).json({ message: "Error creating profile: " + error.message });
     }
   });
@@ -525,7 +557,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const profileId = parseInt(req.params.id);
       const updateData = req.body;
       
-      console.log(`Admin updating profile ${profileId}:`, updateData);
+      console.log('🔍 ADMIN PROFILE UPDATE - Received fields:', {
+        profileId,
+        gender: updateData.gender,
+        height: updateData.height,
+        smoking: updateData.smoking,
+        bodyType: updateData.bodyType,
+        children: updateData.children,
+        relationshipStatus: updateData.relationshipStatus
+      });
       
       const updatedProfile = await storage.updateProfile(profileId, updateData);
       
@@ -533,10 +573,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Profile not found" });
       }
       
-      console.log('Profile updated successfully:', updatedProfile);
+      console.log('🔍 ADMIN PROFILE UPDATE - Final updated profile:', {
+        id: updatedProfile.id,
+        gender: updatedProfile.gender,
+        height: updatedProfile.height,
+        smoking: updatedProfile.smoking,
+        bodyType: updatedProfile.bodyType,
+        children: updatedProfile.children,
+        relationshipStatus: updatedProfile.relationshipStatus
+      });
+      
       res.json(updatedProfile);
     } catch (error: any) {
-      console.error('Error updating profile:', error);
+      console.error('🔍 ADMIN PROFILE UPDATE - Error:', error);
       res.status(500).json({ message: "Error updating profile: " + error.message });
     }
   });
