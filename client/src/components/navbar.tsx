@@ -3,7 +3,7 @@ import { ShoppingCart, Heart, User, LogOut, LogIn, Menu, ChevronDown, FileText, 
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/hooks/useAuth";
-import { CartSidebar } from "./cart-sidebar";
+// Cart sidebar removed - now using dedicated cart page
 import { AuthModal } from "./auth/AuthModal";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -26,10 +26,10 @@ import {
 } from "@/components/ui/sheet";
 
 export function Navbar() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const { getItemCount } = useCart();
   const { user, isAuthenticated, logout, isLoggingOut } = useAuth();
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  // Cart sidebar removed - now using cart page
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const itemCount = getItemCount();
@@ -119,7 +119,7 @@ export function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setIsCartOpen(true)}
+                onClick={() => setLocation(addLanguageToPath('/cart', currentLanguage))}
                 className="relative"
               >
                 <ShoppingCart className="h-5 w-5" />
@@ -340,7 +340,7 @@ export function Navbar() {
         </div>
       </nav>
 
-      <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      {/* Cart sidebar removed - now using dedicated cart page */}
       
       {/* Authentication Modal */}
       <AuthModal

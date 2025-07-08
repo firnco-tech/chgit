@@ -25,7 +25,7 @@ import Cookies from "@/pages/cookies";
 import Disclaimer from "@/pages/disclaimer";
 import Report from "@/pages/report";
 import Checkout from "@/pages/checkout";
-import Cart from "@/pages/cart";
+import CartPage from "@/pages/cart";
 import Favorites from "@/pages/favorites";
 import PaymentSuccess from "@/pages/payment-success";
 import NotFound from "@/pages/not-found";
@@ -74,7 +74,7 @@ function MainSiteRouter() {
           <Route path="/:lang/disclaimer" component={Disclaimer} />
           <Route path="/:lang/report" component={Report} />
           <Route path="/:lang/checkout" component={Checkout} />
-          <Route path="/:lang/cart" component={Cart} />
+          <Route path="/:lang/cart" component={CartPage} />
           <Route path="/:lang/favorites" component={Favorites} />
           <Route path="/:lang/payment-success" component={PaymentSuccess} />
           
