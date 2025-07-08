@@ -48,6 +48,9 @@ const submitProfileSchema = insertProfileSchema.extend({
   }, {
     message: "At least one contact method must be provided",
   }),
+  combinedAgreement: z.boolean().refine((value) => value === true, {
+    message: "You must accept all terms and conditions to proceed",
+  }),
 });
 
 type SubmitProfileFormData = z.infer<typeof submitProfileSchema>;
@@ -102,9 +105,7 @@ export default function SubmitProfile() {
         facebook: "",
         tiktok: "",
       },
-      ageConfirmation: false,
-      termsAccepted: false,
-      reviewConsent: false,
+      combinedAgreement: false,
       contactSharingConsent: false,
     },
   });
@@ -1288,7 +1289,7 @@ export default function SubmitProfile() {
                 <div className="space-y-4">
                   <FormField
                     control={form.control}
-                    name="ageConfirmation"
+                    name="combinedAgreement"
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                         <FormControl>
@@ -1299,47 +1300,7 @@ export default function SubmitProfile() {
                         </FormControl>
                         <div className="space-y-1 leading-none">
                           <FormLabel>
-                            I confirm that I am 18 years of age or older *
-                          </FormLabel>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="termsAccepted"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel>
-                            I agree to the <a href="/terms" className="text-blue-600 hover:underline">Terms of Service</a> and <a href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</a> *
-                          </FormLabel>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="reviewConsent"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel>
-                            I understand that my profile will be manually reviewed and verified before going live *
+                            I confirm that I am 18 years of age or older, I agree to the <a href="/terms" className="text-blue-600 hover:underline">Terms of Service</a> and <a href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</a>, and I understand that my profile will be manually reviewed and verified before going live *
                           </FormLabel>
                         </div>
                       </FormItem>

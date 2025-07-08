@@ -71,9 +71,7 @@ export const profiles = pgTable("profiles", {
   contactMethods: json("contact_methods"),
   
   // Terms and Agreements
-  ageConfirmation: boolean("age_confirmation").default(false),
-  termsAccepted: boolean("terms_accepted").default(false),
-  reviewConsent: boolean("review_consent").default(false),
+  combinedAgreement: boolean("combined_agreement").default(false),
   contactSharingConsent: boolean("contact_sharing_consent").default(false),
   
   // System fields
