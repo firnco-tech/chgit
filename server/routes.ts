@@ -34,6 +34,24 @@ if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
 }
 
+// Verify Stripe keys are live keys for production
+console.log('🔍 STRIPE KEY VALIDATION:');
+console.log('🔍 STRIPE_SECRET_KEY starts with:', process.env.STRIPE_SECRET_KEY.substring(0, 8));
+console.log('🔍 VITE_STRIPE_PUBLIC_KEY starts with:', process.env.VITE_STRIPE_PUBLIC_KEY?.substring(0, 8));
+
+if (!process.env.STRIPE_SECRET_KEY.startsWith('sk_live_')) {
+  console.error('❌ CRITICAL: STRIPE_SECRET_KEY must be a live key (sk_live_) for production');
+  console.error('❌ Please update your Replit Secrets with live keys');
+  throw new Error('STRIPE_SECRET_KEY must be a live key (sk_live_) for production');
+}
+
+if (!process.env.VITE_STRIPE_PUBLIC_KEY?.startsWith('pk_live_')) {
+  console.error('❌ CRITICAL: VITE_STRIPE_PUBLIC_KEY must be a live key (pk_live_) for production');
+  console.error('❌ Please update your Replit Secrets with live keys');
+  throw new Error('VITE_STRIPE_PUBLIC_KEY must be a live key (pk_live_) for production');
+}
+
+console.log('✅ All Stripe keys verified as LIVE keys');
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Configure multer for file uploads
