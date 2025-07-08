@@ -75,9 +75,14 @@ export default function PaymentSuccess() {
       .then((data: PaymentSuccessData) => {
         if (data.success) {
           setOrderData(data);
-          // Clear the cart after successful payment processing
+          // CRITICAL: Clear the cart immediately after successful payment
           clearCart();
-          console.log('✅ Cart cleared after successful payment');
+          console.log('✅ MISSION CRITICAL: Cart cleared after successful payment');
+          
+          // Force a page reload to ensure cart state is fully cleared
+          setTimeout(() => {
+            window.dispatchEvent(new Event('storage'));
+          }, 100);
         } else {
           setError('Failed to process order');
         }

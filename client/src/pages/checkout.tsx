@@ -44,6 +44,7 @@ const CheckoutForm = () => {
           customerEmail,
           customerName: customerName || "Guest Customer",
           profileNames: items.map(item => item.name),
+          language: currentLanguage,
         }
       });
 

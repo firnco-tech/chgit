@@ -252,7 +252,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create hosted checkout session (fallback for ad blockers)
   app.post("/api/create-checkout-session", async (req, res) => {
     try {
-      const { amount, profileIds, customerEmail, profileNames } = req.body;
+      const { amount, profileIds, customerEmail, profileNames, language } = req.body;
       
       console.log('Creating hosted checkout session for:', { amount, profileIds, customerEmail });
       
@@ -272,8 +272,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           },
         ],
         mode: 'payment',
-        success_url: `${req.headers.origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${req.headers.origin}/checkout`,
+        success_url: `${req.headers.origin}/${language || 'en'}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${req.headers.origin}/${language || 'en'}/checkout`,
         customer_email: customerEmail,
         metadata: {
           profileIds: JSON.stringify(profileIds),
