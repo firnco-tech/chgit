@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 
-// Force load .env file and override any existing environment variables
+// Force load .env file and override any existing environment variables (including Replit Secrets)
 const envPath = path.join(process.cwd(), '.env');
 if (fs.existsSync(envPath)) {
   const envContent = fs.readFileSync(envPath, 'utf8');
@@ -12,10 +12,22 @@ if (fs.existsSync(envPath)) {
     const [key, ...valueParts] = line.split('=');
     if (key && valueParts.length > 0) {
       const value = valueParts.join('=');
+      // Force override any existing value (including Replit Secrets)
       process.env[key] = value;
       console.log(`🔧 Force loaded env var: ${key} = ${value.substring(0, 8)}***`);
     }
   });
+}
+
+// Verify Stripe keys are live keys
+if (process.env.STRIPE_SECRET_KEY && !process.env.STRIPE_SECRET_KEY.startsWith('sk_live_')) {
+  console.error('❌ ERROR: STRIPE_SECRET_KEY is not a live key! Current key starts with:', process.env.STRIPE_SECRET_KEY.substring(0, 8));
+  console.error('❌ Please update your .env file with live keys that start with sk_live_');
+}
+
+if (process.env.VITE_STRIPE_PUBLIC_KEY && !process.env.VITE_STRIPE_PUBLIC_KEY.startsWith('pk_live_')) {
+  console.error('❌ ERROR: VITE_STRIPE_PUBLIC_KEY is not a live key! Current key starts with:', process.env.VITE_STRIPE_PUBLIC_KEY.substring(0, 8));
+  console.error('❌ Please update your .env file with live keys that start with pk_live_');
 }
 
 import express, { type Request, Response, NextFunction } from "express";
