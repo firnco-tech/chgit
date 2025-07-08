@@ -122,14 +122,19 @@ const CheckoutForm = () => {
                 <p className="text-sm text-gray-600">Loading secure payment form...</p>
               </div>
             ) : (
-              <PaymentElement 
-                options={{
-                  layout: 'tabs',
-                  fields: {
-                    billingDetails: 'auto'
-                  }
-                }}
-              />
+              <div>
+                <PaymentElement 
+                  options={{
+                    layout: 'tabs',
+                    fields: {
+                      billingDetails: 'auto'
+                    }
+                  }}
+                />
+                <div className="mt-2 text-xs text-gray-500">
+                  ✅ Stripe Elements loaded successfully
+                </div>
+              </div>
             )}
           </div>
         </div>

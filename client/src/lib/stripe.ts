@@ -5,6 +5,7 @@ if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
 }
 
 console.log('🔑 Loading Stripe with key:', import.meta.env.VITE_STRIPE_PUBLIC_KEY.substring(0, 20) + '...');
+console.log('🔍 Full key check:', import.meta.env.VITE_STRIPE_PUBLIC_KEY.startsWith('pk_live_') ? 'LIVE KEY ✅' : 'TEST KEY ⚠️');
 
 // Standard Stripe initialization - no custom timeouts or wrappers
 export const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
