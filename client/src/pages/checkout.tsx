@@ -13,7 +13,7 @@ import { useLocation } from 'wouter';
 import { useTranslation } from "@/hooks/useTranslation";
 import { addLanguageToPath } from "@/lib/i18n";
 
-const CheckoutForm = ({ useHostedCheckout }: { useHostedCheckout?: boolean }) => {
+const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
@@ -39,74 +39,47 @@ const CheckoutForm = ({ useHostedCheckout }: { useHostedCheckout?: boolean }) =>
     }
 
     try {
-      if (useHostedCheckout) {
-        // Use hosted checkout (fallback for ad blockers)
-        console.log('🔄 Processing with hosted checkout');
-        
-        const response = await apiRequest("/api/create-checkout-session", {
-          method: "POST",
-          body: {
-            amount: getTotal(),
-            profileIds: items.map(item => item.id),
-            customerEmail,
-            profileNames: items.map(item => `${item.firstName} ${item.lastName}`)
-          }
-        });
-        
-        const data = await response.json();
-        
-        if (data.url) {
-          // Redirect to Stripe hosted checkout
-          console.log('✅ Redirecting to hosted checkout');
-          window.location.href = data.url;
-          return;
-        }
-      } else {
-        // Use Stripe Elements (normal flow)
-        if (!stripe || !elements) {
-          throw new Error('Stripe not initialized');
-        }
-
-        console.log('💳 Processing with Stripe Elements');
-        
-        // Update payment intent with customer details
-        await apiRequest("/api/update-payment-intent", {
-          method: "POST",
-          body: {
-            customerEmail,
-            customerName: customerName || "Guest Customer",
-            profileIds: items.map(item => item.id),
-          }
-        });
-
-        const { error } = await stripe.confirmPayment({
-          elements,
-          confirmParams: {
-            return_url: `${window.location.origin}${addLanguageToPath('/payment-success', currentLanguage)}?email=${encodeURIComponent(customerEmail)}`,
-          },
-        });
-
-        if (error) {
-          console.error('Payment failed:', error);
-          toast({
-            title: "Payment Failed",
-            description: error.message || "There was an error processing your payment.",
-            variant: "destructive",
-          });
-        } else {
-          console.log('✅ Payment succeeded, clearing cart');
-          clearCart();
-          toast({
-            title: "Payment Successful",
-            description: "Thank you for your purchase! You will receive your contact information shortly.",
-          });
-        }
+      // Standard Stripe Elements flow - no custom logic
+      if (!stripe || !elements) {
+        throw new Error('Stripe not initialized');
       }
-    } catch (error: any) {
-      console.error('Error during payment:', error);
+
+      console.log('💳 Processing with Stripe Elements');
+      
+      // Update payment intent with customer details
+      await apiRequest("/api/update-payment-intent", {
+        method: "POST",
+        body: {
+          customerEmail,
+          customerName: customerName || "Guest Customer",
+          profileIds: items.map(item => item.id),
+        }
+      });
+
+      const { error, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${window.location.origin}${addLanguageToPath('/payment-success', currentLanguage)}`,
+        },
+      });
+
+      if (error) {
+        console.error('Payment failed:', error);
+        toast({
+          title: "Payment failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+        console.log('✅ Payment successful');
+        clearCart();
+        setLocation(addLanguageToPath('/payment-success', currentLanguage));
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
       toast({
-        title: "Payment Error",
-        description: "There was an error processing your payment. Please try again.",
+        title: "Payment failed",
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
         variant: "destructive",
       });
     } finally {
@@ -115,141 +88,101 @@ const CheckoutForm = ({ useHostedCheckout }: { useHostedCheckout?: boolean }) =>
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <Card>
-        <CardHeader>
-          <CardTitle>Complete Your Purchase</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="email">Email Address *</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={customerEmail}
-                  onChange={(e) => setCustomerEmail(e.target.value)}
-                  placeholder="your@email.com"
-                  required
-                />
-              </div>
-              
-              <div>
-                <Label htmlFor="name">Full Name (Optional)</Label>
-                <Input
-                  id="name"
-                  type="text"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  placeholder="Your full name"
-                />
-              </div>
-            </div>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-4">
+        <div>
+          <Label htmlFor="email">Email Address *</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="your@email.com"
+            value={customerEmail}
+            onChange={(e) => setCustomerEmail(e.target.value)}
+            required
+          />
+        </div>
 
-            {useHostedCheckout ? (
-              <div className="border-t pt-4">
-                <div className="p-6 bg-blue-50 border border-blue-200 rounded-lg">
-                  <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0">
-                      <svg className="h-6 w-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                      </svg>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-sm font-medium text-blue-800">Secure Hosted Checkout</h3>
-                      <div className="mt-2 text-sm text-blue-700">
-                        <p>You'll be redirected to Stripe's secure checkout page to complete your payment. This ensures maximum security and compatibility with all browsers and extensions.</p>
-                        <div className="mt-3 flex items-center space-x-2">
-                          <svg className="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                          </svg>
-                          <span className="text-xs text-blue-600">256-bit SSL encryption</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+        <div>
+          <Label htmlFor="name">Full Name (Optional)</Label>
+          <Input
+            id="name"
+            type="text"
+            placeholder="Your full name"
+            value={customerName}
+            onChange={(e) => setCustomerName(e.target.value)}
+          />
+        </div>
+
+        <div className="border-t pt-4">
+          <Label>Payment Information</Label>
+          <div className="mt-2">
+            {!stripe ? (
+              <div className="p-4 bg-gray-50 rounded-lg flex items-center space-x-3">
+                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                <p className="text-sm text-gray-600">Loading secure payment form...</p>
               </div>
             ) : (
-              <div className="border-t pt-4">
-                <Label>Payment Information</Label>
-                <div className="mt-2">
-                  {!stripe ? (
-                    <div className="p-4 bg-gray-50 rounded-lg flex items-center space-x-3">
-                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                      <p className="text-sm text-gray-600">Loading secure payment form...</p>
-                    </div>
-                  ) : (
-                    <PaymentElement 
-                      options={{
-                        layout: 'tabs',
-                        fields: {
-                          billingDetails: 'auto'
-                        }
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
+              <PaymentElement 
+                options={{
+                  layout: 'tabs',
+                  fields: {
+                    billingDetails: 'auto'
+                  }
+                }}
+              />
             )}
+          </div>
+        </div>
 
-            <Button 
-              type="submit"
-              disabled={isProcessing || (!useHostedCheckout && !stripe)}
-              className="w-full bg-primary hover:bg-primary/90"
-            >
-              {isProcessing ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Processing...
-                </>
-              ) : useHostedCheckout ? (
-                `Continue to Secure Checkout - $${getTotal().toFixed(2)}`
-              ) : (
-                `Pay $${getTotal().toFixed(2)}`
-              )}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-center space-x-2">
+            <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <p className="text-sm font-medium text-blue-800">Live Payment Processing</p>
+              <p className="text-xs text-blue-600">Your payment will be processed securely by Stripe</p>
+            </div>
+          </div>
+        </div>
+
+        <Button 
+          type="submit" 
+          disabled={isProcessing || !stripe} 
+          className="w-full"
+        >
+          {isProcessing ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              Processing Payment...
+            </>
+          ) : (
+            `Complete Payment - $${getTotal()}`
+          )}
+        </Button>
+      </div>
+    </form>
   );
 };
 
 export default function Checkout() {
-  const [clientSecret, setClientSecret] = useState("");
-  const [stripeError, setStripeError] = useState<string | null>(null);
-  const [paymentLoading, setPaymentLoading] = useState(true);
-  const [useHostedCheckout, setUseHostedCheckout] = useState(false);
   const { items, getTotal } = useCart();
   const [, setLocation] = useLocation();
   const { currentLanguage } = useTranslation();
-  const { toast } = useToast();
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [paymentLoading, setPaymentLoading] = useState(true);
 
   useEffect(() => {
     if (items.length === 0) {
-      setLocation(addLanguageToPath('/browse', currentLanguage));
+      setLocation(addLanguageToPath('/cart', currentLanguage));
       return;
     }
 
-    // Check if Stripe Elements will work
-    const checkStripeAndInitialize = async () => {
+    const initializePayment = async () => {
       console.log('💳 Initializing payment for amount:', getTotal());
       setPaymentLoading(true);
       
       try {
-        const stripe = await stripePromise;
-        
-        if (!stripe) {
-          // Stripe Elements is blocked, use hosted checkout
-          console.log('🔄 Stripe Elements blocked - using hosted checkout');
-          setUseHostedCheckout(true);
-          setPaymentLoading(false);
-          return;
-        }
-
-        // Stripe Elements available, create payment intent
         const response = await apiRequest("/api/create-payment-intent", {
           method: "POST",
           body: {
@@ -260,26 +193,24 @@ export default function Checkout() {
         });
         
         const data = await response.json();
-        console.log('✅ Payment intent created for Elements');
+        console.log('✅ Payment intent created');
         setClientSecret(data.clientSecret);
         setPaymentLoading(false);
         
       } catch (error) {
-        console.warn('⚠️ Elements failed, falling back to hosted checkout:', error);
-        setUseHostedCheckout(true);
+        console.error('Payment initialization failed:', error);
         setPaymentLoading(false);
       }
     };
 
-    checkStripeAndInitialize();
+    initializePayment();
   }, [items, getTotal, setLocation, currentLanguage]);
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
-          <p className="text-gray-600 mb-4">Add some profiles to your cart before checkout</p>
           <Button onClick={() => setLocation(addLanguageToPath('/browse', currentLanguage))}>
             Browse Profiles
           </Button>
@@ -290,66 +221,25 @@ export default function Checkout() {
 
   if (paymentLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
-          <p>Initializing secure payment...</p>
+          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-gray-600">Preparing secure checkout...</p>
         </div>
       </div>
     );
   }
 
-  if (stripeError || !clientSecret) {
+  if (!clientSecret) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-8">
-            <div className="text-center mb-6">
-              <svg className="h-12 w-12 text-red-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.996-.833-2.464 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-              </svg>
-              <h2 className="text-xl font-semibold text-red-800 mb-2">Payment System Blocked</h2>
-              <p className="text-red-600 mb-4">
-                {stripeError || 'Unable to initialize secure payment processing.'}
-              </p>
-            </div>
-
-            <div className="bg-white rounded-lg p-4 mb-6">
-              <h3 className="font-medium text-gray-900 mb-3">Quick Fix Instructions:</h3>
-              <div className="space-y-3 text-sm text-gray-700">
-                <div className="flex items-start space-x-2">
-                  <span className="font-semibold text-red-600">1.</span>
-                  <span>Disable ad blockers (uBlock Origin, AdBlock Plus, Ghostery)</span>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <span className="font-semibold text-red-600">2.</span>
-                  <span>Allow third-party cookies for secure payment processing</span>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <span className="font-semibold text-red-600">3.</span>
-                  <span>Refresh this page after making changes</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button 
-                onClick={() => window.location.reload()}
-                className="bg-red-600 hover:bg-red-700 text-white"
-              >
-                Refresh & Try Again
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => setLocation(addLanguageToPath('/browse', currentLanguage))}
-              >
-                Back to Browse
-              </Button>
-            </div>
-
-            <p className="text-xs text-gray-500 text-center mt-4">
-              Need help? Contact support with error: "Payment initialization failed"
-            </p>
+        <div className="max-w-md mx-auto text-center">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-red-800 mb-2">Payment Initialization Failed</h2>
+            <p className="text-red-600 mb-4">Unable to initialize secure payment processing.</p>
+            <Button onClick={() => setLocation(addLanguageToPath('/cart', currentLanguage))}>
+              Back to Cart
+            </Button>
           </div>
         </div>
       </div>
@@ -357,8 +247,13 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Complete Your Purchase</h1>
+          <p className="text-gray-600">Secure checkout powered by Stripe</p>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Order Summary */}
           <div className="lg:col-span-1">
@@ -366,30 +261,26 @@ export default function Checkout() {
               <CardHeader>
                 <CardTitle>Order Summary</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {items.map((item) => (
-                    <div key={item.id} className="flex items-center space-x-4">
-                      <img 
-                        src={item.photo} 
-                        alt={item.name}
-                        className="w-12 h-12 object-cover rounded"
-                      />
-                      <div className="flex-1">
-                        <h4 className="font-medium">{item.name}</h4>
-                        <p className="text-sm text-gray-600">{item.location}</p>
-                      </div>
-                      <span className="font-semibold">${item.price}</span>
+              <CardContent className="space-y-4">
+                {items.map((item) => (
+                  <div key={item.id} className="flex items-center space-x-3">
+                    <img 
+                      src={item.photo || `https://picsum.photos/60/60?random=${item.id}`}
+                      alt={item.name}
+                      className="w-12 h-12 object-cover rounded"
+                    />
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">{item.name}</p>
+                      <p className="text-xs text-gray-500">Age: {item.age}</p>
                     </div>
-                  ))}
-                </div>
+                    <p className="font-medium">${item.price}</p>
+                  </div>
+                ))}
                 
-                <div className="border-t pt-4 mt-4">
+                <div className="border-t pt-4">
                   <div className="flex justify-between items-center">
                     <span className="text-lg font-semibold">Total:</span>
-                    <span className="text-2xl font-bold text-primary">
-                      ${getTotal().toFixed(2)}
-                    </span>
+                    <span className="text-lg font-bold text-primary">${getTotal()}</span>
                   </div>
                 </div>
               </CardContent>
@@ -398,92 +289,33 @@ export default function Checkout() {
 
           {/* Payment Form */}
           <div className="lg:col-span-2">
-            {useHostedCheckout ? (
-              <CheckoutForm useHostedCheckout={true} />
-            ) : (
-              <Elements 
-                stripe={stripePromise} 
-                options={{ 
-                  clientSecret,
-                  appearance: {
-                    theme: 'stripe',
-                    variables: {
-                      colorPrimary: '#e91e63',
-                      colorBackground: '#ffffff',
-                      colorText: '#000000',
-                      colorDanger: '#df1b41',
-                      fontFamily: 'system-ui, -apple-system, sans-serif',
-                      spacingUnit: '2px',
-                      borderRadius: '4px',
+            <Card>
+              <CardHeader>
+                <CardTitle>Payment Details</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Elements 
+                  stripe={stripePromise} 
+                  options={{ 
+                    clientSecret,
+                    appearance: {
+                      theme: 'stripe',
+                      variables: {
+                        colorPrimary: '#e91e63',
+                        colorBackground: '#ffffff',
+                        colorText: '#000000',
+                        colorDanger: '#df1b41',
+                        fontFamily: 'system-ui, -apple-system, sans-serif',
+                        spacingUnit: '2px',
+                        borderRadius: '4px',
+                      }
                     }
-                  }
-                }}
-              >
-                <CheckoutForm useHostedCheckout={false} />
-              </Elements>
-            )}
-          </div>
-        </div>
-        
-        {/* Live Mode Notice & Troubleshooting */}
-        <div className="mt-8 space-y-4">
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-green-800">Secure Payment Processing</h3>
-                <div className="mt-2 text-sm text-green-700">
-                  <p>All payments are processed securely through Stripe. Your card information is never stored on our servers.</p>
-                  <p className="mt-1 text-xs">We accept all major credit and debit cards.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <div className="flex items-start">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-blue-800">Payment Form Not Loading?</h3>
-                <div className="mt-2 text-sm text-blue-700">
-                  <p className="mb-2">If the payment form doesn't appear, try these steps:</p>
-                  <div className="space-y-2">
-                    <details className="cursor-pointer">
-                      <summary className="font-medium">Chrome/Edge Users</summary>
-                      <ul className="mt-1 ml-4 list-disc text-xs">
-                        <li>Click the shield icon in the address bar</li>
-                        <li>Select "Allow all cookies" or "Allow third-party cookies"</li>
-                        <li>Disable any ad blockers (uBlock Origin, AdBlock Plus)</li>
-                      </ul>
-                    </details>
-                    <details className="cursor-pointer">
-                      <summary className="font-medium">Firefox Users</summary>
-                      <ul className="mt-1 ml-4 list-disc text-xs">
-                        <li>Click the shield icon next to the address bar</li>
-                        <li>Turn off Enhanced Tracking Protection for this site</li>
-                        <li>Disable any ad blocking extensions</li>
-                      </ul>
-                    </details>
-                    <details className="cursor-pointer">
-                      <summary className="font-medium">Safari Users</summary>
-                      <ul className="mt-1 ml-4 list-disc text-xs">
-                        <li>Go to Safari → Preferences → Privacy</li>
-                        <li>Uncheck "Prevent cross-site tracking"</li>
-                        <li>Refresh the page</li>
-                      </ul>
-                    </details>
-                  </div>
-                </div>
-              </div>
-            </div>
+                  }}
+                >
+                  <CheckoutForm />
+                </Elements>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
