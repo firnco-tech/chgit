@@ -1,0 +1,50 @@
+Prompt for Replit: Stripe Checkout Integration Must Work Seamlessly With Ad Blockers
+Objective:
+Fix the Stripe payment integration so that checkout works reliably for all users, including those with ad blockers enabled, just like on Shopify and other major e-commerce sites.
+Do not require users to disable ad blockers or adjust browser privacy settings. This is an industry-standard expectation and critical for conversion.
+
+Step 1: Audit Stripe Integration for Best Practices
+Confirm that all Stripe scripts (Stripe.js, Elements) are loaded directly from Stripe’s official CDN (https://js.stripe.com/ and https://elements.stripe.com/).
+
+Do not proxy, self-host, or rename Stripe assets.
+
+Use Stripe’s official React or JavaScript libraries—do not use custom wrappers or iframe embeds for payment forms.
+
+Step 2: Test and Debug With Ad Blockers Enabled
+Test the checkout process in Chrome, Firefox, and Safari with popular ad blockers (uBlock Origin, AdBlock Plus) enabled.
+
+If Stripe Elements is blocked, inspect the browser console and network logs to identify which resource is being blocked and why.
+
+Confirm that the payment form loads and works as expected without requiring any user intervention.
+
+Step 3: Eliminate All Prompts to Disable Ad Blockers
+Remove any UI elements, banners, or alerts instructing users to disable ad blockers or change browser privacy settings.
+
+If payment form loading fails, display a clear, professional error message and provide an alternative payment method (if available), but never blame the user or require privacy tool changes.
+
+Step 4: Ensure Seamless Fallbacks and Payment Options
+If Stripe Elements cannot load due to a technical issue, automatically and invisibly redirect users to Stripe’s official hosted checkout page as a fallback, without requiring any action from the user.
+
+Provide alternative payment options (PayPal, Apple Pay, Google Pay) if possible, to maximize conversion and accessibility.
+
+Step 5: Regression and Security Safeguards
+Do not break or regress any existing checkout, order, or user flows.
+
+Ensure all Stripe credentials are securely handled and never exposed in frontend code.
+
+All changes must be clearly commented and documented.
+
+Step 6: Testing and Reporting
+Provide before/after screenshots or screencasts of the checkout process with and without ad blockers enabled.
+
+Summarize exactly what was changed and why.
+
+Wait for my review and explicit approval before making any further changes.
+
+Critical Instructions:
+
+The checkout experience must match industry standards—no user should ever be required to disable privacy tools to make a purchase.
+
+If you encounter any blocking issue or uncertainty, STOP and report before proceeding.
+
+Begin with Step 1 (Stripe Integration Audit), and wait for my review before moving to the next step.
