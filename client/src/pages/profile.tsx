@@ -30,6 +30,21 @@ export default function ProfilePage() {
   const [selectedVideo, setSelectedVideo] = useState<string>('');
   const [selectedVideoIndex, setSelectedVideoIndex] = useState(0);
 
+  // Function to order photos with primary photo first
+  const getOrderedPhotos = (photos: string[] | undefined, primaryPhoto: string | undefined) => {
+    if (!photos || photos.length === 0) return [];
+    if (!primaryPhoto) return photos;
+    
+    // If primary photo exists, put it first
+    const orderedPhotos = [primaryPhoto];
+    photos.forEach(photo => {
+      if (photo !== primaryPhoto) {
+        orderedPhotos.push(photo);
+      }
+    });
+    return orderedPhotos;
+  };
+
   // Determine if the slug is actually a numeric ID (for backward compatibility)
   const isNumericId = slug && /^\d+$/.test(slug);
   const apiEndpoint = isNumericId 
@@ -49,7 +64,7 @@ export default function ProfilePage() {
       name: `${profile.firstName}, ${profile.age}`,
       age: profile.age,
       location: profile.location,
-      photo: profile.photos?.[0] || '',
+      photo: profile.primaryPhoto || profile.photos?.[0] || '',
       price: parseFloat(profile.price)
     });
     
@@ -122,7 +137,7 @@ export default function ProfilePage() {
               <Carousel className="w-full" setApi={setCarouselApi}>
                 <CarouselContent>
                   {/* Photos */}
-                  {profile.photos && profile.photos.map((photo, index) => (
+                  {getOrderedPhotos(profile.photos, profile.primaryPhoto).map((photo, index) => (
                     <CarouselItem key={`photo-${index}`}>
                       <div className="aspect-[3/4] overflow-hidden rounded-xl shadow-lg relative">
                         <img 
@@ -142,7 +157,7 @@ export default function ProfilePage() {
                         />
                         <div className="absolute top-4 left-4 bg-blue-500 text-white text-sm px-2 py-1 rounded-full font-medium flex items-center gap-1">
                           <span>📷</span>
-                          <span>Photo</span>
+                          <span>{photo === profile.primaryPhoto ? 'Primary Photo' : 'Photo'}</span>
                         </div>
                       </div>
                     </CarouselItem>
@@ -219,7 +234,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="grid grid-cols-4 gap-2">
                   {/* Photo Thumbnails */}
-                  {profile.photos && profile.photos.slice(0, 6).map((photo, index) => (
+                  {getOrderedPhotos(profile.photos, profile.primaryPhoto).slice(0, 6).map((photo, index) => (
                     <div key={`thumb-photo-${index}`} className="relative">
                       <img 
                         src={getMediaUrl(photo, 'image')}
@@ -238,7 +253,7 @@ export default function ProfilePage() {
                         }}
                       />
                       <div className="absolute top-1 left-1 bg-blue-500 text-white text-xs px-1 py-0.5 rounded">
-                        📷
+                        {photo === profile.primaryPhoto ? '⭐' : '📷'}
                       </div>
                     </div>
                   ))}

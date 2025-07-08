@@ -47,7 +47,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
       name: `${profile.firstName}, ${profile.age}`,
       age: profile.age,
       location: profile.location,
-      photo: profile.photos?.[0] || '',
+      photo: profile.primaryPhoto || profile.photos?.[0] || '',
       price: parseFloat(profile.price)
     });
     
@@ -62,14 +62,14 @@ export function ProfileCard({ profile }: ProfileCardProps) {
       <Link href={addLanguageToPath(`/profile/${profileSlug}`, currentLanguage)}>
         <div className="aspect-[3/4] overflow-hidden relative">
           <img 
-            src={profile.photos?.[0] ? getMediaUrl(profile.photos[0], 'image') : `data:image/svg+xml;base64,${btoa(`
+            src={profile.primaryPhoto ? getMediaUrl(profile.primaryPhoto, 'image') : (profile.photos?.[0] ? getMediaUrl(profile.photos[0], 'image') : `data:image/svg+xml;base64,${btoa(`
               <svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400">
                 <rect width="300" height="400" fill="#f3f4f6"/>
                 <circle cx="150" cy="160" r="40" fill="#d1d5db"/>
                 <path d="M110 240 L190 240 L175 280 L125 280 Z" fill="#d1d5db"/>
                 <text x="150" y="320" text-anchor="middle" font-family="Arial" font-size="14" fill="#6b7280">Profile Photo</text>
               </svg>
-            `)}`}
+            `)}`)}
             alt={`${profile.firstName} profile photo`}
             className="w-full h-full object-cover hover:scale-105 transition-transform"
             onError={(e) => {
