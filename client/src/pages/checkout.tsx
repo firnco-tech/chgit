@@ -10,6 +10,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { stripePromise } from "@/lib/stripe";
 import { Loader2 } from 'lucide-react';
 import { useLocation } from 'wouter';
+import { useTranslation } from "@/hooks/useTranslation";
+import { addLanguageToPath } from "@/lib/i18n";
 
 const CheckoutForm = () => {
   const stripe = useStripe();
@@ -17,6 +19,7 @@ const CheckoutForm = () => {
   const { toast } = useToast();
   const { items, clearCart, getTotal } = useCart();
   const [, setLocation] = useLocation();
+  const { currentLanguage } = useTranslation();
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -54,7 +57,7 @@ const CheckoutForm = () => {
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${window.location.origin}/payment-success?email=${encodeURIComponent(customerEmail)}`,
+          return_url: `${window.location.origin}${addLanguageToPath('/payment-success', currentLanguage)}?email=${encodeURIComponent(customerEmail)}`,
         },
       });
 
@@ -150,11 +153,12 @@ export default function Checkout() {
   const [paymentLoading, setPaymentLoading] = useState(true);
   const { items, getTotal } = useCart();
   const [, setLocation] = useLocation();
+  const { currentLanguage } = useTranslation();
   const { toast } = useToast();
 
   useEffect(() => {
     if (items.length === 0) {
-      setLocation('/browse');
+      setLocation(addLanguageToPath('/browse', currentLanguage));
       return;
     }
 
@@ -194,7 +198,7 @@ export default function Checkout() {
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
           <p className="text-gray-600 mb-4">Add some profiles to your cart before checkout</p>
-          <Button onClick={() => setLocation('/browse')}>
+          <Button onClick={() => setLocation(addLanguageToPath('/browse', currentLanguage))}>
             Browse Profiles
           </Button>
         </div>
@@ -229,7 +233,7 @@ export default function Checkout() {
               <Button onClick={() => window.location.reload()}>
                 Retry Payment
               </Button>
-              <Button variant="outline" onClick={() => setLocation('/browse')}>
+              <Button variant="outline" onClick={() => setLocation(addLanguageToPath('/browse', currentLanguage))}>
                 Back to Browse
               </Button>
             </div>
