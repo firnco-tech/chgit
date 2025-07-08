@@ -2,6 +2,8 @@ import { X, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
 import { useLocation } from "wouter";
+import { useTranslation } from "@/hooks/useTranslation";
+import { addLanguageToPath } from "@/lib/i18n";
 
 interface CartSidebarProps {
   isOpen: boolean;
@@ -11,10 +13,12 @@ interface CartSidebarProps {
 export function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
   const { items, removeItem, getTotal } = useCart();
   const [, setLocation] = useLocation();
+  const { currentLanguage } = useTranslation();
 
   const handleCheckout = () => {
     onClose();
-    setLocation('/checkout');
+    const checkoutPath = addLanguageToPath('/checkout', currentLanguage);
+    setLocation(checkoutPath);
   };
 
   return (

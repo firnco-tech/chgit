@@ -3,9 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCart } from "@/lib/cart";
 import { Trash2, ShoppingCart } from "lucide-react";
 import { Link } from "wouter";
+import { useTranslation } from "@/hooks/useTranslation";
+import { addLanguageToPath } from "@/lib/i18n";
 
 export default function Cart() {
   const { items, removeItem, getTotal } = useCart();
+  const { currentLanguage } = useTranslation();
 
   if (items.length === 0) {
     return (
@@ -14,7 +17,7 @@ export default function Cart() {
           <ShoppingCart className="h-24 w-24 text-gray-400 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Your cart is empty</h2>
           <p className="text-gray-600 mb-6">Browse profiles and add them to your cart to get started</p>
-          <Link href="/browse">
+          <Link href={addLanguageToPath('/browse', currentLanguage)}>
             <Button className="bg-primary hover:bg-primary/90">
               Browse Profiles
             </Button>
@@ -104,12 +107,12 @@ export default function Cart() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Link href="/checkout">
+                    <Link href={addLanguageToPath('/checkout', currentLanguage)}>
                       <Button className="w-full bg-primary hover:bg-primary/90">
                         Proceed to Checkout
                       </Button>
                     </Link>
-                    <Link href="/browse">
+                    <Link href={addLanguageToPath('/browse', currentLanguage)}>
                       <Button variant="outline" className="w-full">
                         Continue Shopping
                       </Button>
