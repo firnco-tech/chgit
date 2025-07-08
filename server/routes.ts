@@ -352,7 +352,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Handle hosted checkout session
         const session = await stripe.checkout.sessions.retrieve(sessionId);
         
-        if (session.payment_status !== "paid") {
+        console.log('🔍 STRIPE SESSION DEBUG:', {
+          sessionId: sessionId,
+          payment_status: session.payment_status,
+          status: session.status,
+          payment_intent: session.payment_intent,
+          mode: session.mode,
+          amount_total: session.amount_total
+        });
+        
+        // Check for successful payment in hosted checkout
+        if (session.payment_status !== "paid" && session.status !== "complete") {
+          console.error('❌ Payment not successful - session status:', session.payment_status, 'overall status:', session.status);
           return res.status(400).json({ message: "Payment not successful" });
         }
 
@@ -373,11 +384,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Find the order
       const order = await storage.getOrderByPaymentIntent(paymentData.id);
       if (!order) {
+        console.error('❌ Order not found for payment ID:', paymentData.id);
         return res.status(404).json({ message: "Order not found" });
       }
 
+      console.log('✅ Order found:', order.id, 'current status:', order.status);
+      
       // Update order status
       await storage.updateOrderStatus(order.id, "completed");
+      console.log('✅ Order status updated to completed for order:', order.id);
       
       // Create order items with contact info
       const orderItemsData = [];
