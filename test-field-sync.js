@@ -5,11 +5,11 @@
 
 const testProfile = {
   // Basic info
-  firstName: "TestSync",
-  lastName: "FieldTest",
-  age: 25,
-  gender: "Female",
-  height: "5'6",
+  firstName: "FinalSync",
+  lastName: "Test",
+  age: 26,
+  gender: "female",
+  height: "5'0&quot;",
   location: "Santo Domingo, Dominican Republic",
   
   // The problematic fields we need to test
@@ -17,6 +17,7 @@ const testProfile = {
   children: "No children",
   smoking: "Non-smoker",
   bodyType: "Athletic",
+  drinking: "Socially",
   
   // Other required fields
   education: "Bachelor's Degree",
@@ -47,6 +48,7 @@ async function testProfileCreation() {
     console.log('Testing profile creation with fields:');
     console.log('- gender:', testProfile.gender);
     console.log('- height:', testProfile.height);
+    console.log('- drinking:', testProfile.drinking);
     console.log('- smoking:', testProfile.smoking);
     console.log('- bodyType:', testProfile.bodyType);
     console.log('- children:', testProfile.children);
@@ -71,6 +73,7 @@ async function testProfileCreation() {
     console.log('Field verification:');
     console.log('- gender:', createdProfile.gender);
     console.log('- height:', createdProfile.height);
+    console.log('- drinking:', createdProfile.drinking);
     console.log('- smoking:', createdProfile.smoking);
     console.log('- bodyType:', createdProfile.bodyType);
     console.log('- children:', createdProfile.children);

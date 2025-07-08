@@ -269,8 +269,9 @@ export default function AdminEditProfile() {
                       <SelectValue placeholder="Select gender" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Female">Female</SelectItem>
-                      <SelectItem value="Male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -284,26 +285,26 @@ export default function AdminEditProfile() {
                       <SelectValue placeholder="Select height" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="4'8">4'8"</SelectItem>
-                      <SelectItem value="4'9">4'9"</SelectItem>
-                      <SelectItem value="4'10">4'10"</SelectItem>
-                      <SelectItem value="4'11">4'11"</SelectItem>
-                      <SelectItem value="5'0">5'0"</SelectItem>
-                      <SelectItem value="5'1">5'1"</SelectItem>
-                      <SelectItem value="5'2">5'2"</SelectItem>
-                      <SelectItem value="5'3">5'3"</SelectItem>
-                      <SelectItem value="5'4">5'4"</SelectItem>
-                      <SelectItem value="5'5">5'5"</SelectItem>
-                      <SelectItem value="5'6">5'6"</SelectItem>
-                      <SelectItem value="5'7">5'7"</SelectItem>
-                      <SelectItem value="5'8">5'8"</SelectItem>
-                      <SelectItem value="5'9">5'9"</SelectItem>
-                      <SelectItem value="5'10">5'10"</SelectItem>
-                      <SelectItem value="5'11">5'11"</SelectItem>
-                      <SelectItem value="6'0">6'0"</SelectItem>
-                      <SelectItem value="6'1">6'1"</SelectItem>
-                      <SelectItem value="6'2">6'2"</SelectItem>
-                      <SelectItem value="6'3">6'3"</SelectItem>
+                      <SelectItem value="4'8&quot;">4'8"</SelectItem>
+                      <SelectItem value="4'9&quot;">4'9"</SelectItem>
+                      <SelectItem value="4'10&quot;">4'10"</SelectItem>
+                      <SelectItem value="4'11&quot;">4'11"</SelectItem>
+                      <SelectItem value="5'0&quot;">5'0"</SelectItem>
+                      <SelectItem value="5'1&quot;">5'1"</SelectItem>
+                      <SelectItem value="5'2&quot;">5'2"</SelectItem>
+                      <SelectItem value="5'3&quot;">5'3"</SelectItem>
+                      <SelectItem value="5'4&quot;">5'4"</SelectItem>
+                      <SelectItem value="5'5&quot;">5'5"</SelectItem>
+                      <SelectItem value="5'6&quot;">5'6"</SelectItem>
+                      <SelectItem value="5'7&quot;">5'7"</SelectItem>
+                      <SelectItem value="5'8&quot;">5'8"</SelectItem>
+                      <SelectItem value="5'9&quot;">5'9"</SelectItem>
+                      <SelectItem value="5'10&quot;">5'10"</SelectItem>
+                      <SelectItem value="5'11&quot;">5'11"</SelectItem>
+                      <SelectItem value="6'0&quot;">6'0"</SelectItem>
+                      <SelectItem value="6'1&quot;">6'1"</SelectItem>
+                      <SelectItem value="6'2&quot;">6'2"</SelectItem>
+                      <SelectItem value="6'3&quot;">6'3"</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -496,9 +497,11 @@ export default function AdminEditProfile() {
                       <SelectValue placeholder="Select drinking status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Non-drinker">Non-drinker</SelectItem>
-                      <SelectItem value="Social drinker">Social drinker</SelectItem>
-                      <SelectItem value="Regular drinker">Regular drinker</SelectItem>
+                      <SelectItem value="Never">Never</SelectItem>
+                      <SelectItem value="Rarely">Rarely</SelectItem>
+                      <SelectItem value="Socially">Socially</SelectItem>
+                      <SelectItem value="Regularly">Regularly</SelectItem>
+                      <SelectItem value="Frequently">Frequently</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
