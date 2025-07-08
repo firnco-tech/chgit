@@ -48,6 +48,81 @@
   --radius: 0.5rem;
 }
 
+/* Stripe Elements Styling - Critical for payment form visibility */
+.stripe-element-container {
+  min-height: 250px;
+  padding: 20px;
+  border: 1px solid hsl(20, 5.9%, 90%);
+  border-radius: 8px;
+  background: hsl(0, 0%, 100%);
+  overflow: visible !important;
+  position: relative;
+  width: 100%;
+  display: block;
+}
+
+/* Ensure Stripe Elements are visible and accessible */
+.stripe-element-container * {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+  height: auto !important;
+  min-height: inherit !important;
+  overflow: visible !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Stripe PaymentElement specific styling */
+.stripe-element-container .p-Element,
+.stripe-element-container [data-testid="payment-element"],
+.stripe-element-container .p-Element-inner {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+  height: auto !important;
+  min-height: 200px !important;
+  width: 100% !important;
+  overflow: visible !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Override any potential hiding styles */
+.stripe-element-container iframe {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+  height: auto !important;
+  min-height: 200px !important;
+  width: 100% !important;
+}
+
+/* Additional PaymentElement specific fixes */
+#payment-element {
+  min-height: 200px !important;
+  height: auto !important;
+  width: 100% !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow: visible !important;
+  position: relative !important;
+  z-index: 100 !important;
+}
+
+/* Ensure parent containers don't hide Stripe Elements */
+.stripe-element-container,
+.stripe-element-container > div {
+  overflow: visible !important;
+  height: auto !important;
+  min-height: 200px !important;
+  max-height: none !important;
+  width: 100% !important;
+  display: block !important;
+  position: relative !important;
+}
+
 @layer base {
   * {
     @apply border-border;
