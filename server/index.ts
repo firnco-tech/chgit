@@ -66,6 +66,17 @@ app.use(session({
   name: 'sessionId', // Custom session name
 }));
 
+// Redirect www to non-www for SEO and SSL consistency
+app.use((req, res, next) => {
+  const host = req.get('host');
+  if (host && host.startsWith('www.')) {
+    const newHost = host.substring(4); // Remove 'www.'
+    const redirectUrl = `https://${newHost}${req.originalUrl}`;
+    return res.redirect(301, redirectUrl);
+  }
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
