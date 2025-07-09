@@ -69,12 +69,25 @@ export function ImageModal({ isOpen, onClose, src, alt, originalSrc, profileName
   };
 
   const enterFullscreen = async () => {
-    if (modalRef.current && document.documentElement.requestFullscreen) {
-      try {
-        await document.documentElement.requestFullscreen();
-        setIsFullscreen(true);
-      } catch (err) {
-        console.error('Error entering fullscreen:', err);
+    if (isMobile) {
+      // For mobile, use a different approach to achieve true full-screen
+      if (document.documentElement.requestFullscreen) {
+        try {
+          await document.documentElement.requestFullscreen();
+          setIsFullscreen(true);
+        } catch (err) {
+          console.error('Error entering fullscreen:', err);
+        }
+      }
+    } else {
+      // Desktop behavior remains the same
+      if (modalRef.current && document.documentElement.requestFullscreen) {
+        try {
+          await document.documentElement.requestFullscreen();
+          setIsFullscreen(true);
+        } catch (err) {
+          console.error('Error entering fullscreen:', err);
+        }
       }
     }
   };
@@ -118,9 +131,9 @@ export function ImageModal({ isOpen, onClose, src, alt, originalSrc, profileName
       />
       
       {/* Modal content */}
-      <div className={`relative ${isFullscreen ? 'w-full h-full' : 'max-w-[90vw] max-h-[90vh]'} flex flex-col overflow-hidden`}>
-        {/* Header with controls */}
-        <div className={`flex items-center justify-between p-4 bg-black bg-opacity-75 ${isFullscreen ? 'fixed top-0 left-0 right-0 z-20' : 'rounded-t-lg'}`}>
+      <div className={`relative ${isFullscreen ? 'w-full h-full' : 'max-w-[90vw] max-h-[90vh]'} ${isMobile && isFullscreen ? 'flex items-center justify-center' : 'flex flex-col'} overflow-hidden`}>
+        {/* Header with controls - Hidden on mobile fullscreen */}
+        <div className={`flex items-center justify-between p-4 bg-black bg-opacity-75 ${isFullscreen ? (isMobile ? 'hidden' : 'fixed top-0 left-0 right-0 z-20') : 'rounded-t-lg'}`}>
           <div className="flex items-center space-x-2">
             {profileName && (
               <span className="text-white text-sm font-medium">{profileName}</span>
@@ -212,7 +225,7 @@ export function ImageModal({ isOpen, onClose, src, alt, originalSrc, profileName
         
         {/* Image container */}
         <div 
-          className={`relative flex-1 bg-black overflow-auto ${isFullscreen ? 'pt-16' : 'rounded-b-lg'}`} 
+          className={`relative ${isMobile && isFullscreen ? 'w-full h-full' : 'flex-1'} bg-black overflow-auto ${isFullscreen ? (isMobile ? '' : 'pt-16') : 'rounded-b-lg'}`} 
           style={{ maxHeight: isFullscreen ? '100vh' : '75vh' }}
         >
           {isLoading && (
@@ -224,12 +237,38 @@ export function ImageModal({ isOpen, onClose, src, alt, originalSrc, profileName
             </div>
           )}
           
+          {/* Mobile full-screen button - positioned discreetly in top-right corner */}
+          {isMobile && !isFullscreen && (
+            <Button
+              onClick={enterFullscreen}
+              variant="ghost"
+              size="sm"
+              className="absolute top-2 right-2 z-20 text-white bg-black bg-opacity-50 hover:bg-opacity-70 rounded-full p-2"
+              title="Enter Fullscreen"
+            >
+              <Maximize className="h-4 w-4" />
+            </Button>
+          )}
+          
+          {/* Mobile exit fullscreen button - only visible in fullscreen */}
+          {isMobile && isFullscreen && (
+            <Button
+              onClick={exitFullscreen}
+              variant="ghost"
+              size="sm"
+              className="absolute top-4 right-4 z-30 text-white bg-black bg-opacity-50 hover:bg-opacity-70 rounded-full p-2"
+              title="Exit Fullscreen"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+          
           <div className="flex items-center justify-center min-h-full">
             <img
               ref={imageRef}
               src={showOriginal && originalSrc ? originalSrc : src}
               alt={alt}
-              className={`max-w-full max-h-full object-contain transition-transform duration-200 ${isMobile ? 'w-full h-full' : ''}`}
+              className={`max-w-full max-h-full object-contain transition-transform duration-200 ${isMobile && isFullscreen ? 'w-screen h-screen object-contain' : ''}`}
               style={{ 
                 transform: `scale(${zoom})`,
                 transformOrigin: 'center'
@@ -240,7 +279,7 @@ export function ImageModal({ isOpen, onClose, src, alt, originalSrc, profileName
           </div>
         </div>
         
-        {/* Footer with image info */}
+        {/* Footer with image info - Hidden on mobile fullscreen */}
         {!isFullscreen && (
           <div className="p-3 bg-black bg-opacity-75 rounded-b-lg">
             <p className="text-white text-sm text-center">
