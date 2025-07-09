@@ -127,7 +127,7 @@ export function ImageModal({ isOpen, onClose, src, alt, originalSrc, profileName
       {/* Background overlay */}
       <div 
         className="absolute inset-0 bg-black bg-opacity-50"
-        onClick={onClose}
+        onClick={isMobile ? undefined : onClose}
       />
       
       {/* Modal content */}
@@ -200,16 +200,18 @@ export function ImageModal({ isOpen, onClose, src, alt, originalSrc, profileName
               </Button>
             )}
             
-            {/* Fullscreen toggle */}
-            <Button
-              onClick={isFullscreen ? exitFullscreen : enterFullscreen}
-              variant="ghost"
-              size="sm"
-              className="text-white hover:bg-white hover:bg-opacity-20"
-              title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-            >
-              <Maximize className="h-4 w-4" />
-            </Button>
+            {/* Fullscreen toggle - Hide on mobile */}
+            {!isMobile && (
+              <Button
+                onClick={isFullscreen ? exitFullscreen : enterFullscreen}
+                variant="ghost"
+                size="sm"
+                className="text-white hover:bg-white hover:bg-opacity-20"
+                title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+              >
+                <Maximize className="h-4 w-4" />
+              </Button>
+            )}
             
             {/* Close button */}
             <Button
@@ -243,7 +245,7 @@ export function ImageModal({ isOpen, onClose, src, alt, originalSrc, profileName
               onClick={enterFullscreen}
               variant="ghost"
               size="sm"
-              className="absolute top-2 right-2 z-20 text-white bg-black bg-opacity-50 hover:bg-opacity-70 rounded-full p-2"
+              className="absolute top-2 right-2 z-20 text-white bg-black bg-opacity-60 hover:bg-opacity-80 rounded-full p-2 border border-white border-opacity-30"
               title="Enter Fullscreen"
             >
               <Maximize className="h-4 w-4" />
@@ -256,10 +258,10 @@ export function ImageModal({ isOpen, onClose, src, alt, originalSrc, profileName
               onClick={exitFullscreen}
               variant="ghost"
               size="sm"
-              className="absolute top-4 right-4 z-30 text-white bg-black bg-opacity-50 hover:bg-opacity-70 rounded-full p-2"
+              className="absolute top-4 right-4 z-30 text-white bg-black bg-opacity-60 hover:bg-opacity-80 rounded-full p-3 border border-white border-opacity-30"
               title="Exit Fullscreen"
             >
-              <X className="h-4 w-4" />
+              <X className="h-5 w-5" />
             </Button>
           )}
           
@@ -268,7 +270,7 @@ export function ImageModal({ isOpen, onClose, src, alt, originalSrc, profileName
               ref={imageRef}
               src={showOriginal && originalSrc ? originalSrc : src}
               alt={alt}
-              className={`max-w-full max-h-full object-contain transition-transform duration-200 ${isMobile && isFullscreen ? 'w-screen h-screen object-contain' : ''}`}
+              className={`max-w-full max-h-full object-contain transition-transform duration-200 ${isMobile && isFullscreen ? 'w-screen h-screen object-contain' : ''} ${isMobile ? 'pointer-events-none' : ''}`}
               style={{ 
                 transform: `scale(${zoom})`,
                 transformOrigin: 'center'
@@ -279,7 +281,7 @@ export function ImageModal({ isOpen, onClose, src, alt, originalSrc, profileName
           </div>
         </div>
         
-        {/* Footer with image info - Hidden on mobile fullscreen */}
+        {/* Footer with image info - Hidden on fullscreen */}
         {!isFullscreen && (
           <div className="p-3 bg-black bg-opacity-75 rounded-b-lg">
             <p className="text-white text-sm text-center">
