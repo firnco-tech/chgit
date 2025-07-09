@@ -7,8 +7,7 @@ import { Link } from "wouter";
 import { Play } from "lucide-react";
 import { getMediaUrl } from "@/lib/mediaUtils";
 import { addLanguageToPath, getCurrentLanguage } from "@/lib/i18n";
-import { ImageModal } from "@/components/ImageModal";
-import { useState } from "react";
+
 import type { Profile } from "@shared/schema";
 
 interface ProfileCardProps {
@@ -19,7 +18,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
   const { addItem, items } = useCart();
   const { toast } = useToast();
   const currentLanguage = getCurrentLanguage();
-  const [imageModalOpen, setImageModalOpen] = useState(false);
+
 
   const isInCart = items.some(item => item.id === profile.id);
 
@@ -63,8 +62,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
   const primaryPhoto = profile.primaryPhoto || profile.photos?.[0];
 
   return (
-    <>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
         <Link href={addLanguageToPath(`/profile/${profileSlug}`, currentLanguage)}>
           <div className="aspect-[3/4] overflow-hidden relative bg-gray-100">
             <img 
@@ -91,27 +89,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
               }}
             />
             
-            {/* Click overlay for fullscreen */}
-            <div 
-              className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center cursor-pointer"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (primaryPhoto) {
-                  setImageModalOpen(true);
-                }
-              }}
-            >
-              <div className="opacity-0 hover:opacity-100 transition-opacity">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-white bg-black bg-opacity-50 hover:bg-opacity-70"
-                >
-                  View Full Size
-                </Button>
-              </div>
-            </div>
+
           
           {/* Media Count Indicators */}
           <div className="absolute top-2 right-2 flex gap-1">
@@ -161,17 +139,5 @@ export function ProfileCard({ profile }: ProfileCardProps) {
         </div>
       </CardContent>
     </Card>
-    
-    {/* Image Modal */}
-    {primaryPhoto && (
-      <ImageModal
-        isOpen={imageModalOpen}
-        onClose={() => setImageModalOpen(false)}
-        src={getMediaUrl(primaryPhoto, 'image')}
-        alt={`${profile.firstName} profile photo`}
-        profileName={profile.firstName}
-      />
-    )}
-  </>
   );
 }

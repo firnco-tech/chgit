@@ -166,23 +166,7 @@ export default function ProfilePage() {
                           }}
                         />
                         
-                        {/* Photo overlay with fullscreen button */}
-                        <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="opacity-0 hover:opacity-100 transition-opacity text-white bg-black bg-opacity-50 hover:bg-opacity-70"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedImage(photo);
-                              setSelectedImageIndex(index);
-                              setImageModalOpen(true);
-                            }}
-                          >
-                            <Maximize className="w-4 h-4 mr-2" />
-                            View Full Size
-                          </Button>
-                        </div>
+
                         
                         <div className="absolute top-4 left-4 bg-blue-500 text-white text-sm px-2 py-1 rounded-full font-medium flex items-center gap-1">
                           <span>📷</span>
@@ -272,9 +256,6 @@ export default function ProfilePage() {
                         style={{ backgroundColor: '#f8fafc' }}
                         onClick={() => {
                           carouselApi?.scrollTo(index);
-                          setSelectedImage(photo);
-                          setSelectedImageIndex(index);
-                          setImageModalOpen(true);
                         }}
                         onError={(e) => {
                           e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`

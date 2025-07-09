@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Download, Maximize2 } from 'lucide-react';
+import { X, Maximize2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface ImageModalProps {
@@ -42,23 +42,7 @@ export function ImageModal({ isOpen, onClose, src, alt, originalSrc, profileName
     setShowOriginal(!showOriginal);
   };
 
-  const handleDownload = async () => {
-    try {
-      const imageUrl = showOriginal && originalSrc ? originalSrc : src;
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${profileName || 'profile'}-photo.jpg`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Download failed:', error);
-    }
-  };
+
 
   if (!isOpen) return null;
 
@@ -71,7 +55,7 @@ export function ImageModal({ isOpen, onClose, src, alt, originalSrc, profileName
       />
       
       {/* Modal content */}
-      <div className="relative max-w-[95vw] max-h-[95vh] flex flex-col">
+      <div className="relative max-w-[90vw] max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header with controls */}
         <div className="flex items-center justify-between p-4 bg-black bg-opacity-75 rounded-t-lg">
           <div className="flex items-center space-x-2">
@@ -100,15 +84,7 @@ export function ImageModal({ isOpen, onClose, src, alt, originalSrc, profileName
               </Button>
             )}
             
-            {/* Download button */}
-            <Button
-              onClick={handleDownload}
-              variant="ghost"
-              size="sm"
-              className="text-white hover:bg-white hover:bg-opacity-20"
-            >
-              <Download className="h-4 w-4" />
-            </Button>
+
             
             {/* Close button */}
             <Button
@@ -123,7 +99,7 @@ export function ImageModal({ isOpen, onClose, src, alt, originalSrc, profileName
         </div>
         
         {/* Image container */}
-        <div className="relative flex-1 bg-black rounded-b-lg overflow-hidden">
+        <div className="relative flex-1 bg-black rounded-b-lg overflow-auto" style={{ maxHeight: '75vh' }}>
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
               <div className="text-white text-center">
