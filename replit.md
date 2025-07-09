@@ -455,6 +455,16 @@ RESTful API endpoints include:
   - VERIFIED: Only the full-screen button triggers the action, not the entire image area
   - ACHIEVED: Clean, distraction-free mobile photo viewing experience similar to native photo apps
 
+- July 09, 2025. RESTORE POINT: Mobile Photo Click Functionality Disabled - COMPLETED
+  - RESOLVED: Disabled full-screen click functionality on entire photo for mobile devices only (window.innerWidth <= 768)
+  - IMPLEMENTED: Mobile detection with resize listener to dynamically detect screen size changes
+  - ENHANCED: Conditional onClick handler that only works on desktop devices
+  - IMPROVED: Cursor styling that removes pointer cursor on mobile since photos are no longer clickable
+  - PRESERVED: Desktop functionality remains completely unchanged - users can still click anywhere on photo for full-screen
+  - VERIFIED: Mobile users can only trigger full-screen modal using discrete button in top-right corner
+  - PUSHED: All changes successfully committed to GitHub repository
+  - STATUS: Mobile photo interaction now follows user requirements with button-only activation
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
