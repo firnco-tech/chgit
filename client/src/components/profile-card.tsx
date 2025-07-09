@@ -7,6 +7,8 @@ import { Link } from "wouter";
 import { Play } from "lucide-react";
 import { getMediaUrl } from "@/lib/mediaUtils";
 import { addLanguageToPath, getCurrentLanguage } from "@/lib/i18n";
+import { ImageModal } from "@/components/ImageModal";
+import { useState } from "react";
 import type { Profile } from "@shared/schema";
 
 interface ProfileCardProps {
@@ -17,6 +19,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
   const { addItem, items } = useCart();
   const { toast } = useToast();
   const currentLanguage = getCurrentLanguage();
+  const [imageModalOpen, setImageModalOpen] = useState(false);
 
   const isInCart = items.some(item => item.id === profile.id);
 
@@ -57,32 +60,58 @@ export function ProfileCard({ profile }: ProfileCardProps) {
     });
   };
 
+  const primaryPhoto = profile.primaryPhoto || profile.photos?.[0];
+
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-      <Link href={addLanguageToPath(`/profile/${profileSlug}`, currentLanguage)}>
-        <div className="aspect-[3/4] overflow-hidden relative">
-          <img 
-            src={profile.primaryPhoto ? getMediaUrl(profile.primaryPhoto, 'image') : (profile.photos?.[0] ? getMediaUrl(profile.photos[0], 'image') : `data:image/svg+xml;base64,${btoa(`
-              <svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400">
-                <rect width="300" height="400" fill="#f3f4f6"/>
-                <circle cx="150" cy="160" r="40" fill="#d1d5db"/>
-                <path d="M110 240 L190 240 L175 280 L125 280 Z" fill="#d1d5db"/>
-                <text x="150" y="320" text-anchor="middle" font-family="Arial" font-size="14" fill="#6b7280">Profile Photo</text>
-              </svg>
-            `)}`)}
-            alt={`${profile.firstName} profile photo`}
-            className="w-full h-full object-cover hover:scale-105 transition-transform"
-            onError={(e) => {
-              e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
+    <>
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+        <Link href={addLanguageToPath(`/profile/${profileSlug}`, currentLanguage)}>
+          <div className="aspect-[3/4] overflow-hidden relative bg-gray-100">
+            <img 
+              src={primaryPhoto ? getMediaUrl(primaryPhoto, 'image') : `data:image/svg+xml;base64,${btoa(`
                 <svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400">
                   <rect width="300" height="400" fill="#f3f4f6"/>
                   <circle cx="150" cy="160" r="40" fill="#d1d5db"/>
                   <path d="M110 240 L190 240 L175 280 L125 280 Z" fill="#d1d5db"/>
                   <text x="150" y="320" text-anchor="middle" font-family="Arial" font-size="14" fill="#6b7280">Profile Photo</text>
                 </svg>
-              `)}`;
-            }}
-          />
+              `)}`}
+              alt={`${profile.firstName} profile photo`}
+              className="w-full h-full object-contain hover:scale-105 transition-transform"
+              style={{ backgroundColor: '#f8fafc' }}
+              onError={(e) => {
+                e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
+                  <svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400">
+                    <rect width="300" height="400" fill="#f3f4f6"/>
+                    <circle cx="150" cy="160" r="40" fill="#d1d5db"/>
+                    <path d="M110 240 L190 240 L175 280 L125 280 Z" fill="#d1d5db"/>
+                    <text x="150" y="320" text-anchor="middle" font-family="Arial" font-size="14" fill="#6b7280">Profile Photo</text>
+                  </svg>
+                `)}`;
+              }}
+            />
+            
+            {/* Click overlay for fullscreen */}
+            <div 
+              className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (primaryPhoto) {
+                  setImageModalOpen(true);
+                }
+              }}
+            >
+              <div className="opacity-0 hover:opacity-100 transition-opacity">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-white bg-black bg-opacity-50 hover:bg-opacity-70"
+                >
+                  View Full Size
+                </Button>
+              </div>
+            </div>
           
           {/* Media Count Indicators */}
           <div className="absolute top-2 right-2 flex gap-1">
@@ -132,5 +161,17 @@ export function ProfileCard({ profile }: ProfileCardProps) {
         </div>
       </CardContent>
     </Card>
+    
+    {/* Image Modal */}
+    {primaryPhoto && (
+      <ImageModal
+        isOpen={imageModalOpen}
+        onClose={() => setImageModalOpen(false)}
+        src={getMediaUrl(primaryPhoto, 'image')}
+        alt={`${profile.firstName} profile photo`}
+        profileName={profile.firstName}
+      />
+    )}
+  </>
   );
 }

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { FavoriteHeart } from "@/components/FavoriteHeart";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { VideoModal } from "@/components/VideoModal";
+import { ImageModal } from "@/components/ImageModal";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
 import { ArrowLeft, MessageCircle, Instagram, Mail, Shield, Zap, Lock, Phone, Send, Facebook, Video, Play, Maximize } from "lucide-react";
 import { useCart } from "@/lib/cart";
@@ -29,6 +30,9 @@ export default function ProfilePage() {
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<string>('');
   const [selectedVideoIndex, setSelectedVideoIndex] = useState(0);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string>('');
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   // Function to order photos with primary photo first
   const getOrderedPhotos = (photos: string[] | undefined, primaryPhoto: string | undefined) => {
@@ -139,11 +143,17 @@ export default function ProfilePage() {
                   {/* Photos */}
                   {getOrderedPhotos(profile.photos, profile.primaryPhoto).map((photo, index) => (
                     <CarouselItem key={`photo-${index}`}>
-                      <div className="aspect-[3/4] overflow-hidden rounded-xl shadow-lg relative">
+                      <div className="aspect-[3/4] overflow-hidden rounded-xl shadow-lg relative bg-gray-100">
                         <img 
                           src={getMediaUrl(photo, 'image')}
                           alt={`${profile.firstName} photo ${index + 1}`}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain cursor-pointer"
+                          style={{ backgroundColor: '#f8fafc' }}
+                          onClick={() => {
+                            setSelectedImage(photo);
+                            setSelectedImageIndex(index);
+                            setImageModalOpen(true);
+                          }}
                           onError={(e) => {
                             e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
                               <svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500">
@@ -155,6 +165,25 @@ export default function ProfilePage() {
                             `)}`;
                           }}
                         />
+                        
+                        {/* Photo overlay with fullscreen button */}
+                        <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="opacity-0 hover:opacity-100 transition-opacity text-white bg-black bg-opacity-50 hover:bg-opacity-70"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedImage(photo);
+                              setSelectedImageIndex(index);
+                              setImageModalOpen(true);
+                            }}
+                          >
+                            <Maximize className="w-4 h-4 mr-2" />
+                            View Full Size
+                          </Button>
+                        </div>
+                        
                         <div className="absolute top-4 left-4 bg-blue-500 text-white text-sm px-2 py-1 rounded-full font-medium flex items-center gap-1">
                           <span>📷</span>
                           <span>{photo === profile.primaryPhoto ? 'Primary Photo' : 'Photo'}</span>
@@ -235,12 +264,18 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-4 gap-2">
                   {/* Photo Thumbnails */}
                   {getOrderedPhotos(profile.photos, profile.primaryPhoto).slice(0, 6).map((photo, index) => (
-                    <div key={`thumb-photo-${index}`} className="relative">
+                    <div key={`thumb-photo-${index}`} className="relative bg-gray-100 rounded-lg overflow-hidden">
                       <img 
                         src={getMediaUrl(photo, 'image')}
                         alt={`${profile.firstName} photo ${index + 1}`}
-                        className="w-full rounded-lg aspect-square object-cover hover:opacity-80 hover:ring-2 hover:ring-blue-400 transition-all cursor-pointer"
-                        onClick={() => carouselApi?.scrollTo(index)}
+                        className="w-full rounded-lg aspect-square object-contain hover:opacity-80 hover:ring-2 hover:ring-blue-400 transition-all cursor-pointer"
+                        style={{ backgroundColor: '#f8fafc' }}
+                        onClick={() => {
+                          carouselApi?.scrollTo(index);
+                          setSelectedImage(photo);
+                          setSelectedImageIndex(index);
+                          setImageModalOpen(true);
+                        }}
                         onError={(e) => {
                           e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
                             <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150">
@@ -514,6 +549,15 @@ export default function ProfilePage() {
         profileName={profile?.firstName || 'Profile'}
         videoIndex={selectedVideoIndex}
         totalVideos={profile?.videos?.length || 0}
+      />
+      
+      {/* Image Modal */}
+      <ImageModal
+        isOpen={imageModalOpen}
+        onClose={() => setImageModalOpen(false)}
+        src={selectedImage ? getMediaUrl(selectedImage, 'image') : ''}
+        alt={`${profile?.firstName || 'Profile'} photo ${selectedImageIndex + 1}`}
+        profileName={profile?.firstName || 'Profile'}
       />
     </div>
   );

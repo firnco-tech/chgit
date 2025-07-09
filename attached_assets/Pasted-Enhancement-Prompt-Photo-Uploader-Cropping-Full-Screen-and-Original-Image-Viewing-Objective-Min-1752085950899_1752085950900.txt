@@ -1,0 +1,84 @@
+Enhancement Prompt: Photo Uploader Cropping, Full-Screen, and Original Image Viewing
+Objective
+Minimize excessive cropping of uploaded photos by preserving original aspect ratios.
+
+Enable full-screen viewing of photos when clicked.
+
+Allow users to view the original, unmodified image (prior to any cropping or resizing) via a clear option.
+
+Ensure all changes are safe, non-disruptive, and maintain existing site features, admin paths, and SEO optimizations.
+
+Requirements
+Preserve Aspect Ratio:
+Display uploaded images using scaling (contain/fit) rather than forced cropping. Use padding or background fill as needed for container mismatches.
+
+Full-Screen Viewing:
+Clicking a photo should open it in full-screen, maintaining aspect ratio and allowing easy exit (close button, tap outside, or ESC key).
+
+View Original Image:
+In the full-screen modal, provide a clearly labeled option (e.g., “View Original”) to display the original, unedited image as uploaded. Toggle back to the adjusted view as needed.
+
+Performance:
+Only load the original image when requested to optimize bandwidth and page speed.
+
+Minimal Code Disruption:
+Do not break or alter existing site code, user flows, admin paths, or SEO.
+
+Consistent Styling:
+Ensure all overlays and modals match the site’s branding.
+
+Step-by-Step Implementation Plan
+1. Analyze Current Image Handling
+Review how images are uploaded, processed, and displayed.
+
+Confirm both the original and processed versions are stored and accessible (e.g., as separate columns in PostgreSQL or via storage service).
+
+2. Refactor Image Display Logic
+Use CSS object-fit: contain; for image containers in React components to preserve aspect ratio.
+
+For images where aspect ratios differ, add background color or blur fill as needed.
+
+If using a JavaScript uploader or library, configure it to avoid forced cropping.
+
+3. Implement Full-Screen & Original Image Viewing
+Integrate a lightweight React-compatible library (e.g., PhotoSwipe, React-Image-Lightbox) or use the HTML5 Fullscreen API.
+
+Add an onClick event to open the full-screen modal.
+
+Within the modal, provide a toggle or button to switch between the display image and the original.
+
+Lazy-load the original image only when the user requests it.
+
+4. Accessibility & Responsiveness
+Ensure all new controls are keyboard-accessible and screen-reader friendly.
+
+Test all changes on major browsers and devices.
+
+5. Performance & Quality Assurance
+Optimize image loading and minimize additional JavaScript overhead.
+
+Test thoroughly in the development environment to confirm no disruption to admin paths, user flows, or SEO metadata.
+
+6. Documentation & Reporting
+Document any new logic, parameters, or UI changes for future maintenance.
+
+Summarize exactly what was changed and why.
+
+Wait for my review and explicit approval before making any further changes.
+
+Critical Instructions
+Do NOT break or alter any existing site structure, user data, or admin/user experience outside this fix.
+
+If you encounter any blocking issue or uncertainty, STOP and report before proceeding.
+
+Technical Suggestions
+Store both the processed and original images in your backend (PostgreSQL can reference both file paths or URLs).
+
+Use a single endpoint with a query parameter to serve either version if possible (e.g., /images/photo123?original=true).
+
+Avoid exposing the original image publicly unless necessary; restrict access as appropriate.
+
+Prefer existing storage and routing structures to minimize risk.
+
+End of prompt.
+Please proceed step by step, and report back with a summary of changes for approval before continuing.
