@@ -247,7 +247,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="grid grid-cols-4 gap-2">
                   {/* Photo Thumbnails */}
-                  {getOrderedPhotos(profile.photos, profile.primaryPhoto).slice(0, 6).map((photo, index) => (
+                  {getOrderedPhotos(profile.photos, profile.primaryPhoto).slice(0, 10).map((photo, index) => (
                     <div key={`thumb-photo-${index}`} className="relative bg-gray-100 rounded-lg overflow-hidden">
                       <img 
                         src={getMediaUrl(photo, 'image')}
@@ -275,7 +275,7 @@ export default function ProfilePage() {
                   ))}
                   
                   {/* Video Thumbnails */}
-                  {profile.videos && profile.videos.slice(0, 8 - (profile.photos?.length || 0)).map((video, index) => (
+                  {profile.videos && profile.videos.slice(0, 10 - (profile.photos?.length || 0)).map((video, index) => (
                     <div key={`thumb-video-${index}`} className="relative group">
                       <div 
                         className="w-full rounded-lg aspect-square bg-gray-900 hover:opacity-80 hover:ring-2 hover:ring-purple-400 transition-all cursor-pointer overflow-hidden"
