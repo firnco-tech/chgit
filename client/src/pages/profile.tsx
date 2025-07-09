@@ -1,6 +1,6 @@
 import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -33,6 +33,17 @@ export default function ProfilePage() {
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string>('');
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Function to order photos with primary photo first
   const getOrderedPhotos = (photos: string[] | undefined, primaryPhoto: string | undefined) => {
@@ -147,13 +158,13 @@ export default function ProfilePage() {
                         <img 
                           src={getMediaUrl(photo, 'image')}
                           alt={`${profile.firstName} photo ${index + 1}`}
-                          className="w-full h-full object-contain cursor-pointer"
+                          className={`w-full h-full object-contain ${!isMobile ? 'cursor-pointer' : ''}`}
                           style={{ backgroundColor: '#f8fafc' }}
-                          onClick={() => {
+                          onClick={!isMobile ? () => {
                             setSelectedImage(photo);
                             setSelectedImageIndex(index);
                             setImageModalOpen(true);
-                          }}
+                          } : undefined}
                           onError={(e) => {
                             e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
                               <svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500">
