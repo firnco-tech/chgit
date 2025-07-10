@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import path from "path";
 import multer from "multer";
 import { nanoid } from "nanoid";
+import { s3Upload } from "./s3-config";
 import Stripe from "stripe";
 import { storage } from "./storage";
 import { requireAuth, requireAdminAuth, hashPassword, verifyPassword, createUserSession } from "./auth";
@@ -54,7 +55,14 @@ if (!process.env.VITE_STRIPE_PUBLIC_KEY?.startsWith('pk_live_')) {
 console.log('✅ All Stripe keys verified as LIVE keys');
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// Configure multer for file uploads
+// Check if S3 is configured
+const isS3Configured = process.env.AWS_ACCESS_KEY_ID && 
+                      process.env.AWS_SECRET_ACCESS_KEY && 
+                      process.env.AWS_S3_BUCKET_NAME;
+
+console.log('🔍 S3 Configuration Status:', isS3Configured ? 'ENABLED' : 'DISABLED (using local storage)');
+
+// Configure multer for file uploads (local storage fallback)
 const storage_config = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = file.mimetype.startsWith('video/') ? 'uploads/videos' : 'uploads/images';
@@ -67,7 +75,7 @@ const storage_config = multer.diskStorage({
   }
 });
 
-const upload = multer({
+const localUpload = multer({
   storage: storage_config,
   limits: {
     fileSize: 50 * 1024 * 1024, // 50MB limit
@@ -81,6 +89,9 @@ const upload = multer({
     }
   }
 });
+
+// Use S3 upload if configured, otherwise use local storage
+const upload = isS3Configured ? s3Upload : localUpload;
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -98,11 +109,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const uploadedFiles = req.files.map(file => ({
-        filename: file.filename,
+        filename: file.filename || (file as any).key?.split('/').pop(),
         originalName: file.originalname,
         mimetype: file.mimetype,
         size: file.size,
-        url: `/uploads/${file.mimetype.startsWith('video/') ? 'videos' : 'images'}/${file.filename}`
+        url: isS3Configured ? (file as any).location : `/uploads/${file.mimetype.startsWith('video/') ? 'videos' : 'images'}/${file.filename}`
       }));
       
       res.json({ 
