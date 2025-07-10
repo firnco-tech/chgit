@@ -352,6 +352,23 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(profiles.createdAt));
   }
 
+  // Admin search all profiles (approved and pending)
+  async searchAllProfiles(query: string): Promise<Profile[]> {
+    return await db
+      .select()
+      .from(profiles)
+      .where(
+        or(
+          ilike(profiles.firstName, `%${query}%`),
+          ilike(profiles.lastName, `%${query}%`),
+          ilike(profiles.location, `%${query}%`),
+          ilike(profiles.email, `%${query}%`),
+          ilike(profiles.aboutMe, `%${query}%`)
+        )
+      )
+      .orderBy(desc(profiles.createdAt));
+  }
+
   async createOrder(order: InsertOrder): Promise<Order> {
     const [newOrder] = await db
       .insert(orders)

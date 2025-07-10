@@ -607,10 +607,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     auditLog('view_admin_profiles', 'profile'), 
     async (req, res) => {
     try {
-      const { status, limit = 100, offset = 0 } = req.query;
+      const { status, limit = 100, offset = 0, search } = req.query;
       const approved = status === 'approved' ? true : status === 'pending' ? false : undefined;
       
-      console.log('🔍 ADMIN PROFILES API - Query parameters:', { status, approved, limit, offset });
+      console.log('🔍 ADMIN PROFILES API - Query parameters:', { status, approved, limit, offset, search });
+      
+      // If search is provided, use search function instead
+      if (search && search.toString().trim()) {
+        const profiles = await storage.searchAllProfiles(search.toString().trim());
+        console.log('🔍 ADMIN PROFILES API - Search returned:', profiles.length, 'profiles for query:', search);
+        return res.json(profiles);
+      }
       
       const profiles = await storage.getProfilesForAdmin({
         approved,

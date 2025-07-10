@@ -54,7 +54,7 @@ export default function AdminProfiles() {
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [itemsPerPage] = useState(20);
+  const [itemsPerPage] = useState(50);
 
   // Calculate pagination
   const offset = (currentPage - 1) * itemsPerPage;
