@@ -496,3 +496,26 @@ RESTful API endpoints include:
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+
+## CRITICAL DEPLOYMENT SAFETY REQUIREMENTS
+
+**ABSOLUTE PROHIBITION**: Never overwrite or delete media files during deployments.
+
+### Issues Encountered:
+- Development environment connects to live production database
+- Media files stored on production server filesystem in `/uploads/` directory  
+- Deployment process overwrites `/uploads/` with development version
+- This deletes all live user-uploaded media files
+- NOT SUSTAINABLE - poses huge risk to live site media
+
+### Solution Implemented:
+- Added `uploads/` to .gitignore to exclude from deployments
+- Created DEPLOYMENT_SAFETY.md with emergency recovery procedures
+- Development environment now serves restored media for testing purposes
+- Production deployments must exclude uploads directory completely
+
+### User Requirements:
+- Must be able to work on app without deployment risk to live media
+- Development environment should serve media for testing
+- Deployments must never touch existing media files on production server
+- Consider cloud storage migration for permanent solution
