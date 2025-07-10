@@ -60,13 +60,25 @@ export function ProfileCard({ profile }: ProfileCardProps) {
   };
 
   const primaryPhoto = profile.primaryPhoto || profile.photos?.[0];
+  const imageUrl = primaryPhoto ? getMediaUrl(primaryPhoto, 'image') : null;
+  
+  // Debug logging for development
+  if (process.env.NODE_ENV === 'development' && primaryPhoto) {
+    console.log('ProfileCard Debug:', {
+      profileId: profile.id,
+      firstName: profile.firstName,
+      primaryPhoto,
+      imageUrl,
+      photos: profile.photos
+    });
+  }
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
         <Link href={addLanguageToPath(`/profile/${profileSlug}`, currentLanguage)}>
           <div className="aspect-[3/4] overflow-hidden relative bg-gray-100">
             <img 
-              src={primaryPhoto ? getMediaUrl(primaryPhoto, 'image') : `data:image/svg+xml;base64,${btoa(`
+              src={imageUrl || `data:image/svg+xml;base64,${btoa(`
                 <svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400">
                   <rect width="300" height="400" fill="#f3f4f6"/>
                   <circle cx="150" cy="160" r="40" fill="#d1d5db"/>
