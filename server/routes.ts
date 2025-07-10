@@ -610,14 +610,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { status, limit = 100, offset = 0 } = req.query;
       const approved = status === 'approved' ? true : status === 'pending' ? false : undefined;
       
+      console.log('🔍 ADMIN PROFILES API - Query parameters:', { status, approved, limit, offset });
+      
       const profiles = await storage.getProfilesForAdmin({
         approved,
         limit: parseInt(limit as string),
         offset: parseInt(offset as string)
       });
       
+      console.log('🔍 ADMIN PROFILES API - Profiles returned:', profiles.length);
+      
       res.json(profiles);
     } catch (error: any) {
+      console.error('🔍 ADMIN PROFILES API - Error:', error);
       res.status(500).json({ message: "Error fetching admin profiles: " + error.message });
     }
   });

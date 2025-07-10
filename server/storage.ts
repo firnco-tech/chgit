@@ -518,12 +518,19 @@ export class DatabaseStorage implements IStorage {
     offset?: number;
   }): Promise<Profile[]> {
     let query = db.select().from(profiles);
+    const conditions = [];
     
+    // Only filter by approved status if explicitly specified
     if (filters?.approved !== undefined) {
-      query = query.where(eq(profiles.isApproved, filters.approved));
+      conditions.push(eq(profiles.isApproved, filters.approved));
     }
     if (filters?.featured !== undefined) {
-      query = query.where(eq(profiles.isFeatured, filters.featured));
+      conditions.push(eq(profiles.isFeatured, filters.featured));
+    }
+    
+    // Apply conditions if any exist
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
     }
     
     query = query.orderBy(desc(profiles.createdAt));
@@ -535,7 +542,11 @@ export class DatabaseStorage implements IStorage {
       query = query.offset(filters.offset);
     }
     
-    return await query;
+    console.log('🔍 ADMIN PROFILES STORAGE - Query filters:', filters);
+    const result = await query;
+    console.log('🔍 ADMIN PROFILES STORAGE - Query returned:', result.length, 'profiles');
+    
+    return result;
   }
 
   async getProfileCountByStatus(): Promise<{ approved: number; pending: number; total: number }> {
