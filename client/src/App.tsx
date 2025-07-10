@@ -113,6 +113,7 @@ function Router() {
       {/* Admin login route - no layout */}
       <Route path="/admin/login" component={AdminLogin} />
       {/* Admin routes - all use consistent layout */}
+      <Route path="/admin/profiles" component={AdminProfiles} />
       <Route path="/admin/users" component={AdminUsers} />
       <Route path="/admin/admins" component={AdminManagement} />
       <Route path="/admin/edit-profile/:id" component={AdminEditProfile} />
