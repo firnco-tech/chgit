@@ -1,0 +1,40 @@
+# Deployment exclusion file
+# Files and directories to exclude from deployments
+
+# Media files - NEVER deploy these
+uploads/
+uploads/*
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+# Development files
+node_modules/
+.git/
+.env
+.env.*
+*.log
+*.tmp
+*.temp
+
+# Build artifacts
+dist/
+build/
+coverage/
+
+# Backup files
+*.tar.gz
+*.zip
+*.backup
+
+# OS generated files
+.DS_Store
+Thumbs.db
+.Spotlight-V100
+.Trashes
