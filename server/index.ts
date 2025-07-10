@@ -111,6 +111,14 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // CRITICAL: Serve static files BEFORE registering routes and Vite
+  // This prevents Vite's catch-all middleware from intercepting static file requests
+  app.use('/uploads', express.static('uploads', {
+    maxAge: '1d', // Cache for 1 day
+    etag: true,
+    lastModified: true
+  }));
+
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

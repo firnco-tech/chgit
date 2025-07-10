@@ -88,14 +88,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // MEDIA UPLOAD ROUTES - Handle file uploads for profiles
   // =============================================================================
   
-  // Serve uploaded files statically
-  app.use('/uploads', express.static('uploads'));
-  
-  // Debug: Log static file requests
-  app.use('/uploads/*', (req, res, next) => {
-    console.log('🔍 Static file request:', req.path);
-    next();
-  });
+  // NOTE: Static file serving moved to server/index.ts to prevent Vite interference
   
   // Upload multiple files (photos and videos)
   app.post("/api/upload", upload.array('files', 20), (req, res) => {
