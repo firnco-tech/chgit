@@ -90,6 +90,8 @@ export function ProfileCard({ profile }: ProfileCardProps) {
               className="w-full h-full object-contain hover:scale-105 transition-transform"
               style={{ backgroundColor: '#f8fafc' }}
               onError={(e) => {
+                console.error('Image failed to load:', e.currentTarget.src);
+                console.error('Error details:', e);
                 e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
                   <svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400">
                     <rect width="300" height="400" fill="#f3f4f6"/>
