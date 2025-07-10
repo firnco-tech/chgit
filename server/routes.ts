@@ -91,6 +91,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploaded files statically
   app.use('/uploads', express.static('uploads'));
   
+  // Debug: Log static file requests
+  app.use('/uploads/*', (req, res, next) => {
+    console.log('🔍 Static file request:', req.path);
+    next();
+  });
+  
   // Upload multiple files (photos and videos)
   app.post("/api/upload", upload.array('files', 20), (req, res) => {
     try {

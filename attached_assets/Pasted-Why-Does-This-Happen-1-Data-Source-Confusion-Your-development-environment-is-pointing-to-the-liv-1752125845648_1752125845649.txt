@@ -1,0 +1,67 @@
+Why Does This Happen?
+1. Data Source Confusion
+Your development environment is pointing to the live production database for profile data (names, ages, etc.), but not for media storage.
+
+The profile records load, but the associated photos are missing because the development environment cannot access the production media files.
+
+2. Media Storage Location
+User-uploaded media (photos) are often stored separately from the database—either in a dedicated folder on the server or (ideally) in cloud storage (like AWS S3, Google Cloud Storage).
+
+If your development environment is not configured to access the same storage location as production, it will display profiles without their images.
+
+3. File System vs. Cloud Storage
+If media files are stored on the local filesystem of the production server, the development environment cannot access them unless you manually sync or mount that directory.
+
+If media is in cloud storage and both environments use the same bucket, both should see the same images—unless access keys or permissions differ.
+
+Risks When Deploying the Admin Panel Fix
+Deploying code from development to production can overwrite or delete media if:
+
+The deployment process includes the media directory (e.g., /uploads, /media) and replaces it with the development copy (which may be empty or contain only test files).
+
+The database is reset or migrated in a way that breaks links between profiles and their media.
+
+Past deployments have already caused media loss, so this is a real risk.
+
+Simpler Solutions and Best Practices
+1. Never Store Persistent Media in Project Filesystem
+Store user-uploaded media in a cloud storage service (e.g., AWS S3, Google Cloud Storage, Azure Blob Storage).
+
+Both development and production should reference the same storage bucket for production media, but use different buckets for test/dev uploads.
+
+2. Environment-Specific Configuration
+Use environment variables to distinguish between dev and prod database and media storage locations.
+
+Example:
+
+PROD_MEDIA_BUCKET for production
+
+DEV_MEDIA_BUCKET for development
+
+3. Deployment Safety
+Exclude media directories from your deployment process.
+Only deploy code, not user data or media folders.
+
+Use .gitignore or deployment scripts to prevent accidental overwrite of media files.
+
+4. Back Up Before Deploying
+Always back up both the database and media files before any deployment.
+
+5. Media Proxy for Dev
+If you want to see production media in dev, set up your dev environment to proxy or read from the production media bucket (read-only), but never write to it.
+
+Diagnosis from Your Screenshots
+Development environment is reading profile data from the production database, but cannot access the production media files.
+
+This is why profile images are missing in dev, but present in production.
+
+If you deploy from dev to prod and include the media folder, you risk deleting or overwriting live media.
+
+Actionable Recommendations
+Problem	Solution
+Dev profiles show no photos	Configure dev to access the same media store (read-only), or use sample images in dev.
+Media lost on deployment	Exclude media directories from deployment. Use cloud storage for media.
+Database confusion	Always use separate databases for dev and prod. Never overwrite prod with dev data.
+Deployment risk	Back up all media and database before deployment. Test in staging.
+Summary:
+The missing media in your dev environment is due to a disconnect between where your profile data and your media files are stored and accessed. To prevent future data loss, move all media to cloud storage, configure environments separately, and never deploy user-uploaded files with your code. Always back up before deploying and test thoroughly in a staging environment.
