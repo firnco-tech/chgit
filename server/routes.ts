@@ -603,9 +603,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin profile management - ADMIN ONLY
-  app.get("/api/admin/profiles", requireAdminAuth, async (req, res) => {
+  app.get("/api/admin/profiles", 
+    requireAdmin, 
+    auditLog('view_admin_profiles', 'profile'), 
+    async (req, res) => {
     try {
-      const { status, limit = 50, offset = 0 } = req.query;
+      const { status, limit = 100, offset = 0 } = req.query;
       const approved = status === 'approved' ? true : status === 'pending' ? false : undefined;
       
       const profiles = await storage.getProfilesForAdmin({

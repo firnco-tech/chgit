@@ -36,12 +36,14 @@ import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminEditProfile from "@/pages/admin/AdminEditProfile";
 import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminManagement from "@/pages/admin/AdminManagement";
+import AdminProfiles from "@/pages/admin/AdminProfiles";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 
 // Admin Route Wrapper - No main site layout for admin routes
 function AdminRoutes() {
   return (
     <Switch>
+      <Route path="/admin/profiles" component={AdminProfiles} />
       <Route path="/admin/users" component={AdminUsers} />
       <Route path="/admin/admins" component={AdminManagement} />
       <Route path="/admin/edit-profile/:id" component={AdminEditProfile} />
