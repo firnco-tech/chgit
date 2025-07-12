@@ -1,0 +1,40 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main, freshcontactharvest ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      id-token: write  # Required for Workload Identity Federation
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+      
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+      
+      - name: Configure Docker to use gcloud as a credential helper
+        run: gcloud auth configure-docker
+      
+      - name: Build and deploy application
+        run: |
+          echo "Deployment steps would go here"
+          # Add your actual deployment commands
+          # For example: docker build, docker push, etc.
+      
+      - name: Verify Google Cloud Storage access
+        run: |
+          gsutil ls gs://${{ secrets.GOOGLE_CLOUD_BUCKET_NAME }}
