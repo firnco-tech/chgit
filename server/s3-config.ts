@@ -2,17 +2,28 @@ import { Storage } from '@google-cloud/storage';
 import multer from 'multer';
 
 // Google Cloud Storage Configuration
+let gcsCredentials;
+try {
+  gcsCredentials = process.env.GOOGLE_CLOUD_CREDENTIALS ? JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS) : undefined;
+} catch (error) {
+  console.error('Error parsing Google Cloud credentials:', error);
+  gcsCredentials = undefined;
+}
+
 const storage = new Storage({
   projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
   keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE, // Path to service account key file
   // Or use service account key directly
-  credentials: process.env.GOOGLE_CLOUD_CREDENTIALS ? JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS) : undefined,
+  credentials: gcsCredentials,
 });
 
 const BUCKET_NAME = process.env.GOOGLE_CLOUD_BUCKET_NAME || 'holacupid-media';
 
 // Custom Multer Google Cloud Storage engine
 class GoogleCloudStorageEngine {
+  bucket: any;
+  options: any;
+  
   constructor(options: any) {
     this.bucket = storage.bucket(options.bucket);
     this.options = options;
