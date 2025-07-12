@@ -1,5 +1,5 @@
 import { db } from './db';
-import { profiles } from '@/shared/schema';
+import { profiles } from '../shared/schema';
 import { migrateLocalFileToGCS, getGCSPublicUrl } from './s3-config';
 import { eq } from 'drizzle-orm';
 import * as fs from 'fs';
