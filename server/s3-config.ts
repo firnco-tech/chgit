@@ -44,7 +44,6 @@ class GoogleCloudStorageEngine {
       metadata: {
         contentType: file.mimetype,
       },
-      public: true, // Make file publicly accessible
     });
 
     stream.on('error', (error: any) => {
@@ -117,7 +116,6 @@ export async function uploadFileToGCS(
     metadata: {
       contentType: contentType,
     },
-    public: true, // Make file publicly accessible
   });
   
   return getGCSPublicUrl(filename);
@@ -129,8 +127,8 @@ export async function migrateLocalFileToGCS(
   gcsFilename: string,
   contentType: string
 ): Promise<string> {
-  const fs = require('fs');
-  const path = require('path');
+  const fs = await import('fs');
+  const path = await import('path');
   
   if (!fs.existsSync(localPath)) {
     throw new Error(`Local file not found: ${localPath}`);

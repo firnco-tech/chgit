@@ -2,9 +2,9 @@ import { db } from './db';
 import { profiles } from '../shared/schema';
 import { migrateLocalFileToGCS, getGCSPublicUrl } from './s3-config';
 import { eq } from 'drizzle-orm';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as mime from 'mime-types';
+import fs from 'fs';
+import path from 'path';
+import mime from 'mime-types';
 
 interface MediaFile {
   localPath: string;
