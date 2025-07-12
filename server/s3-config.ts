@@ -100,8 +100,7 @@ export async function generateSignedUrl(filename: string, expiresIn: number = 36
 
 // Get Google Cloud Storage URL for public access
 export function getGCSPublicUrl(filename: string): string {
-  // Since files are private, serve them through our app endpoint
-  return `/api/media/${filename}`;
+  return `https://storage.googleapis.com/${BUCKET_NAME}/${filename}`;
 }
 
 // Upload existing local file to Google Cloud Storage
