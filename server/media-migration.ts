@@ -1,6 +1,6 @@
 import { db } from './db';
 import { profiles } from '@/shared/schema';
-import { migrateLocalFileToS3, getS3PublicUrl } from './s3-config';
+import { migrateLocalFileToGCS, getGCSPublicUrl } from './s3-config';
 import { eq } from 'drizzle-orm';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -71,8 +71,8 @@ export async function scanLocalMedia(): Promise<MediaFile[]> {
 }
 
 // Migrate all local media files to S3
-export async function migrateAllMediaToS3(): Promise<void> {
-  console.log('🚀 Starting media migration to S3...');
+export async function migrateAllMediaToGCS(): Promise<void> {
+  console.log('🚀 Starting media migration to Google Cloud Storage...');
   
   const mediaFiles = await scanLocalMedia();
   console.log(`Found ${mediaFiles.length} media files to migrate`);
@@ -87,14 +87,14 @@ export async function migrateAllMediaToS3(): Promise<void> {
   
   for (const media of mediaFiles) {
     try {
-      console.log(`Uploading ${media.localPath} to S3...`);
-      const s3Url = await migrateLocalFileToS3(
+      console.log(`Uploading ${media.localPath} to Google Cloud Storage...`);
+      const gcsUrl = await migrateLocalFileToGCS(
         media.localPath,
         media.s3Key,
         media.contentType
       );
       
-      console.log(`✅ Successfully uploaded: ${s3Url}`);
+      console.log(`✅ Successfully uploaded: ${gcsUrl}`);
       successCount++;
     } catch (error) {
       console.error(`❌ Failed to upload ${media.localPath}:`, error);
@@ -107,7 +107,7 @@ export async function migrateAllMediaToS3(): Promise<void> {
 
 // Update database to use S3 URLs
 export async function updateDatabaseUrls(): Promise<void> {
-  console.log('🔄 Updating database URLs to use S3...');
+  console.log('🔄 Updating database URLs to use Google Cloud Storage...');
   
   const allProfiles = await db.select().from(profiles);
   console.log(`Found ${allProfiles.length} profiles to update`);
@@ -121,8 +121,8 @@ export async function updateDatabaseUrls(): Promise<void> {
       if (profile.photos && Array.isArray(profile.photos)) {
         const updatedPhotos = profile.photos.map((photo: string) => {
           if (photo.startsWith('/uploads/')) {
-            const s3Key = photo.replace('/uploads/', '');
-            return getS3PublicUrl(s3Key);
+            const gcsKey = photo.replace('/uploads/', '');
+            return getGCSPublicUrl(gcsKey);
           }
           return photo;
         });
@@ -137,8 +137,8 @@ export async function updateDatabaseUrls(): Promise<void> {
       if (profile.videos && Array.isArray(profile.videos)) {
         const updatedVideos = profile.videos.map((video: string) => {
           if (video.startsWith('/uploads/')) {
-            const s3Key = video.replace('/uploads/', '');
-            return getS3PublicUrl(s3Key);
+            const gcsKey = video.replace('/uploads/', '');
+            return getGCSPublicUrl(gcsKey);
           }
           return video;
         });
@@ -169,8 +169,8 @@ export async function runFullMigration(): Promise<void> {
   console.log('🚀 Starting full media migration process...');
   
   try {
-    // Step 1: Migrate files to S3
-    await migrateAllMediaToS3();
+    // Step 1: Migrate files to Google Cloud Storage
+    await migrateAllMediaToGCS();
     
     // Step 2: Update database URLs
     await updateDatabaseUrls();

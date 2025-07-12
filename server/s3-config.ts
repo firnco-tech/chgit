@@ -1,43 +1,66 @@
-import { S3Client } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import { Storage } from '@google-cloud/storage';
 import multer from 'multer';
-import multerS3 from 'multer-s3';
 
-// S3 Client Configuration
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION || 'us-east-1',
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
-  },
+// Google Cloud Storage Configuration
+const storage = new Storage({
+  projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
+  keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE, // Path to service account key file
+  // Or use service account key directly
+  credentials: process.env.GOOGLE_CLOUD_CREDENTIALS ? JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS) : undefined,
 });
 
-const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME || 'holacupid-media';
+const BUCKET_NAME = process.env.GOOGLE_CLOUD_BUCKET_NAME || 'holacupid-media';
 
-// Multer S3 Configuration for Direct Upload
-export const s3Upload = multer({
-  storage: multerS3({
-    s3: s3Client,
-    bucket: BUCKET_NAME,
-    contentType: multerS3.AUTO_CONTENT_TYPE,
-    key: function (req, file, cb) {
-      const timestamp = Date.now();
-      const randomString = Math.random().toString(36).substring(2, 15);
-      const extension = file.originalname.split('.').pop();
-      const filename = `${timestamp}-${randomString}.${extension}`;
-      
-      // Organize by type
-      const folder = file.mimetype.startsWith('image/') ? 'images' : 'videos';
-      cb(null, `${folder}/${filename}`);
-    },
-    metadata: function (req, file, cb) {
+// Custom Multer Google Cloud Storage engine
+class GoogleCloudStorageEngine {
+  constructor(options: any) {
+    this.bucket = storage.bucket(options.bucket);
+    this.options = options;
+  }
+
+  _handleFile(req: any, file: any, cb: any) {
+    const timestamp = Date.now();
+    const randomString = Math.random().toString(36).substring(2, 15);
+    const extension = file.originalname.split('.').pop();
+    const filename = `${timestamp}-${randomString}.${extension}`;
+    
+    // Organize by type
+    const folder = file.mimetype.startsWith('image/') ? 'images' : 'videos';
+    const fullPath = `${folder}/${filename}`;
+    
+    const gcsFile = this.bucket.file(fullPath);
+    const stream = gcsFile.createWriteStream({
+      metadata: {
+        contentType: file.mimetype,
+      },
+      public: true, // Make file publicly accessible
+    });
+
+    stream.on('error', (error: any) => {
+      cb(error);
+    });
+
+    stream.on('finish', () => {
       cb(null, {
-        fieldName: file.fieldname,
-        originalName: file.originalname,
-        uploadedAt: new Date().toISOString(),
+        bucket: this.bucket.name,
+        key: fullPath,
+        cloudStoragePublicUrl: `https://storage.googleapis.com/${this.bucket.name}/${fullPath}`,
+        contentType: file.mimetype,
       });
-    },
+    });
+
+    file.stream.pipe(stream);
+  }
+
+  _removeFile(req: any, file: any, cb: any) {
+    this.bucket.file(file.key).delete(cb);
+  }
+}
+
+// Multer Google Cloud Storage Configuration for Direct Upload
+export const gcsUpload = multer({
+  storage: new GoogleCloudStorageEngine({
+    bucket: BUCKET_NAME,
   }),
   limits: {
     fileSize: 100 * 1024 * 1024, // 100MB limit
@@ -53,41 +76,46 @@ export const s3Upload = multer({
 });
 
 // Generate signed URL for secure access
-export async function generateSignedUrl(key: string, expiresIn: number = 3600): Promise<string> {
-  const command = new GetObjectCommand({
-    Bucket: BUCKET_NAME,
-    Key: key,
+export async function generateSignedUrl(filename: string, expiresIn: number = 3600): Promise<string> {
+  const bucket = storage.bucket(BUCKET_NAME);
+  const file = bucket.file(filename);
+  
+  const [signedUrl] = await file.getSignedUrl({
+    action: 'read',
+    expires: Date.now() + expiresIn * 1000,
   });
   
-  return await getSignedUrl(s3Client, command, { expiresIn });
+  return signedUrl;
 }
 
-// Get S3 URL for public access (if bucket is public)
-export function getS3PublicUrl(key: string): string {
-  return `https://${BUCKET_NAME}.s3.amazonaws.com/${key}`;
+// Get Google Cloud Storage URL for public access
+export function getGCSPublicUrl(filename: string): string {
+  return `https://storage.googleapis.com/${BUCKET_NAME}/${filename}`;
 }
 
-// Upload existing local file to S3
-export async function uploadFileToS3(
+// Upload existing local file to Google Cloud Storage
+export async function uploadFileToGCS(
   fileBuffer: Buffer,
-  key: string,
+  filename: string,
   contentType: string
 ): Promise<string> {
-  const command = new PutObjectCommand({
-    Bucket: BUCKET_NAME,
-    Key: key,
-    Body: fileBuffer,
-    ContentType: contentType,
+  const bucket = storage.bucket(BUCKET_NAME);
+  const file = bucket.file(filename);
+  
+  await file.save(fileBuffer, {
+    metadata: {
+      contentType: contentType,
+    },
+    public: true, // Make file publicly accessible
   });
   
-  await s3Client.send(command);
-  return getS3PublicUrl(key);
+  return getGCSPublicUrl(filename);
 }
 
 // Migration function to upload existing files
-export async function migrateLocalFileToS3(
+export async function migrateLocalFileToGCS(
   localPath: string,
-  s3Key: string,
+  gcsFilename: string,
   contentType: string
 ): Promise<string> {
   const fs = require('fs');
@@ -98,7 +126,7 @@ export async function migrateLocalFileToS3(
   }
   
   const fileBuffer = fs.readFileSync(localPath);
-  return await uploadFileToS3(fileBuffer, s3Key, contentType);
+  return await uploadFileToGCS(fileBuffer, gcsFilename, contentType);
 }
 
-export { s3Client, BUCKET_NAME };
+export { storage as gcsStorage, BUCKET_NAME };

@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import path from "path";
 import multer from "multer";
 import { nanoid } from "nanoid";
-import { s3Upload } from "./s3-config";
+import { gcsUpload } from "./s3-config";
 import Stripe from "stripe";
 import { storage } from "./storage";
 import { requireAuth, requireAdminAuth, hashPassword, verifyPassword, createUserSession } from "./auth";
@@ -55,12 +55,12 @@ if (!process.env.VITE_STRIPE_PUBLIC_KEY?.startsWith('pk_live_')) {
 console.log('✅ All Stripe keys verified as LIVE keys');
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// Check if S3 is configured
-const isS3Configured = process.env.AWS_ACCESS_KEY_ID && 
-                      process.env.AWS_SECRET_ACCESS_KEY && 
-                      process.env.AWS_S3_BUCKET_NAME;
+// Check if Google Cloud Storage is configured
+const isGCSConfigured = (process.env.GOOGLE_CLOUD_PROJECT_ID && 
+                        process.env.GOOGLE_CLOUD_BUCKET_NAME && 
+                        (process.env.GOOGLE_CLOUD_KEY_FILE || process.env.GOOGLE_CLOUD_CREDENTIALS));
 
-console.log('🔍 S3 Configuration Status:', isS3Configured ? 'ENABLED' : 'DISABLED (using local storage)');
+console.log('🔍 Google Cloud Storage Status:', isGCSConfigured ? 'ENABLED' : 'DISABLED (using local storage)');
 
 // Configure multer for file uploads (local storage fallback)
 const storage_config = multer.diskStorage({
@@ -90,8 +90,8 @@ const localUpload = multer({
   }
 });
 
-// Use S3 upload if configured, otherwise use local storage
-const upload = isS3Configured ? s3Upload : localUpload;
+// Use Google Cloud Storage upload if configured, otherwise use local storage
+const upload = isGCSConfigured ? gcsUpload : localUpload;
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -113,7 +113,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         originalName: file.originalname,
         mimetype: file.mimetype,
         size: file.size,
-        url: isS3Configured ? (file as any).location : `/uploads/${file.mimetype.startsWith('video/') ? 'videos' : 'images'}/${file.filename}`
+        url: isGCSConfigured ? (file as any).cloudStoragePublicUrl : `/uploads/${file.mimetype.startsWith('video/') ? 'videos' : 'images'}/${file.filename}`
       }));
       
       res.json({ 
