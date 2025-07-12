@@ -56,9 +56,9 @@ console.log('✅ All Stripe keys verified as LIVE keys');
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Check if Google Cloud Storage is configured
-const isGCSConfigured = (process.env.GOOGLE_CLOUD_PROJECT_ID && 
-                        process.env.GOOGLE_CLOUD_BUCKET_NAME && 
-                        (process.env.GOOGLE_CLOUD_KEY_FILE || process.env.GOOGLE_CLOUD_CREDENTIALS));
+const isGCSConfigured = !!(process.env.GOOGLE_CLOUD_PROJECT_ID && 
+                          process.env.GOOGLE_CLOUD_BUCKET_NAME && 
+                          (process.env.GOOGLE_CLOUD_KEY_FILE || process.env.GOOGLE_CLOUD_CREDENTIALS));
 
 console.log('🔍 Google Cloud Storage Status:', isGCSConfigured ? 'ENABLED' : 'DISABLED (using local storage)');
 
@@ -104,23 +104,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Upload multiple files (photos and videos)
   app.post("/api/upload", upload.array('files', 20), (req, res) => {
     try {
+      console.log('🔍 UPLOAD DEBUG - isGCSConfigured:', isGCSConfigured);
+      console.log('🔍 UPLOAD DEBUG - req.files:', req.files?.length);
+      
       if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
         return res.status(400).json({ message: "No files uploaded" });
       }
       
-      const uploadedFiles = req.files.map(file => ({
-        filename: file.filename || (file as any).key?.split('/').pop(),
-        originalName: file.originalname,
-        mimetype: file.mimetype,
-        size: file.size,
-        url: isGCSConfigured ? (file as any).cloudStoragePublicUrl : `/uploads/${file.mimetype.startsWith('video/') ? 'videos' : 'images'}/${file.filename}`
-      }));
+      const uploadedFiles = req.files.map(file => {
+        console.log('🔍 UPLOAD DEBUG - Processing file:', {
+          filename: file.filename,
+          key: (file as any).key,
+          cloudStoragePublicUrl: (file as any).cloudStoragePublicUrl,
+          isGCSConfigured
+        });
+        
+        return {
+          filename: file.filename || (file as any).key?.split('/').pop(),
+          originalName: file.originalname,
+          mimetype: file.mimetype,
+          size: file.size,
+          url: isGCSConfigured ? (file as any).cloudStoragePublicUrl : `/uploads/${file.mimetype.startsWith('video/') ? 'videos' : 'images'}/${file.filename}`
+        };
+      });
+      
+      console.log('🔍 UPLOAD DEBUG - Final uploadedFiles:', uploadedFiles);
       
       res.json({ 
         message: "Files uploaded successfully", 
         files: uploadedFiles 
       });
     } catch (error: any) {
+      console.error('❌ UPLOAD ERROR:', error);
       res.status(500).json({ message: "Error uploading files: " + error.message });
     }
   });
