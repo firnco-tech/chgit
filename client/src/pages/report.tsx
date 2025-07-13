@@ -1,5 +1,5 @@
 import { SEO } from '@/components/SEO';
-import { getCurrentLanguage } from '@/lib/i18n';
+import { useTranslation } from '@/hooks/useTranslation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,7 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { AlertTriangle, Shield, FileText, Bug } from 'lucide-react';
 
 export default function Report() {
-  const currentLanguage = getCurrentLanguage();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     type: '',
     profileId: '',
@@ -28,30 +28,30 @@ export default function Report() {
   };
 
   const reportTypes = [
-    { value: 'harassment', label: 'Harassment or Threats', icon: AlertTriangle },
-    { value: 'inappropriate', label: 'Inappropriate Content', icon: FileText },
-    { value: 'fake', label: 'Fake Profile', icon: Shield },
-    { value: 'scam', label: 'Scam or Fraud', icon: AlertTriangle },
-    { value: 'safety', label: 'Safety Concern', icon: Shield },
-    { value: 'technical', label: 'Technical Issue', icon: Bug },
-    { value: 'payment', label: 'Payment Problem', icon: Bug },
-    { value: 'other', label: 'Other', icon: FileText }
+    { value: 'harassment', label: t.reportTypes.harassment, icon: AlertTriangle },
+    { value: 'inappropriate', label: t.reportTypes.inappropriate, icon: FileText },
+    { value: 'fake', label: t.reportTypes.fake, icon: Shield },
+    { value: 'scam', label: t.reportTypes.scam, icon: AlertTriangle },
+    { value: 'safety', label: t.reportTypes.safety, icon: Shield },
+    { value: 'technical', label: t.reportTypes.technical, icon: Bug },
+    { value: 'payment', label: t.reportTypes.payment, icon: Bug },
+    { value: 'other', label: t.reportTypes.other, icon: FileText }
   ];
 
   return (
     <>
       <SEO 
         page="about"
-        customTitle="Report an Issue | HolaCupid"
-        customDescription="Report inappropriate behavior, safety concerns, or technical issues on HolaCupid. Our team reviews all reports within 24 hours."
+        customTitle={t.reportPageTitle}
+        customDescription={t.reportPageDescription}
       />
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-4xl mx-auto">
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">Report an Issue</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">{t.reportAnIssue}</h1>
               <p className="text-gray-600 max-w-2xl">
-                Help us maintain a safe and respectful community. Report any inappropriate behavior, safety concerns, or technical issues.
+                {t.reportSubtitle}
               </p>
             </div>
 
@@ -67,14 +67,7 @@ export default function Report() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-gray-600">
-                      {type.value === 'harassment' && 'Report harassment, threats, or inappropriate messages'}
-                      {type.value === 'inappropriate' && 'Report inappropriate photos or profile content'}
-                      {type.value === 'fake' && 'Report fake profiles or stolen photos'}
-                      {type.value === 'scam' && 'Report scam attempts or fraudulent behavior'}
-                      {type.value === 'safety' && 'Report safety threats or suspicious activity'}
-                      {type.value === 'technical' && 'Report website bugs or technical issues'}
-                      {type.value === 'payment' && 'Report payment issues or billing problems'}
-                      {type.value === 'other' && 'Report other concerns or issues'}
+                      {t.reportDescriptions[type.value as keyof typeof t.reportDescriptions]}
                     </p>
                   </CardContent>
                 </Card>
@@ -84,17 +77,17 @@ export default function Report() {
             {/* Report Form */}
             <Card>
               <CardHeader>
-                <CardTitle>Submit a Report</CardTitle>
+                <CardTitle>{t.submitReport}</CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <Label htmlFor="type" className="text-sm font-medium">
-                      Type of Report *
+                      {t.typeOfReport}
                     </Label>
                     <Select value={formData.type} onValueChange={(value) => setFormData({...formData, type: value})}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select report type" />
+                        <SelectValue placeholder={t.selectReportType} />
                       </SelectTrigger>
                       <SelectContent>
                         {reportTypes.map((type) => (
@@ -108,28 +101,28 @@ export default function Report() {
 
                   <div>
                     <Label htmlFor="profileId" className="text-sm font-medium">
-                      Profile ID or Name (if applicable)
+                      {t.profileIdOrName}
                     </Label>
                     <Input
                       id="profileId"
                       value={formData.profileId}
                       onChange={(e) => setFormData({...formData, profileId: e.target.value})}
-                      placeholder="If reporting about a specific profile, provide the profile ID or name"
+                      placeholder={t.profileIdPlaceholder}
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      If reporting about a specific profile, please provide the profile ID or name
+                      {t.profileIdHelp}
                     </p>
                   </div>
 
                   <div>
                     <Label htmlFor="description" className="text-sm font-medium">
-                      Description *
+                      {t.descriptionLabel}
                     </Label>
                     <Textarea
                       id="description"
                       value={formData.description}
                       onChange={(e) => setFormData({...formData, description: e.target.value})}
-                      placeholder="Please provide details about the issue you're reporting..."
+                      placeholder={t.descriptionPlaceholder}
                       rows={5}
                       required
                     />
@@ -137,7 +130,7 @@ export default function Report() {
 
                   <div>
                     <Label htmlFor="evidence" className="text-sm font-medium">
-                      Additional Evidence
+                      {t.additionalEvidence}
                     </Label>
                     <Input
                       id="evidence"
@@ -146,7 +139,7 @@ export default function Report() {
                       onChange={(e) => setFormData({...formData, evidence: e.target.files?.[0] || null})}
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      Upload screenshots or documents that support your report
+                      {t.evidenceHelp}
                     </p>
                   </div>
 
@@ -157,30 +150,30 @@ export default function Report() {
                       onCheckedChange={(checked) => setFormData({...formData, anonymous: checked as boolean})}
                     />
                     <Label htmlFor="anonymous" className="text-sm">
-                      Submit this report anonymously
+                      {t.submitAnonymously}
                     </Label>
                   </div>
 
                   <div>
                     <Label htmlFor="email" className="text-sm font-medium">
-                      Your Email Address *
+                      {t.yourEmailAddress}
                     </Label>
                     <Input
                       id="email"
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      placeholder="We'll use this to follow up on your report"
+                      placeholder={t.emailPlaceholder}
                       required
                     />
                   </div>
 
                   <Button type="submit" className="w-full bg-pink-500 hover:bg-pink-600 text-white">
-                    Submit Report
+                    {t.submitReportButton}
                   </Button>
 
                   <p className="text-xs text-gray-500 text-center">
-                    All reports are reviewed by our team. False reports may result in account restrictions.
+                    {t.falseReportsWarning}
                   </p>
                 </form>
               </CardContent>
@@ -189,34 +182,18 @@ export default function Report() {
             {/* What Happens Next */}
             <Card className="mt-8">
               <CardHeader>
-                <CardTitle>What happens after you report?</CardTitle>
+                <CardTitle>{t.whatHappensNext}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="text-center">
-                    <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <span className="text-pink-600 font-bold">1</span>
+                  {t.processSteps.map((step, index) => (
+                    <div key={index} className="text-center">
+                      <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <span className="text-pink-600 font-bold">{index + 1}</span>
+                      </div>
+                      <p className="text-sm font-medium mb-1">{step}</p>
                     </div>
-                    <p className="text-sm font-medium mb-1">We receive and review your report within 24 hours</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <span className="text-pink-600 font-bold">2</span>
-                    </div>
-                    <p className="text-sm font-medium mb-1">Our team investigates the reported issue or behavior</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <span className="text-pink-600 font-bold">3</span>
-                    </div>
-                    <p className="text-sm font-medium mb-1">We take appropriate action based on our findings</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <span className="text-pink-600 font-bold">4</span>
-                    </div>
-                    <p className="text-sm font-medium mb-1">You receive a follow-up email about the resolution</p>
-                  </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -226,12 +203,12 @@ export default function Report() {
               <CardHeader>
                 <CardTitle className="text-red-800 flex items-center gap-2">
                   <AlertTriangle className="w-5 h-5" />
-                  Emergency Situations
+                  {t.emergencySituations}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-red-700">
-                  If you are in immediate danger or experiencing an emergency, please contact local emergency services (911) immediately. This form is for non-emergency reports only.
+                  {t.emergencyNotice}
                 </p>
               </CardContent>
             </Card>
