@@ -72,15 +72,15 @@ function MainSiteRouter() {
           <Route path="/:lang/privacy" component={Privacy} />
           <Route path="/:lang/terms" component={Terms} />
           <Route path="/:lang/cookies" component={Cookies} />
-          
-          {/* Profile route with cleaner SEO-friendly URLs - Must be last to avoid conflicts */}
-          <Route path="/:lang/:slug" component={ProfilePage} />
           <Route path="/:lang/disclaimer" component={Disclaimer} />
           <Route path="/:lang/report" component={Report} />
           <Route path="/:lang/checkout" component={Checkout} />
           <Route path="/:lang/cart" component={CartPage} />
           <Route path="/:lang/favorites" component={Favorites} />
           <Route path="/:lang/payment-success" component={PaymentSuccess} />
+          
+          {/* Profile route with cleaner SEO-friendly URLs - Must be last to avoid conflicts */}
+          <Route path="/:lang/:slug" component={ProfilePage} />
           
           {/* Default routes without language prefix - redirect to language version */}
           <Route path="/" component={() => <RedirectToLanguage path="/" />} />
