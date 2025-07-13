@@ -308,4 +308,41 @@ export const nl = {
   formValidationEmail: "Voer een geldig e-mailadres in",
   formValidationSubject: "Selecteer een onderwerp",
   formValidationMessage: "Bericht moet minstens 10 tekens bevatten",
+
+  // Terms of Service page
+  termsPageTitle: "Servicevoorwaarden | HolaCupid",
+  termsPageDescription: "Lees de Servicevoorwaarden van HolaCupid om uw rechten en verantwoordelijkheden te begrijpen bij het gebruik van ons Dominicaanse dating platform.",
+  termsOfServiceTitle: "Servicevoorwaarden",
+  acceptanceOfTerms: "1. Aanvaarding van Voorwaarden",
+  acceptanceOfTermsText: "Door HolaCupid te bezoeken en te gebruiken, accepteert u en gaat u akkoord gebonden te zijn aan de voorwaarden en bepalingen van deze overeenkomst. Als u niet akkoord gaat met het bovenstaande, gebruik dan deze service niet.",
+  serviceDescription: "2. Servicebeschrijving",
+  serviceDescriptionText: "HolaCupid is een platform waarmee gebruikers geverifieerde profielen kunnen bekijken en contactinformatie kunnen kopen om verbindingen te maken. We zijn geen dating service maar een e-commerce platform voor contactinformatie.",
+  userResponsibilities: "3. Gebruikersverantwoordelijkheden",
+  userResponsibilitiesText: "Gebruikers stemmen ermee in om:",
+  userResponsibilitiesList: [
+    "Nauwkeurige en waarheidsgetrouwe informatie te verstrekken",
+    "De service alleen voor wettige doeleinden te gebruiken",
+    "De privacy en rechten van anderen te respecteren",
+    "Geen intimidatie of ongepast gedrag te vertonen",
+    "Niet te proberen onze verificatieprocessen te omzeilen"
+  ],
+  paymentAndRefunds: "4. Betalingen en Terugbetalingen",
+  paymentAndRefundsText: "Alle aankopen zijn definitief. Contactinformatie wordt onmiddellijk geleverd na succesvolle betaling. Terugbetalingen kunnen worden overwogen bij technische fouten of als contactinformatie ongeldig blijkt te zijn.",
+  profileSubmission: "5. Profiel Indiening",
+  profileSubmissionText: "Door een profiel in te dienen, stemt u ermee in dat uw contactinformatie beschikbaar wordt gemaakt voor aankoop. U moet 18 jaar of ouder zijn en het recht hebben om de verstrekte informatie te delen.",
+  prohibitedActivities: "6. Verboden Activiteiten",
+  prohibitedActivitiesText: "Gebruikers mogen niet:",
+  prohibitedActivitiesList: [
+    "Valse of misleidende informatie indienen",
+    "De service gebruiken voor commerciële werving",
+    "Proberen de service te hacken of te verstoren",
+    "Geldende wetten of regelgeving overtreden",
+    "Andere gebruikers intimideren of bedreigen"
+  ],
+  limitationOfLiability: "7. Beperking van Aansprakelijkheid",
+  limitationOfLiabilityText: "HolaCupid is niet verantwoordelijk voor de acties van gebruikers of de resultaten van verbindingen gemaakt via ons platform. We verstrekken contactinformatie zoals deze is en geven geen garanties over het succes van verbindingen.",
+  termination: "8. Beëindiging",
+  terminationText: "We behouden ons het recht voor om de toegang tot onze service onmiddellijk te beëindigen of op te schorten, zonder voorafgaande kennisgeving, voor gedrag dat naar onze mening deze Servicevoorwaarden schendt.",
+  termsContactInformation: "9. Contactinformatie",
+  termsContactInformationText: "Voor vragen over deze Servicevoorwaarden, neem contact met ons op via:",
 };

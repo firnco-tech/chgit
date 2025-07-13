@@ -308,4 +308,41 @@ export const de = {
   formValidationEmail: "Bitte geben Sie eine gültige E-Mail-Adresse ein",
   formValidationSubject: "Bitte wählen Sie einen Betreff",
   formValidationMessage: "Nachricht muss mindestens 10 Zeichen haben",
+
+  // Terms of Service page
+  termsPageTitle: "Nutzungsbedingungen | HolaCupid",
+  termsPageDescription: "Lesen Sie die Nutzungsbedingungen von HolaCupid, um Ihre Rechte und Pflichten bei der Nutzung unserer dominikanischen Dating-Plattform zu verstehen.",
+  termsOfServiceTitle: "Nutzungsbedingungen",
+  acceptanceOfTerms: "1. Annahme der Bedingungen",
+  acceptanceOfTermsText: "Durch den Zugriff und die Nutzung von HolaCupid akzeptieren Sie und stimmen zu, an die Bedingungen und Bestimmungen dieser Vereinbarung gebunden zu sein. Wenn Sie nicht mit dem oben Genannten einverstanden sind, nutzen Sie bitte diesen Service nicht.",
+  serviceDescription: "2. Servicebeschreibung",
+  serviceDescriptionText: "HolaCupid ist eine Plattform, die es Benutzern ermöglicht, verifizierte Profile zu durchsuchen und Kontaktinformationen zum Zweck der Kontaktaufnahme zu kaufen. Wir sind kein Dating-Service, sondern eine E-Commerce-Plattform für Kontaktinformationen.",
+  userResponsibilities: "3. Benutzerverantwortlichkeiten",
+  userResponsibilitiesText: "Benutzer stimmen zu:",
+  userResponsibilitiesList: [
+    "Genaue und wahrheitsgemäße Informationen bereitzustellen",
+    "Den Service nur für rechtmäßige Zwecke zu nutzen",
+    "Die Privatsphäre und Rechte anderer zu respektieren",
+    "Nicht an Belästigung oder unangemessenem Verhalten teilzunehmen",
+    "Nicht zu versuchen, unsere Verifizierungsprozesse zu umgehen"
+  ],
+  paymentAndRefunds: "4. Zahlung und Rückerstattungen",
+  paymentAndRefundsText: "Alle Käufe sind endgültig. Kontaktinformationen werden sofort nach erfolgreicher Zahlung geliefert. Rückerstattungen können in Fällen technischer Fehler oder wenn sich Kontaktinformationen als ungültig erweisen, in Betracht gezogen werden.",
+  profileSubmission: "5. Profileinreichung",
+  profileSubmissionText: "Durch das Einreichen eines Profils stimmen Sie zu, dass Ihre Kontaktinformationen zum Kauf verfügbar gemacht werden. Sie müssen 18 Jahre oder älter sein und das Recht haben, die bereitgestellten Informationen zu teilen.",
+  prohibitedActivities: "6. Verbotene Aktivitäten",
+  prohibitedActivitiesText: "Benutzer dürfen nicht:",
+  prohibitedActivitiesList: [
+    "Falsche oder irreführende Informationen einreichen",
+    "Den Service für kommerzielle Werbung nutzen",
+    "Versuchen, den Service zu hacken oder zu stören",
+    "Geltende Gesetze oder Vorschriften verletzen",
+    "Andere Benutzer belästigen oder bedrohen"
+  ],
+  limitationOfLiability: "7. Haftungsbeschränkung",
+  limitationOfLiabilityText: "HolaCupid ist nicht verantwortlich für die Handlungen der Benutzer oder die Ergebnisse von Verbindungen, die über unsere Plattform hergestellt werden. Wir stellen Kontaktinformationen wie sie sind bereit und geben keine Garantien für den Erfolg von Verbindungen.",
+  termination: "8. Kündigung",
+  terminationText: "Wir behalten uns das Recht vor, den Zugang zu unserem Service sofort zu beenden oder zu suspendieren, ohne vorherige Ankündigung, bei Verhalten, das unserer Meinung nach diese Nutzungsbedingungen verletzt.",
+  termsContactInformation: "9. Kontaktinformationen",
+  termsContactInformationText: "Für Fragen zu diesen Nutzungsbedingungen kontaktieren Sie uns unter:",
 };

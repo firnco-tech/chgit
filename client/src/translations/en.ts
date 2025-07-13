@@ -308,4 +308,41 @@ export const en = {
   formValidationEmail: "Please enter a valid email address",
   formValidationSubject: "Please select a subject",
   formValidationMessage: "Message must be at least 10 characters",
+
+  // Terms of Service page
+  termsPageTitle: "Terms of Service | HolaCupid",
+  termsPageDescription: "Read HolaCupid's Terms of Service to understand your rights and responsibilities when using our Dominican dating platform.",
+  termsOfServiceTitle: "Terms of Service",
+  acceptanceOfTerms: "1. Acceptance of Terms",
+  acceptanceOfTermsText: "By accessing and using HolaCupid, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.",
+  serviceDescription: "2. Service Description",
+  serviceDescriptionText: "HolaCupid is a platform that allows users to browse verified profiles and purchase contact information for the purpose of making connections. We are not a dating service but rather an e-commerce platform for contact information.",
+  userResponsibilities: "3. User Responsibilities",
+  userResponsibilitiesText: "Users agree to:",
+  userResponsibilitiesList: [
+    "Provide accurate and truthful information",
+    "Use the service for lawful purposes only",
+    "Respect the privacy and rights of others",
+    "Not engage in harassment or inappropriate behavior",
+    "Not attempt to circumvent our verification processes"
+  ],
+  paymentAndRefunds: "4. Payment and Refunds",
+  paymentAndRefundsText: "All purchases are final. Contact information is delivered immediately upon successful payment. Refunds may be considered in cases of technical errors or if contact information is proven to be invalid.",
+  profileSubmission: "5. Profile Submission",
+  profileSubmissionText: "By submitting a profile, you consent to having your contact information made available for purchase. You must be 18 years or older and have the right to share the information provided.",
+  prohibitedActivities: "6. Prohibited Activities",
+  prohibitedActivitiesText: "Users may not:",
+  prohibitedActivitiesList: [
+    "Submit false or misleading information",
+    "Use the service for commercial solicitation",
+    "Attempt to hack or disrupt the service",
+    "Violate any applicable laws or regulations",
+    "Harass or threaten other users"
+  ],
+  limitationOfLiability: "7. Limitation of Liability",
+  limitationOfLiabilityText: "HolaCupid is not responsible for the actions of users or the outcomes of connections made through our platform. We provide contact information as-is and make no guarantees about the success of any connections.",
+  termination: "8. Termination",
+  terminationText: "We reserve the right to terminate or suspend access to our service immediately, without prior notice, for conduct that we believe violates these Terms of Service.",
+  termsContactInformation: "9. Contact Information",
+  termsContactInformationText: "For questions about these Terms of Service, contact us at:",
 };

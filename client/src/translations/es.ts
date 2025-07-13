@@ -308,4 +308,41 @@ export const es = {
   formValidationEmail: "Por favor ingresa una dirección de correo electrónico válida",
   formValidationSubject: "Por favor selecciona un asunto",
   formValidationMessage: "El mensaje debe tener al menos 10 caracteres",
+
+  // Terms of Service page
+  termsPageTitle: "Términos de Servicio | HolaCupid",
+  termsPageDescription: "Lee los Términos de Servicio de HolaCupid para entender tus derechos y responsabilidades al usar nuestra plataforma de citas dominicanas.",
+  termsOfServiceTitle: "Términos de Servicio",
+  acceptanceOfTerms: "1. Aceptación de Términos",
+  acceptanceOfTermsText: "Al acceder y usar HolaCupid, aceptas y acuerdas estar obligado por los términos y disposiciones de este acuerdo. Si no estás de acuerdo con lo anterior, por favor no uses este servicio.",
+  serviceDescription: "2. Descripción del Servicio",
+  serviceDescriptionText: "HolaCupid es una plataforma que permite a los usuarios navegar perfiles verificados y comprar información de contacto con el propósito de hacer conexiones. No somos un servicio de citas sino una plataforma de comercio electrónico para información de contacto.",
+  userResponsibilities: "3. Responsabilidades del Usuario",
+  userResponsibilitiesText: "Los usuarios acuerdan:",
+  userResponsibilitiesList: [
+    "Proporcionar información precisa y veraz",
+    "Usar el servicio solo para propósitos legales",
+    "Respetar la privacidad y derechos de otros",
+    "No participar en acoso o comportamiento inapropiado",
+    "No intentar eludir nuestros procesos de verificación"
+  ],
+  paymentAndRefunds: "4. Pagos y Reembolsos",
+  paymentAndRefundsText: "Todas las compras son finales. La información de contacto se entrega inmediatamente después del pago exitoso. Los reembolsos pueden considerarse en casos de errores técnicos o si se comprueba que la información de contacto es inválida.",
+  profileSubmission: "5. Envío de Perfil",
+  profileSubmissionText: "Al enviar un perfil, consientes que tu información de contacto esté disponible para compra. Debes tener 18 años o más y tener el derecho de compartir la información proporcionada.",
+  prohibitedActivities: "6. Actividades Prohibidas",
+  prohibitedActivitiesText: "Los usuarios no pueden:",
+  prohibitedActivitiesList: [
+    "Enviar información falsa o engañosa",
+    "Usar el servicio para solicitudes comerciales",
+    "Intentar hackear o interrumpir el servicio",
+    "Violar cualquier ley o regulación aplicable",
+    "Acosar o amenazar a otros usuarios"
+  ],
+  limitationOfLiability: "7. Limitación de Responsabilidad",
+  limitationOfLiabilityText: "HolaCupid no es responsable por las acciones de los usuarios o los resultados de las conexiones hechas a través de nuestra plataforma. Proporcionamos información de contacto tal como está y no garantizamos el éxito de cualquier conexión.",
+  termination: "8. Terminación",
+  terminationText: "Nos reservamos el derecho de terminar o suspender el acceso a nuestro servicio inmediatamente, sin previo aviso, por conducta que creemos viola estos Términos de Servicio.",
+  termsContactInformation: "9. Información de Contacto",
+  termsContactInformationText: "Para preguntas sobre estos Términos de Servicio, contáctanos en:",
 };
