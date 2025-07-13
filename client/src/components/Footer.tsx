@@ -20,20 +20,20 @@ export function Footer() {
               <span className="text-xl font-bold">HolaCupid</span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Connect with amazing people from the Dominican Republic. Safe, secure, and authentic connections.
+              {t.footerBrandDescription}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold mb-4 text-white">Quick Links</h4>
+            <h4 className="font-semibold mb-4 text-white">{t.quickLinks}</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link 
                   href={`/${currentLanguage}/browse`}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Browse Profiles
+                  {t.browse}
                 </Link>
               </li>
               <li>
@@ -41,7 +41,7 @@ export function Footer() {
                   href={`/${currentLanguage}#how-it-works`}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  How It Works
+                  {t.howItWorks}
                 </Link>
               </li>
               <li>
@@ -49,7 +49,7 @@ export function Footer() {
                   href={`/${currentLanguage}/submit-profile`}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Submit Profile
+                  {t.submitProfile}
                 </Link>
               </li>
               <li>
@@ -57,7 +57,7 @@ export function Footer() {
                   href={`/${currentLanguage}/help#faq`}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  FAQ
+                  {t.faq}
                 </Link>
               </li>
             </ul>
@@ -65,14 +65,14 @@ export function Footer() {
 
           {/* Support */}
           <div>
-            <h4 className="font-semibold mb-4 text-white">Support</h4>
+            <h4 className="font-semibold mb-4 text-white">{t.support}</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link 
                   href={`/${currentLanguage}/contact`}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Contact Us
+                  {t.contactUs}
                 </Link>
               </li>
               <li>
@@ -80,7 +80,7 @@ export function Footer() {
                   href={`/${currentLanguage}/help`}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Help Center
+                  {t.helpCenter}
                 </Link>
               </li>
               <li>
@@ -88,7 +88,7 @@ export function Footer() {
                   href={`/${currentLanguage}/safety`}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Safety Tips
+                  {t.safetyTips}
                 </Link>
               </li>
               <li>
@@ -96,7 +96,7 @@ export function Footer() {
                   href={`/${currentLanguage}/report`}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Report Issue
+                  {t.reportIssue}
                 </Link>
               </li>
             </ul>
@@ -104,14 +104,14 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h4 className="font-semibold mb-4 text-white">Legal</h4>
+            <h4 className="font-semibold mb-4 text-white">{t.legal}</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link 
                   href={`/${currentLanguage}/privacy`}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Privacy Policy
+                  {t.privacyPolicy}
                 </Link>
               </li>
               <li>
@@ -119,7 +119,7 @@ export function Footer() {
                   href={`/${currentLanguage}/terms`}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Terms of Service
+                  {t.termsOfService}
                 </Link>
               </li>
               <li>
@@ -127,7 +127,7 @@ export function Footer() {
                   href={`/${currentLanguage}/cookies`}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Cookie Policy
+                  {t.cookiePolicy}
                 </Link>
               </li>
               <li>
@@ -135,7 +135,7 @@ export function Footer() {
                   href={`/${currentLanguage}/disclaimer`}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Disclaimer
+                  {t.disclaimer}
                 </Link>
               </li>
             </ul>
@@ -145,15 +145,15 @@ export function Footer() {
         {/* Help Section with Contact Support Button */}
         <div className="mt-12 pt-8 border-t border-gray-700">
           <div className="bg-gray-900 rounded-lg p-8 text-center">
-            <h3 className="text-xl font-semibold mb-2">Still need help?</h3>
+            <h3 className="text-xl font-semibold mb-2">{t.stillNeedHelp}</h3>
             <p className="text-gray-400 mb-4">
-              Can't find what you're looking for? Our support team is here to help.
+              {t.contactSupportDescription}
             </p>
             <Link 
               href={`/${currentLanguage}/contact`}
               className="inline-block bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
             >
-              Contact Support
+              {t.contactSupport}
             </Link>
           </div>
         </div>
@@ -163,7 +163,7 @@ export function Footer() {
       <div className="border-t border-gray-700">
         <div className="container mx-auto px-4 py-4">
           <p className="text-center text-gray-400 text-sm">
-            © 2024 HolaCupid. All rights reserved.
+            © 2024 HolaCupid. {t.allRightsReserved}.
           </p>
         </div>
       </div>

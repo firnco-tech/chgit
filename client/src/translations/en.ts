@@ -201,6 +201,7 @@ export const en = {
   noVideos: 'No videos available',
 
   // Footer translations
+  submitProfile: "Submit Profile",
   footerBrandDescription: "Connect with amazing people from the Dominican Republic. Safe, secure, and authentic connections.",
   quickLinks: "Quick Links",
   support: "Support",
