@@ -66,7 +66,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-        <Link href={addLanguageToPath(`/profile/${profileSlug}`, currentLanguage)}>
+        <Link href={addLanguageToPath(`/${profileSlug}`, currentLanguage)}>
           <div className="aspect-[3/4] overflow-hidden relative bg-gray-100">
             <img 
               src={imageUrl || `data:image/svg+xml;base64,${btoa(`
@@ -115,7 +115,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-2">
           <div className="flex-1">
-            <Link href={addLanguageToPath(`/profile/${profileSlug}`, currentLanguage)}>
+            <Link href={addLanguageToPath(`/${profileSlug}`, currentLanguage)}>
               <h3 className="text-xl font-semibold text-gray-900 mb-2 hover:text-primary">
                 {profile.firstName}, {profile.age}
               </h3>

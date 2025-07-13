@@ -64,7 +64,6 @@ function MainSiteRouter() {
           {/* Language-prefixed routes */}
           <Route path="/:lang" component={Home} />
           <Route path="/:lang/browse" component={Browse} />
-          <Route path="/:lang/profile/:slug" component={ProfilePage} />
           <Route path="/:lang/submit-profile" component={SubmitProfile} />
           <Route path="/:lang/about" component={About} />
           <Route path="/:lang/contact" component={Contact} />
@@ -73,6 +72,9 @@ function MainSiteRouter() {
           <Route path="/:lang/privacy" component={Privacy} />
           <Route path="/:lang/terms" component={Terms} />
           <Route path="/:lang/cookies" component={Cookies} />
+          
+          {/* Profile route with cleaner SEO-friendly URLs - Must be last to avoid conflicts */}
+          <Route path="/:lang/:slug" component={ProfilePage} />
           <Route path="/:lang/disclaimer" component={Disclaimer} />
           <Route path="/:lang/report" component={Report} />
           <Route path="/:lang/checkout" component={Checkout} />
