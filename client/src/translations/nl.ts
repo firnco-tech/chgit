@@ -345,4 +345,46 @@ export const nl = {
   terminationText: "We behouden ons het recht voor om de toegang tot onze service onmiddellijk te beëindigen of op te schorten, zonder voorafgaande kennisgeving, voor gedrag dat naar onze mening deze Servicevoorwaarden schendt.",
   termsContactInformation: "9. Contactinformatie",
   termsContactInformationText: "Voor vragen over deze Servicevoorwaarden, neem contact met ons op via:",
+
+  // Cookie Policy page
+  cookiePageTitle: "Cookiebeleid | HolaCupid",
+  cookiePageDescription: "Leer hoe HolaCupid cookies gebruikt om uw browse-ervaring te verbeteren en gepersonaliseerde diensten te bieden.",
+  cookiePolicyTitle: "Cookiebeleid",
+  whatAreCookies: "Wat zijn Cookies?",
+  whatAreCookiesText: "Cookies zijn kleine tekstbestanden die worden opgeslagen op uw computer of mobiele apparaat wanneer u een website bezoekt. Ze helpen websites om informatie over uw bezoek te onthouden, wat uw volgende bezoek makkelijker kan maken en de site nuttiger voor u.",
+  howWeUseCookies: "Hoe Wij Cookies Gebruiken",
+  howWeUseCookiesText: "Wij gebruiken cookies voor verschillende doeleinden:",
+  howWeUseCookiesList: [
+    "Essentiële Cookies: Vereist voor het correct functioneren van de website",
+    "Prestatie Cookies: Helpen ons begrijpen hoe bezoekers omgaan met onze website",
+    "Functionaliteit Cookies: Onthouden uw voorkeuren en instellingen",
+    "Marketing Cookies: Gebruikt om relevante advertenties te leveren"
+  ],
+  typesOfCookies: "Soorten Cookies die Wij Gebruiken",
+  sessionCookies: "Sessie Cookies",
+  sessionCookiesText: "Dit zijn tijdelijke cookies die verlopen wanneer u uw browser sluit. Ze helpen ons uw sessie te behouden terwijl u door onze site navigeert.",
+  persistentCookies: "Permanente Cookies",
+  persistentCookiesText: "Deze cookies blijven op uw apparaat voor een bepaalde periode of totdat u ze verwijdert. Ze helpen ons uw voorkeuren te onthouden voor toekomstige bezoeken.",
+  thirdPartyCookies: "Cookies van Derden",
+  thirdPartyCookiesText: "Sommige cookies worden geplaatst door diensten van derden die verschijnen op onze pagina's, zoals analyse-aanbieders.",
+  managingCookies: "Cookies Beheren",
+  managingCookiesText: "U kunt cookies op verschillende manieren controleren en beheren:",
+  managingCookiesList: [
+    "De meeste browsers stellen u in staat om cookies te weigeren of bestaande cookies te verwijderen",
+    "U kunt uw browser instellen om u te waarschuwen wanneer cookies worden gebruikt",
+    "U kunt cookies volledig uitschakelen, hoewel dit de functionaliteit van de website kan beïnvloeden"
+  ],
+  managingCookiesNote: "Houd er rekening mee dat het uitschakelen van cookies uw ervaring op onze website kan beïnvloeden en bepaalde functies kan beperken.",
+  thirdPartyServices: "Diensten van Derden",
+  thirdPartyServicesText: "We kunnen diensten van derden gebruiken die ook cookies gebruiken, waaronder:",
+  thirdPartyServicesList: [
+    "Google Analytics voor website-analyse",
+    "Betalingsverwerkers voor veilige transacties",
+    "Social media platforms voor deel-functies"
+  ],
+  thirdPartyServicesNote: "Deze diensten hebben hun eigen cookiebeleid, dat wij u aanmoedigen te bekijken.",
+  updatesToPolicy: "Updates van dit Beleid",
+  updatesToPolicyText: "We kunnen dit Cookiebeleid van tijd tot tijd bijwerken. Eventuele wijzigingen zullen op deze pagina worden geplaatst met een bijgewerkte herzieningsdatum.",
+  cookieContactUs: "Neem Contact Op",
+  cookieContactUsText: "Als u vragen heeft over ons gebruik van cookies, neem dan contact met ons op via:",
 };

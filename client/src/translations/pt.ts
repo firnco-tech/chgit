@@ -345,4 +345,46 @@ export const pt = {
   terminationText: "Reservamos o direito de terminar ou suspender o acesso ao nosso serviço imediatamente, sem aviso prévio, por conduta que acreditamos violar estes Termos de Serviço.",
   termsContactInformation: "9. Informações de Contato",
   termsContactInformationText: "Para perguntas sobre estes Termos de Serviço, entre em contato conosco em:",
+
+  // Cookie Policy page
+  cookiePageTitle: "Política de Cookies | HolaCupid",
+  cookiePageDescription: "Saiba como o HolaCupid usa cookies para melhorar sua experiência de navegação e fornecer serviços personalizados.",
+  cookiePolicyTitle: "Política de Cookies",
+  whatAreCookies: "O que são Cookies?",
+  whatAreCookiesText: "Cookies são pequenos arquivos de texto que são armazenados em seu computador ou dispositivo móvel quando você visita um site. Eles ajudam os sites a lembrar informações sobre sua visita, o que pode tornar sua próxima visita mais fácil e o site mais útil para você.",
+  howWeUseCookies: "Como Usamos Cookies",
+  howWeUseCookiesText: "Usamos cookies para vários propósitos:",
+  howWeUseCookiesList: [
+    "Cookies Essenciais: Necessários para o funcionamento adequado do site",
+    "Cookies de Performance: Nos ajudam a entender como os visitantes interagem com nosso site",
+    "Cookies de Funcionalidade: Lembram suas preferências e configurações",
+    "Cookies de Marketing: Usados para entregar anúncios relevantes"
+  ],
+  typesOfCookies: "Tipos de Cookies que Usamos",
+  sessionCookies: "Cookies de Sessão",
+  sessionCookiesText: "Estes são cookies temporários que expiram quando você fecha seu navegador. Eles nos ajudam a manter sua sessão enquanto você navega em nosso site.",
+  persistentCookies: "Cookies Persistentes",
+  persistentCookiesText: "Estes cookies permanecem em seu dispositivo por um período definido ou até que você os delete. Eles nos ajudam a lembrar suas preferências para visitas futuras.",
+  thirdPartyCookies: "Cookies de Terceiros",
+  thirdPartyCookiesText: "Alguns cookies são colocados por serviços de terceiros que aparecem em nossas páginas, como provedores de análise.",
+  managingCookies: "Gerenciando Cookies",
+  managingCookiesText: "Você pode controlar e gerenciar cookies de várias maneiras:",
+  managingCookiesList: [
+    "A maioria dos navegadores permite que você recuse cookies ou exclua cookies existentes",
+    "Você pode configurar seu navegador para notificá-lo quando cookies estiverem sendo usados",
+    "Você pode desabilitar cookies completamente, embora isso possa afetar a funcionalidade do site"
+  ],
+  managingCookiesNote: "Por favor, note que desabilitar cookies pode impactar sua experiência em nosso site e limitar certas funcionalidades.",
+  thirdPartyServices: "Serviços de Terceiros",
+  thirdPartyServicesText: "Podemos usar serviços de terceiros que também usam cookies, incluindo:",
+  thirdPartyServicesList: [
+    "Google Analytics para análise do site",
+    "Processadores de pagamento para transações seguras",
+    "Plataformas de redes sociais para recursos de compartilhamento"
+  ],
+  thirdPartyServicesNote: "Estes serviços têm suas próprias políticas de cookies, que encorajamos você a revisar.",
+  updatesToPolicy: "Atualizações desta Política",
+  updatesToPolicyText: "Podemos atualizar esta Política de Cookies de tempos em tempos. Quaisquer alterações serão publicadas nesta página com uma data de revisão atualizada.",
+  cookieContactUs: "Entre em Contato",
+  cookieContactUsText: "Se você tiver dúvidas sobre nosso uso de cookies, entre em contato conosco em:",
 };
