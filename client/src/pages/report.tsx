@@ -62,11 +62,11 @@ export default function Report() {
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-2">
                       <type.icon className="w-5 h-5 text-pink-500" />
-                      <CardTitle className="text-sm font-medium">{type.label}</CardTitle>
+                      <CardTitle className="text-base font-medium">{type.label}</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-xs text-gray-600">
+                    <p className="text-sm text-gray-600">
                       {type.value === 'harassment' && 'Report harassment, threats, or inappropriate messages'}
                       {type.value === 'inappropriate' && 'Report inappropriate photos or profile content'}
                       {type.value === 'fake' && 'Report fake profiles or stolen photos'}
