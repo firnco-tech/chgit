@@ -1,0 +1,39 @@
+Replit, the SEO audit of the profile detail page (/en/profile/59) reveals critical unimplemented or regressed features. Your next task is to perform a detailed audit of the codebase to determine the status of these specific features. This is crucial for fixing the SEO regressions.
+
+Please, for each point below, state how you will verify its presence/correctness in the code, then report your findings.
+
+ACTION: Verify Profile Page SEO Implementations in Codebase
+
+SEO-Friendly Profile URL Structure (Slugs):
+
+Replit: Identify the backend code (e.g., in server/, api/, database models) responsible for generating multilingual, descriptive slugs from profile data (name, city, country) instead of numeric IDs. Provide file paths.
+
+Replit: Confirm the frontend routing logic (client/src/router/, client/src/pages/profile/) is configured to handle and use these slug-based URLs for profile pages.
+
+Replit: Confirm the code that updates all internal links/navigation to use the new slug URLs.
+
+Replit: Report if this feature is missing, partially implemented, or has issues.
+
+JSON-LD Structured Data for Profiles:
+
+Replit: Identify the code (file paths, components, e.g., client/src/pages/profile/, utility files) responsible for generating and embedding Profile schema JSON-LD structured data on profile detail pages. Look for <script type="application/ld+json"> injection logic.
+
+Replit: Report if this code is missing or incomplete.
+
+Hreflang Tag Implementation (Site-wide check):
+
+Replit: Confirm the exact code logic (file paths, components, e.g., main layout, head component) responsible for generating and embedding <link rel="alternate" hreflang="x" href="URL" /> tags for all language versions on every page, including self-referential tags.
+
+Replit: Report if this code logic is missing or seems incorrect.
+
+Image Alt Text & Lazy Loading for Profile Photos:
+
+Replit: Inspect the code that renders profile photos (e.g., in client/src/components/ProfileDetail.tsx or similar).
+
+Replit: Confirm that alt attributes are dynamically generated and populated with descriptive text for images.
+
+Replit: Confirm that loading="lazy" or similar lazy-loading logic is applied to images.
+
+Replit: Report its findings.
+
+Replit: For each point, provide specific file paths, relevant code snippets, and a clear "Found and Correct," "Missing," "Partially Implemented," or "Issues Found" status. Await my review after this comprehensive code audit.
