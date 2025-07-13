@@ -219,4 +219,50 @@ export const it = {
   contactSupportDescription: "Non trovi quello che cerchi? Il nostro team di supporto è qui per aiutarti.",
   contactSupport: "Contatta il Supporto",
   allRightsReserved: "Tutti i diritti riservati",
+
+  // Privacy Policy page
+  privacyPolicyTitle: "Politica sulla Privacy",
+  privacyPolicyDescription: "Scopri come HolaCupid protegge la tua privacy e gestisce le tue informazioni personali. La nostra politica sulla privacy completa spiega la raccolta, l'uso e le misure di protezione dei dati.",
+  informationWeCollect: "1. Informazioni che Raccogliamo",
+  informationWeCollectText: "Raccogliamo informazioni che ci fornisci direttamente, ad esempio quando:",
+  informationWeCollectList: [
+    "Crei un account o invii un profilo",
+    "Effettui un acquisto o una transazione",
+    "Ci contatti per supporto",
+    "Ti iscrivi alle nostre comunicazioni"
+  ],
+  informationWeCollectDetails: "Questo può includere il tuo nome, indirizzo email, numero di telefono, foto e altre informazioni del profilo.",
+  howWeUseInformation: "2. Come Utilizziamo le Tue Informazioni",
+  howWeUseInformationText: "Utilizziamo le informazioni che raccogliamo per:",
+  howWeUseInformationList: [
+    "Fornire, mantenere e migliorare i nostri servizi",
+    "Elaborare transazioni e inviare informazioni correlate",
+    "Inviarti avvisi tecnici e messaggi di supporto",
+    "Rispondere ai tuoi commenti e domande",
+    "Proteggere contro attività fraudolente o illegali"
+  ],
+  informationSharing: "3. Condivisione delle Informazioni",
+  informationSharingText: "Possiamo condividere le tue informazioni nelle seguenti circostanze:",
+  informationSharingList: [
+    "Con il tuo consenso o su tua indicazione",
+    "Con fornitori di servizi che assistono nelle nostre operazioni",
+    "Per rispettare obblighi legali",
+    "Per proteggere i nostri diritti e prevenire frodi"
+  ],
+  informationSharingNote: "Non vendiamo le tue informazioni personali a terze parti.",
+  dataSecurity: "4. Sicurezza dei Dati",
+  dataSecurityText: "Implementiamo misure di sicurezza appropriate per proteggere le tue informazioni personali contro accesso non autorizzato, alterazione, divulgazione o distruzione. Tuttavia, nessun metodo di trasmissione su internet è sicuro al 100%.",
+  yourRights: "5. I Tuoi Diritti",
+  yourRightsText: "Hai il diritto di:",
+  yourRightsList: [
+    "Accedere e aggiornare le tue informazioni personali",
+    "Richiedere la cancellazione dei tuoi dati",
+    "Optare per non ricevere comunicazioni di marketing",
+    "Richiedere una copia dei tuoi dati"
+  ],
+  contactUsSection: "6. Contattaci",
+  contactUsText: "Se hai domande su questa Politica sulla Privacy, contattaci a:",
+  emailLabel: "Email:",
+  addressLabel: "Indirizzo:",
+  companyAddress: "HolaCupid LLC, 30 N GOULD ST STE R, SHERIDAN, WY 82801",
 };

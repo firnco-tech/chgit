@@ -219,4 +219,50 @@ export const en = {
   contactSupportDescription: "Can't find what you're looking for? Our support team is here to help.",
   contactSupport: "Contact Support",
   allRightsReserved: "All rights reserved",
+
+  // Privacy Policy page
+  privacyPolicyTitle: "Privacy Policy",
+  privacyPolicyDescription: "Learn about how HolaCupid protects your privacy and handles your personal information. Our comprehensive privacy policy explains data collection, usage, and protection measures.",
+  informationWeCollect: "1. Information We Collect",
+  informationWeCollectText: "We collect information you provide directly to us, such as when you:",
+  informationWeCollectList: [
+    "Create an account or submit a profile",
+    "Make a purchase or transaction",
+    "Contact us for support",
+    "Subscribe to our communications"
+  ],
+  informationWeCollectDetails: "This may include your name, email address, phone number, photos, and other profile information.",
+  howWeUseInformation: "2. How We Use Your Information",
+  howWeUseInformationText: "We use the information we collect to:",
+  howWeUseInformationList: [
+    "Provide, maintain, and improve our services",
+    "Process transactions and send related information",
+    "Send you technical notices and support messages",
+    "Respond to your comments and questions",
+    "Protect against fraudulent or illegal activity"
+  ],
+  informationSharing: "3. Information Sharing",
+  informationSharingText: "We may share your information in the following circumstances:",
+  informationSharingList: [
+    "With your consent or at your direction",
+    "With service providers who assist in our operations",
+    "To comply with legal obligations",
+    "To protect our rights and prevent fraud"
+  ],
+  informationSharingNote: "We do not sell your personal information to third parties.",
+  dataSecurity: "4. Data Security",
+  dataSecurityText: "We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet is 100% secure.",
+  yourRights: "5. Your Rights",
+  yourRightsText: "You have the right to:",
+  yourRightsList: [
+    "Access and update your personal information",
+    "Request deletion of your data",
+    "Opt out of marketing communications",
+    "Request a copy of your data"
+  ],
+  contactUsSection: "6. Contact Us",
+  contactUsText: "If you have questions about this Privacy Policy, please contact us at:",
+  emailLabel: "Email:",
+  addressLabel: "Address:",
+  companyAddress: "HolaCupid LLC, 30 N GOULD ST STE R, SHERIDAN, WY 82801",
 };

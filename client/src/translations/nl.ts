@@ -219,4 +219,50 @@ export const nl = {
   contactSupportDescription: "Kan je niet vinden wat je zoekt? Ons supportteam is er om je te helpen.",
   contactSupport: "Contact Ondersteuning",
   allRightsReserved: "Alle rechten voorbehouden",
+
+  // Privacy Policy page
+  privacyPolicyTitle: "Privacybeleid",
+  privacyPolicyDescription: "Leer hoe HolaCupid uw privacy beschermt en uw persoonlijke informatie behandelt. Ons uitgebreide privacybeleid legt gegevensverzameling, gebruik en beschermingsmaatregelen uit.",
+  informationWeCollect: "1. Informatie die we verzamelen",
+  informationWeCollectText: "We verzamelen informatie die u ons direct verstrekt, zoals wanneer u:",
+  informationWeCollectList: [
+    "Een account aanmaakt of een profiel indient",
+    "Een aankoop of transactie doet",
+    "Contact met ons opneemt voor ondersteuning",
+    "Zich abonneert op onze communicatie"
+  ],
+  informationWeCollectDetails: "Dit kan uw naam, e-mailadres, telefoonnummer, foto's en andere profielinformatie omvatten.",
+  howWeUseInformation: "2. Hoe we uw informatie gebruiken",
+  howWeUseInformationText: "We gebruiken de informatie die we verzamelen om:",
+  howWeUseInformationList: [
+    "Onze diensten te leveren, onderhouden en verbeteren",
+    "Transacties te verwerken en gerelateerde informatie te verzenden",
+    "U technische berichten en ondersteuningsberichten te sturen",
+    "Te reageren op uw opmerkingen en vragen",
+    "Te beschermen tegen frauduleuze of illegale activiteiten"
+  ],
+  informationSharing: "3. Informatie delen",
+  informationSharingText: "We kunnen uw informatie delen in de volgende omstandigheden:",
+  informationSharingList: [
+    "Met uw toestemming of op uw aanwijzing",
+    "Met dienstverleners die helpen bij onze activiteiten",
+    "Om te voldoen aan wettelijke verplichtingen",
+    "Om onze rechten te beschermen en fraude te voorkomen"
+  ],
+  informationSharingNote: "We verkopen uw persoonlijke informatie niet aan derden.",
+  dataSecurity: "4. Gegevensbeveiliging",
+  dataSecurityText: "We implementeren passende beveiligingsmaatregelen om uw persoonlijke informatie te beschermen tegen ongeautoriseerde toegang, wijziging, openbaarmaking of vernietiging. Echter, geen enkele methode van overdracht via het internet is 100% veilig.",
+  yourRights: "5. Uw rechten",
+  yourRightsText: "U heeft het recht om:",
+  yourRightsList: [
+    "Toegang te krijgen tot en uw persoonlijke informatie bij te werken",
+    "Verwijdering van uw gegevens aan te vragen",
+    "Af te melden voor marketingcommunicatie",
+    "Een kopie van uw gegevens aan te vragen"
+  ],
+  contactUsSection: "6. Neem contact op",
+  contactUsText: "Als u vragen heeft over dit Privacybeleid, neem dan contact met ons op via:",
+  emailLabel: "E-mail:",
+  addressLabel: "Adres:",
+  companyAddress: "HolaCupid LLC, 30 N GOULD ST STE R, SHERIDAN, WY 82801",
 };
