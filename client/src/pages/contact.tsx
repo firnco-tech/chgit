@@ -10,19 +10,21 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Mail, MapPin, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import SEO, { structuredDataSchemas } from "@/components/SEO";
-
-const contactSchema = z.object({
-  fullName: z.string().min(2, "Full name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  subject: z.string().min(1, "Please select a subject"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
-});
-
-type ContactFormData = z.infer<typeof contactSchema>;
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
+
+  const contactSchema = z.object({
+    fullName: z.string().min(2, t.formValidationName),
+    email: z.string().email(t.formValidationEmail),
+    subject: z.string().min(1, t.formValidationSubject),
+    message: z.string().min(10, t.formValidationMessage),
+  });
+
+  type ContactFormData = z.infer<typeof contactSchema>;
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
@@ -42,15 +44,15 @@ export default function Contact() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       toast({
-        title: "Message sent successfully!",
-        description: "We'll respond within 24 hours.",
+        title: t.messageSentTitle,
+        description: t.messageSentDescription,
       });
       
       form.reset();
     } catch (error) {
       toast({
-        title: "Error sending message",
-        description: "Please try again later.",
+        title: t.messageErrorTitle,
+        description: t.messageErrorDescription,
         variant: "destructive",
       });
     } finally {
@@ -62,15 +64,16 @@ export default function Contact() {
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 py-12 px-4">
       <SEO 
         page="contact" 
+        customTitle={t.contactPageTitle}
+        customDescription={t.contactPageDescription}
         structuredData={structuredDataSchemas.website}
       />
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Contact HolaCupid - Dominican Dating Support</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">{t.contactPageTitle}</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Get help with your Dominican dating experience. Our expert team is here to assist with profile verification, 
-            payment questions, and connecting you with beautiful Dominican women.
+            {t.contactPageDescription}
           </p>
         </div>
 
@@ -81,7 +84,7 @@ export default function Contact() {
             <div className="bg-white rounded-lg shadow-lg p-8">
               <div className="flex items-center mb-4">
                 <MapPin className="h-6 w-6 text-pink-600 mr-3" />
-                <h3 className="text-xl font-semibold text-gray-900">Address</h3>
+                <h3 className="text-xl font-semibold text-gray-900">{t.contactAddress}</h3>
               </div>
               <div className="text-gray-700">
                 <p className="font-medium">HolaCupid LLC.</p>
@@ -94,7 +97,7 @@ export default function Contact() {
             <div className="bg-white rounded-lg shadow-lg p-8">
               <div className="flex items-center mb-4">
                 <Mail className="h-6 w-6 text-pink-600 mr-3" />
-                <h3 className="text-xl font-semibold text-gray-900">Email</h3>
+                <h3 className="text-xl font-semibold text-gray-900">{t.contactEmail}</h3>
               </div>
               <a href="mailto:admin@holacupid.com" className="text-pink-600 hover:text-pink-700 font-medium">
                 admin@holacupid.com
@@ -105,26 +108,26 @@ export default function Contact() {
             <div className="bg-white rounded-lg shadow-lg p-8">
               <div className="flex items-center mb-4">
                 <Clock className="h-6 w-6 text-pink-600 mr-3" />
-                <h3 className="text-xl font-semibold text-gray-900">Response Time</h3>
+                <h3 className="text-xl font-semibold text-gray-900">{t.contactResponseTime}</h3>
               </div>
-              <p className="text-gray-700">We typically respond within 24 hours</p>
+              <p className="text-gray-700">{t.responseTimeText}</p>
             </div>
 
             {/* Common Questions */}
             <div className="bg-white rounded-lg shadow-lg p-8">
-              <h3 className="text-xl font-semibold text-gray-900 mb-6">Common Questions</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-6">{t.commonQuestions}</h3>
               <div className="space-y-6">
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-2">How do I purchase contact information?</h4>
-                  <p className="text-gray-700">Browse profiles, add them to your cart, and complete the secure checkout process.</p>
+                  <h4 className="font-medium text-gray-900 mb-2">{t.howToPurchase}</h4>
+                  <p className="text-gray-700">{t.howToPurchaseAnswer}</p>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Are the profiles verified?</h4>
-                  <p className="text-gray-700">Yes, all profiles go through our manual verification process.</p>
+                  <h4 className="font-medium text-gray-900 mb-2">{t.areProfilesVerified}</h4>
+                  <p className="text-gray-700">{t.areProfilesVerifiedAnswer}</p>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-2">How do I submit my profile?</h4>
-                  <p className="text-gray-700">Use our "Submit Profile" form and we'll review it within 24-48 hours.</p>
+                  <h4 className="font-medium text-gray-900 mb-2">{t.howToSubmitProfile}</h4>
+                  <p className="text-gray-700">{t.howToSubmitProfileAnswer}</p>
                 </div>
               </div>
             </div>
@@ -132,7 +135,7 @@ export default function Contact() {
 
           {/* Contact Form */}
           <div className="bg-white rounded-lg shadow-lg p-8">
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">Send us a Message</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-6">{t.sendUsMessage}</h3>
             
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -141,11 +144,11 @@ export default function Contact() {
                   name="fullName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700">Full Name *</FormLabel>
+                      <FormLabel className="text-gray-700">{t.fullNameLabel}</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
-                          placeholder="Enter your full name"
+                          placeholder={t.fullNamePlaceholder}
                           className="border-gray-300 focus:border-pink-500 focus:ring-pink-500"
                         />
                       </FormControl>
@@ -159,12 +162,12 @@ export default function Contact() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700">Email Address *</FormLabel>
+                      <FormLabel className="text-gray-700">{t.emailAddressLabel}</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
                           type="email"
-                          placeholder="Enter your email address"
+                          placeholder={t.emailAddressPlaceholder}
                           className="border-gray-300 focus:border-pink-500 focus:ring-pink-500"
                         />
                       </FormControl>
@@ -178,22 +181,22 @@ export default function Contact() {
                   name="subject"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700">Subject *</FormLabel>
+                      <FormLabel className="text-gray-700">{t.subjectLabel}</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger className="border-gray-300 focus:border-pink-500 focus:ring-pink-500">
-                            <SelectValue placeholder="Select a subject" />
+                            <SelectValue placeholder={t.subjectPlaceholder} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="general">General Inquiry</SelectItem>
-                          <SelectItem value="technical">Technical Support</SelectItem>
-                          <SelectItem value="billing">Billing Question</SelectItem>
-                          <SelectItem value="profile">Profile Submission</SelectItem>
-                          <SelectItem value="verification">Verification Issue</SelectItem>
-                          <SelectItem value="report">Report a Problem</SelectItem>
-                          <SelectItem value="partnership">Partnership Inquiry</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
+                          <SelectItem value="general">{t.subjectGeneral}</SelectItem>
+                          <SelectItem value="technical">{t.subjectTechnical}</SelectItem>
+                          <SelectItem value="billing">{t.subjectBilling}</SelectItem>
+                          <SelectItem value="profile">{t.subjectProfile}</SelectItem>
+                          <SelectItem value="verification">{t.subjectVerification}</SelectItem>
+                          <SelectItem value="report">{t.subjectReport}</SelectItem>
+                          <SelectItem value="partnership">{t.subjectPartnership}</SelectItem>
+                          <SelectItem value="other">{t.subjectOther}</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -206,11 +209,11 @@ export default function Contact() {
                   name="message"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700">Message *</FormLabel>
+                      <FormLabel className="text-gray-700">{t.messageLabel}</FormLabel>
                       <FormControl>
                         <Textarea
                           {...field}
-                          placeholder="Enter your message"
+                          placeholder={t.messagePlaceholder}
                           className="border-gray-300 focus:border-pink-500 focus:ring-pink-500 min-h-[120px]"
                         />
                       </FormControl>
@@ -224,7 +227,7 @@ export default function Contact() {
                   disabled={isSubmitting}
                   className="w-full bg-pink-600 hover:bg-pink-700 text-white font-medium py-3 px-6 rounded-md transition-colors"
                 >
-                  {isSubmitting ? "Sending..." : "Send Message"}
+                  {isSubmitting ? t.sendingButton : t.sendMessageButton}
                 </Button>
               </form>
             </Form>
@@ -234,10 +237,10 @@ export default function Contact() {
         {/* Footer */}
         <div className="text-center mt-12 pt-8 border-t border-gray-200">
           <p className="text-gray-600">
-            Copyright © 2007-2025 holacupid.com.
+            {t.copyrightText}
           </p>
           <p className="text-gray-600 mt-1">
-            All rights reserved
+            {t.allRightsReserved}
           </p>
         </div>
       </div>
