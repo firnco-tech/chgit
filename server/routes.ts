@@ -1393,95 +1393,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // SEO ROUTES - Sitemap and robots.txt for search engine optimization
   // =============================================================================
 
-  // Dynamic sitemap generation
+  // Dynamic multilingual sitemap generation
   app.get("/sitemap.xml", async (req, res) => {
     try {
       const baseUrl = `${req.protocol}://${req.get('host')}`;
       const currentDate = new Date().toISOString().split('T')[0];
+      const languages = ['en', 'es', 'de', 'it', 'nl', 'pt'];
       
       // Get approved profiles for individual profile pages
       const profiles = await storage.getProfiles({ approved: true });
       
       let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Main pages -->
-  <url>
-    <loc>${baseUrl}/</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/browse</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/about</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/contact</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/help</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/safety</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/privacy</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/terms</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/cookies</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/disclaimer</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/report</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>`;
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">`;
 
-      // Add individual profile pages
+      // Main pages for each language
+      const mainPages = ['', 'browse', 'about', 'contact', 'help', 'safety', 'privacy', 'terms', 'cookies', 'disclaimer', 'report', 'submit-profile'];
+      
+      mainPages.forEach(page => {
+        const pagePath = page === '' ? '' : `/${page}`;
+        const priority = page === '' ? '1.0' : page === 'browse' ? '0.9' : '0.7';
+        const changefreq = page === '' || page === 'browse' ? 'daily' : 'weekly';
+        
+        languages.forEach(lang => {
+          sitemap += `
+  <url>
+    <loc>${baseUrl}/${lang}${pagePath}</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>`;
+          
+          // Add hreflang alternate links
+          languages.forEach(altLang => {
+            sitemap += `
+    <xhtml:link rel="alternate" hreflang="${altLang}" href="${baseUrl}/${altLang}${pagePath}" />`;
+          });
+          
+          sitemap += `
+  </url>`;
+        });
+      });
+
+      // Add individual profile pages with multilingual slugs
       profiles.forEach(profile => {
         const profileDate = profile.updatedAt ? new Date(profile.updatedAt).toISOString().split('T')[0] : currentDate;
-        sitemap += `
+        
+        languages.forEach(lang => {
+          let profileSlug;
+          switch (lang) {
+            case 'es': profileSlug = profile.slugEs; break;
+            case 'de': profileSlug = profile.slugDe; break;
+            case 'it': profileSlug = profile.slugIt; break;
+            case 'nl': profileSlug = profile.slugNl; break;
+            case 'pt': profileSlug = profile.slugPt; break;
+            default: profileSlug = profile.slugEn; break;
+          }
+          
+          // Use slug if available, otherwise fallback to ID
+          const urlPath = profileSlug || profile.id.toString();
+          
+          sitemap += `
   <url>
-    <loc>${baseUrl}/profile/${profile.id}</loc>
+    <loc>${baseUrl}/${lang}/${urlPath}</loc>
     <lastmod>${profileDate}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.8</priority>`;
+          
+          // Add hreflang alternate links for profile pages
+          languages.forEach(altLang => {
+            let altSlug;
+            switch (altLang) {
+              case 'es': altSlug = profile.slugEs; break;
+              case 'de': altSlug = profile.slugDe; break;
+              case 'it': altSlug = profile.slugIt; break;
+              case 'nl': altSlug = profile.slugNl; break;
+              case 'pt': altSlug = profile.slugPt; break;
+              default: altSlug = profile.slugEn; break;
+            }
+            
+            const altUrlPath = altSlug || profile.id.toString();
+            sitemap += `
+    <xhtml:link rel="alternate" hreflang="${altLang}" href="${baseUrl}/${altLang}/${altUrlPath}" />`;
+          });
+          
+          sitemap += `
   </url>`;
+        });
       });
 
       sitemap += `

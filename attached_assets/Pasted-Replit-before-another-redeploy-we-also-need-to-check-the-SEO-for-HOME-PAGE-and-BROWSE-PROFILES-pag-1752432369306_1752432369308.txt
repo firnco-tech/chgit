@@ -1,0 +1,33 @@
+Replit, before another redeploy, we also need to check the SEO for HOME PAGE and BROWSE PROFILES pages: Your task is to c inspect the codebase and audit to recommend any improvements or repairs:
+
+Specifically, please verify the implementation status of the following features within the project code:
+
+Hreflang Tag Implementation (Crucial):
+
+Replit: Confirm the exact code logic (file paths, components) responsible for generating and embedding <link rel="alternate" hreflang="x" href="URL" /> tags for all language versions on every page, including self-referential tags.
+
+Replit: If this code logic is missing or seems incorrect, report its absence or issues.
+
+JSON-LD Structured Data Generation:
+
+Replit: Identify the code (file paths, components) responsible for generating JSON-LD structured data (e.g., Profile, Product, Article schemas).
+
+Replit: Confirm where this <script type="application/ld+json"> is meant to be injected for relevant pages. Report if this code is missing or incomplete.
+
+SEO-Friendly Profile URL Structure (Slugs):
+
+Replit: Re-verify the implementation status of STEP 2 of "MAJOR MULTILINGUAL & SEO-FRIENDLY URL ENHANCEMENT" in the codebase.
+
+Replit: Confirm the backend logic (e.g., server/, api/) for generating multilingual slugs (from name, city, country) for profiles. Provide file paths.
+
+Replit: Confirm the frontend routing logic (client/src/router/, client/src/App.tsx) for handling and displaying these slug-based URLs (e.g., /en/katy-from-santiago-dominican-republic).
+
+Replit: Confirm code for updating internal links/sitemaps/hreflang tags to use new slug URLs.
+
+Replit: Report if the code for generating/using slug-based URLs is missing or incomplete.
+
+Multilingual Sitemap.xml Generation Logic (Confirmation):
+
+Replit: Confirm that the sitemap generation logic (code/script) is designed to include all language versions of pages, including profile pages with the new slug-based URLs (if implemented). Provide file paths for the sitemap generation code.
+
+Replit: For each point, provide specific file paths, code snippets (if relevant), and a clear "Found and Correct," "Missing," or "Issues Found" status. Await my review after this comprehensive code audit.
