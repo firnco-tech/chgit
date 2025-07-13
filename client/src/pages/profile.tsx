@@ -181,7 +181,7 @@ export default function ProfilePage() {
                         
                         <div className="absolute top-4 left-4 bg-blue-500 text-white text-sm px-2 py-1 rounded-full font-medium flex items-center gap-1">
                           <span>📷</span>
-                          <span>{photo === profile.primaryPhoto ? 'Primary Photo' : 'Photo'}</span>
+                          <span>{photo === profile.primaryPhoto ? t.primaryPhoto : t.photo}</span>
                         </div>
                       </div>
                     </CarouselItem>
@@ -209,7 +209,7 @@ export default function ProfilePage() {
                         
                         <div className="absolute top-4 left-4 bg-purple-500 text-white text-sm px-2 py-1 rounded-full font-medium flex items-center gap-1 pointer-events-none z-10">
                           <span>🎥</span>
-                          <span>Video</span>
+                          <span>{t.video}</span>
                         </div>
                         
                         {/* Fullscreen Button */}
@@ -236,7 +236,7 @@ export default function ProfilePage() {
               </Carousel>
             ) : (
               <div className="w-full h-96 bg-gray-200 rounded-xl flex items-center justify-center">
-                <p className="text-gray-500">No media available</p>
+                <p className="text-gray-500">{t.noMediaAvailable}</p>
               </div>
             )}
             
@@ -247,12 +247,12 @@ export default function ProfilePage() {
                 <div className="text-center flex gap-2 justify-center">
                   {profile.photos && profile.photos.length > 0 && (
                     <Badge variant="secondary" className="text-sm">
-                      {profile.photos.length} photo{profile.photos.length !== 1 ? 's' : ''}
+                      {profile.photos.length} {profile.photos.length === 1 ? t.photoCount : t.photosCount}
                     </Badge>
                   )}
                   {profile.videos && profile.videos.length > 0 && (
                     <Badge variant="secondary" className="text-sm bg-purple-100 text-purple-800">
-                      {profile.videos.length} video{profile.videos.length !== 1 ? 's' : ''}
+                      {profile.videos.length} {profile.videos.length === 1 ? t.videoCount : t.videosCount}
                     </Badge>
                   )}
                 </div>
@@ -379,38 +379,38 @@ export default function ProfilePage() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Profile Details</h3>
+                    <h3 className="font-semibold text-gray-900 mb-2">{t.profileDetails}</h3>
                     <div className="space-y-2 text-sm">
                       {profile.height && (
-                        <div><span className="font-medium">Height:</span> {profile.height}</div>
+                        <div><span className="font-medium">{t.heightLabel}</span> {profile.height}</div>
                       )}
                       {profile.occupation && (
-                        <div><span className="font-medium">Profession:</span> {profile.occupation}</div>
+                        <div><span className="font-medium">{t.professionLabel}</span> {profile.occupation}</div>
                       )}
                       {profile.education && (
-                        <div><span className="font-medium">Education:</span> {profile.education}</div>
+                        <div><span className="font-medium">{t.educationLabel}</span> {profile.education}</div>
                       )}
                       {profile.relationshipStatus && (
-                        <div><span className="font-medium">Status:</span> {profile.relationshipStatus}</div>
+                        <div><span className="font-medium">{t.statusLabel}</span> {profile.relationshipStatus}</div>
                       )}
                       {profile.languages && (
-                        <div><span className="font-medium">Languages:</span> {profile.languages.join(', ')}</div>
+                        <div><span className="font-medium">{t.languagesLabel}</span> {profile.languages.join(', ')}</div>
                       )}
                       {profile.children && (
-                        <div><span className="font-medium">Children:</span> {profile.children}</div>
+                        <div><span className="font-medium">{t.childrenLabel}</span> {profile.children}</div>
                       )}
                       {profile.smoking && (
-                        <div><span className="font-medium">Smoking:</span> {profile.smoking}</div>
+                        <div><span className="font-medium">{t.smokingLabel}</span> {profile.smoking}</div>
                       )}
                       {profile.drinking && (
-                        <div><span className="font-medium">Drinking:</span> {profile.drinking}</div>
+                        <div><span className="font-medium">{t.drinkingLabel}</span> {profile.drinking}</div>
                       )}
                     </div>
                   </div>
                   
                   {profile.interests && profile.interests.length > 0 && (
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-2">Interests</h3>
+                      <h3 className="font-semibold text-gray-900 mb-2">{t.interests}</h3>
                       <div className="flex flex-wrap gap-2">
                         {profile.interests.map((interest) => (
                           <Badge key={interest} variant="secondary">
@@ -423,14 +423,14 @@ export default function ProfilePage() {
                 </div>
                 
                 <div className="border-t pt-6">
-                  <h3 className="font-semibold text-gray-900 mb-4">Available Contact Methods</h3>
+                  <h3 className="font-semibold text-gray-900 mb-4">{t.availableContactMethods}</h3>
                   <div className="grid grid-cols-3 gap-4 mb-6">
                     {(profile.contactMethods as any)?.whatsapp && (
                       <div className="text-center">
                         <div className="bg-green-100 text-green-600 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
                           <MessageCircle className="h-6 w-6" />
                         </div>
-                        <span className="text-sm text-gray-600">WhatsApp</span>
+                        <span className="text-sm text-gray-600">{t.whatsapp}</span>
                       </div>
                     )}
                     {(profile.contactMethods as any)?.instagram && (
@@ -438,7 +438,7 @@ export default function ProfilePage() {
                         <div className="bg-pink-100 text-pink-600 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
                           <Instagram className="h-6 w-6" />
                         </div>
-                        <span className="text-sm text-gray-600">Instagram</span>
+                        <span className="text-sm text-gray-600">{t.instagram}</span>
                       </div>
                     )}
                     {(profile.contactMethods as any)?.email && (
@@ -446,7 +446,7 @@ export default function ProfilePage() {
                         <div className="bg-blue-100 text-blue-600 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
                           <Mail className="h-6 w-6" />
                         </div>
-                        <span className="text-sm text-gray-600">Email</span>
+                        <span className="text-sm text-gray-600">{t.email}</span>
                       </div>
                     )}
                     {(profile.contactMethods as any)?.telegram && (
@@ -454,7 +454,7 @@ export default function ProfilePage() {
                         <div className="bg-blue-100 text-blue-600 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
                           <Send className="h-6 w-6" />
                         </div>
-                        <span className="text-sm text-gray-600">Telegram</span>
+                        <span className="text-sm text-gray-600">{t.telegram}</span>
                       </div>
                     )}
                     {(profile.contactMethods as any)?.facebook && (
@@ -462,7 +462,7 @@ export default function ProfilePage() {
                         <div className="bg-blue-100 text-blue-600 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
                           <Facebook className="h-6 w-6" />
                         </div>
-                        <span className="text-sm text-gray-600">Facebook</span>
+                        <span className="text-sm text-gray-600">{t.facebook}</span>
                       </div>
                     )}
                     {(profile.contactMethods as any)?.tiktok && (
@@ -470,7 +470,7 @@ export default function ProfilePage() {
                         <div className="bg-black text-white p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
                           <Video className="h-6 w-6" />
                         </div>
-                        <span className="text-sm text-gray-600">TikTok</span>
+                        <span className="text-sm text-gray-600">{t.tiktok}</span>
                       </div>
                     )}
                   </div>
@@ -478,37 +478,37 @@ export default function ProfilePage() {
                   <div className="bg-gray-50 p-4 rounded-lg mb-6">
                     <p className="text-sm text-gray-600 text-center">
                       <Shield className="inline h-4 w-4 text-blue-600 mr-2" />
-                      Contact information is revealed after purchase and verified for authenticity
+                      {t.contactInfoPurchaseNote}
                     </p>
                   </div>
                   
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-gray-900">Contact Pricing</h3>
+                    <h3 className="font-semibold text-gray-900">{t.contactPricing}</h3>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="border-2 border-gray-200 rounded-lg p-4">
-                        <h4 className="font-semibold text-gray-900 mb-2">Individual Contact</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t.individualContact}</h4>
                         <div className="text-3xl font-bold text-primary mb-2">
                           ${profile.price}
                         </div>
-                        <p className="text-sm text-gray-600 mb-4">1-9 contacts</p>
+                        <p className="text-sm text-gray-600 mb-4">{t.contactsRange1to9}</p>
                         <Button 
                           onClick={handleAddToCart}
                           className="w-full bg-primary hover:bg-primary/90"
                         >
-                          Add to Cart
+                          {t.addToCart}
                         </Button>
                       </div>
                       
                       <div className="border-2 border-primary rounded-lg p-4">
-                        <h4 className="font-semibold text-gray-900 mb-2">Bulk Discount</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t.bulkDiscount}</h4>
                         <div className="text-3xl font-bold text-primary mb-2">$1.00</div>
-                        <p className="text-sm text-gray-600 mb-4">10+ contacts</p>
+                        <p className="text-sm text-gray-600 mb-4">{t.contactsRange10plus}</p>
                         <Button 
                           onClick={handleAddToCart}
                           className="w-full bg-primary hover:bg-primary/90"
                         >
-                          Add to Cart
+                          {t.addToCart}
                         </Button>
                       </div>
                     </div>
@@ -518,11 +518,11 @@ export default function ProfilePage() {
                     <div className="flex items-center justify-center space-x-4 text-sm text-gray-600">
                       <span className="flex items-center">
                         <Lock className="h-4 w-4 text-blue-600 mr-1" />
-                        Secure payment
+                        {t.securePayment}
                       </span>
                       <span className="flex items-center">
                         <Zap className="h-4 w-4 text-yellow-600 mr-1" />
-                        Instant delivery
+                        {t.instantDelivery}
                       </span>
                     </div>
                   </div>
