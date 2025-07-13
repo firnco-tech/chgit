@@ -437,4 +437,73 @@ export const nl = {
   ],
   emergencySituations: "Noodsituaties",
   emergencyNotice: "Als je in direct gevaar bent of een noodsituatie ervaart, neem dan onmiddellijk contact op met lokale hulpdiensten (112). Dit formulier is alleen voor niet-urgente meldingen.",
+
+  // Help page
+  helpPageTitle: "Hulp Centrum | HolaCupid",
+  helpPageDescription: "Vind antwoorden op veelgestelde vragen en krijg hulp bij het gebruiken van HolaCupid. Doorzoek ons uitgebreide hulp centrum voor ondersteuning.",
+  contactSupportDesc: "Krijg gepersonaliseerde hulp van ons team",
+  safetyTipsDesc: "Leer hoe je online veilig blijft",
+  reportIssueDesc: "Meld problemen of zorgen",
+  browseByCategory: "Bladeren op Categorie",
+  gettingStarted: "Aan de Slag",
+  gettingStartedDesc: "Leer hoe je profielen bekijkt en connecties maakt",
+  gettingStartedItems: [
+    "Hoe profielen te bekijken",
+    "Ons verificatieproces begrijpen",
+    "Je eerste aankoop maken",
+    "Je account instellen"
+  ],
+  paymentsBilling: "Betalingen & Facturering",
+  paymentsBillingDesc: "Informatie over prijzen, betalingen en facturering",
+  paymentsBillingItems: [
+    "Prijsstructuur uitgelegd",
+    "Geaccepteerde betaalmethoden",
+    "Terugbetalingsbeleid",
+    "Factureringsvragen"
+  ],
+  safetySecurity: "Veiligheid & Beveiliging",
+  safetySecurityDesc: "Blijf veilig terwijl je connecties maakt",
+  safetySecurityItems: [
+    "Veiligheidsrichtlijnen",
+    "Ongepast gedrag melden",
+    "Privacybescherming",
+    "Verificatie badges"
+  ],
+  profileManagement: "Profielbeheer",
+  profileManagementDesc: "Dien je profiel in en beheer het",
+  profileManagementItems: [
+    "Hoe je profiel in te dienen",
+    "Profiel goedkeuringsproces",
+    "Je informatie bijwerken",
+    "Foto richtlijnen"
+  ],
+  faqSection: "Veelgestelde Vragen",
+  faqQuestions: [
+    {
+      question: "Hoe werkt HolaCupid?",
+      answer: "HolaCupid is een platform waar je geverifieerde profielen kunt bekijken en contactinformatie kunt kopen om directe connecties te maken. Bekijk gewoon profielen, voeg je favorieten toe aan je winkelwagen en voltooi je aankoop om contactgegevens te ontvangen."
+    },
+    {
+      question: "Zijn alle profielen geverifieerd?",
+      answer: "Ja, alle profielen doorlopen ons handmatige verificatieproces om authenticiteit te waarborgen. We verifiëren foto's, contactinformatie en profieldetails voor goedkeuring."
+    },
+    {
+      question: "Welke contactinformatie krijg ik?",
+      answer: "Na aankoop ontvang je geverifieerde contactinformatie die telefoonnummers, e-mailadressen en social media profielen kan bevatten, afhankelijk van wat elke persoon heeft verstrekt."
+    },
+    {
+      question: "Hoeveel kost het?",
+      answer: "Individuele contacten kosten $2 per stuk voor 1-9 contacten. Als je 10 of meer contacten koopt, daalt de prijs naar $1 per stuk. Er zijn geen maandelijkse kosten of abonnementen."
+    },
+    {
+      question: "Is mijn betaling veilig?",
+      answer: "Ja, we gebruiken industriestandaard SSL-encryptie en werken met vertrouwde betalingsverwerkers om ervoor te zorgen dat je financiële informatie volledig veilig is."
+    },
+    {
+      question: "Hoe dien ik mijn profiel in?",
+      answer: "Klik op de 'Profiel Indienen' knop in de header, vul het uitgebreide formulier in met je foto's en informatie, en ons team zal het binnen 24-48 uur beoordelen."
+    }
+  ],
+  stillNeedHelp: "Nog steeds hulp nodig?",
+  stillNeedHelpDesc: "Kun je niet vinden wat je zoekt? Ons ondersteuningsteam staat klaar om te helpen.",
 };

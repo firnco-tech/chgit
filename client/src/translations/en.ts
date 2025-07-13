@@ -437,4 +437,72 @@ export const en = {
   ],
   emergencySituations: "Emergency Situations",
   emergencyNotice: "If you are in immediate danger or experiencing an emergency, please contact local emergency services (911) immediately. This form is for non-emergency reports only.",
+
+  // Help page
+  helpPageTitle: "Help Center | HolaCupid",
+  helpPageDescription: "Find answers to common questions and get help with using HolaCupid. Browse our comprehensive help center for support.",
+  contactSupportDesc: "Get personalized help from our team",
+  safetyTipsDesc: "Learn how to stay safe online",
+  reportIssueDesc: "Report problems or concerns",
+  browseByCategory: "Browse by Category",
+  gettingStarted: "Getting Started",
+  gettingStartedDesc: "Learn how to browse profiles and make connections",
+  gettingStartedItems: [
+    "How to browse profiles",
+    "Understanding our verification process",
+    "Creating your first purchase",
+    "Setting up your account"
+  ],
+  paymentsBilling: "Payments & Billing",
+  paymentsBillingDesc: "Information about pricing, payments, and billing",
+  paymentsBillingItems: [
+    "Pricing structure explained",
+    "Payment methods accepted",
+    "Refund policy",
+    "Billing questions"
+  ],
+  safetySecurity: "Safety & Security",
+  safetySecurityDesc: "Stay safe while making connections",
+  safetySecurityItems: [
+    "Safety guidelines",
+    "Reporting inappropriate behavior",
+    "Privacy protection",
+    "Verification badges"
+  ],
+  profileManagement: "Profile Management",
+  profileManagementDesc: "Submit and manage your profile",
+  profileManagementItems: [
+    "How to submit your profile",
+    "Profile approval process",
+    "Updating your information",
+    "Photo guidelines"
+  ],
+  faqSection: "Frequently Asked Questions",
+  faqQuestions: [
+    {
+      question: "How does HolaCupid work?",
+      answer: "HolaCupid is a platform where you can browse verified profiles and purchase contact information to make direct connections. Simply browse profiles, add your favorites to cart, and complete your purchase to receive contact details."
+    },
+    {
+      question: "Are all profiles verified?",
+      answer: "Yes, all profiles go through our manual verification process to ensure authenticity. We verify photos, contact information, and profile details before approval."
+    },
+    {
+      question: "What contact information do I receive?",
+      answer: "After purchase, you'll receive verified contact information which may include phone numbers, email addresses, and social media profiles, depending on what each person has provided."
+    },
+    {
+      question: "How much does it cost?",
+      answer: "Individual contacts cost $2 each for 1-9 contacts. If you purchase 10 or more contacts, the price drops to $1 each. There are no monthly fees or subscriptions."
+    },
+    {
+      question: "Is my payment secure?",
+      answer: "Yes, we use industry-standard SSL encryption and work with trusted payment processors to ensure your financial information is completely secure."
+    },
+    {
+      question: "How do I submit my profile?",
+      answer: "Click the 'Submit Profile' button in the header, fill out the comprehensive form with your photos and information, and our team will review it within 24-48 hours."
+    }
+  ],
+  stillNeedHelpDesc: "Can't find what you're looking for? Our support team is here to help.",
 };

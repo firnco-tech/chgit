@@ -437,4 +437,72 @@ export const de = {
   ],
   emergencySituations: "Notfälle",
   emergencyNotice: "Wenn Sie sich in unmittelbarer Gefahr befinden oder einen Notfall erleben, kontaktieren Sie bitte sofort den örtlichen Notdienst (112). Dieses Formular ist nur für Nicht-Notfall-Meldungen gedacht.",
+
+  // Help page
+  helpPageTitle: "Hilfe-Center | HolaCupid",
+  helpPageDescription: "Finden Sie Antworten auf häufige Fragen und erhalten Sie Hilfe bei der Verwendung von HolaCupid. Durchsuchen Sie unser umfassendes Hilfe-Center für Support.",
+  contactSupportDesc: "Erhalten Sie persönliche Hilfe von unserem Team",
+  safetyTipsDesc: "Lernen Sie, wie Sie online sicher bleiben",
+  reportIssueDesc: "Probleme oder Bedenken melden",
+  browseByCategory: "Nach Kategorie durchsuchen",
+  gettingStarted: "Erste Schritte",
+  gettingStartedDesc: "Lernen Sie, wie Sie Profile durchsuchen und Verbindungen knüpfen",
+  gettingStartedItems: [
+    "Wie man Profile durchsucht",
+    "Unser Verifizierungsprozess verstehen",
+    "Ihren ersten Kauf tätigen",
+    "Ihr Konto einrichten"
+  ],
+  paymentsBilling: "Zahlungen & Abrechnung",
+  paymentsBillingDesc: "Informationen zu Preisen, Zahlungen und Abrechnung",
+  paymentsBillingItems: [
+    "Preisstruktur erklärt",
+    "Akzeptierte Zahlungsmethoden",
+    "Rückerstattungsrichtlinie",
+    "Abrechnungsfragen"
+  ],
+  safetySecurity: "Sicherheit & Schutz",
+  safetySecurityDesc: "Bleiben Sie sicher beim Knüpfen von Verbindungen",
+  safetySecurityItems: [
+    "Sicherheitsrichtlinien",
+    "Unangemessenes Verhalten melden",
+    "Datenschutz",
+    "Verifizierungsabzeichen"
+  ],
+  profileManagement: "Profilverwaltung",
+  profileManagementDesc: "Profil einreichen und verwalten",
+  profileManagementItems: [
+    "Wie Sie Ihr Profil einreichen",
+    "Profil-Genehmigungsprozess",
+    "Ihre Informationen aktualisieren",
+    "Foto-Richtlinien"
+  ],
+  faqSection: "Häufig gestellte Fragen",
+  faqQuestions: [
+    {
+      question: "Wie funktioniert HolaCupid?",
+      answer: "HolaCupid ist eine Plattform, auf der Sie verifizierte Profile durchsuchen und Kontaktinformationen kaufen können, um direkte Verbindungen herzustellen. Durchsuchen Sie einfach Profile, fügen Sie Ihre Favoriten zum Warenkorb hinzu und schließen Sie Ihren Kauf ab, um Kontaktdaten zu erhalten."
+    },
+    {
+      question: "Sind alle Profile verifiziert?",
+      answer: "Ja, alle Profile durchlaufen unseren manuellen Verifizierungsprozess, um die Authentizität zu gewährleisten. Wir überprüfen Fotos, Kontaktinformationen und Profildetails vor der Genehmigung."
+    },
+    {
+      question: "Welche Kontaktinformationen erhalte ich?",
+      answer: "Nach dem Kauf erhalten Sie verifizierte Kontaktinformationen, die Telefonnummern, E-Mail-Adressen und Social-Media-Profile umfassen können, je nachdem, was jede Person bereitgestellt hat."
+    },
+    {
+      question: "Wie viel kostet es?",
+      answer: "Einzelne Kontakte kosten $2 pro Stück für 1-9 Kontakte. Wenn Sie 10 oder mehr Kontakte kaufen, sinkt der Preis auf $1 pro Stück. Es gibt keine monatlichen Gebühren oder Abonnements."
+    },
+    {
+      question: "Ist meine Zahlung sicher?",
+      answer: "Ja, wir verwenden branchenübliche SSL-Verschlüsselung und arbeiten mit vertrauenswürdigen Zahlungsanbietern zusammen, um sicherzustellen, dass Ihre Finanzinformationen vollständig sicher sind."
+    },
+    {
+      question: "Wie reiche ich mein Profil ein?",
+      answer: "Klicken Sie auf die Schaltfläche 'Profil einreichen' in der Kopfzeile, füllen Sie das umfassende Formular mit Ihren Fotos und Informationen aus, und unser Team wird es innerhalb von 24-48 Stunden überprüfen."
+    }
+  ],
+  stillNeedHelpDesc: "Können Sie nicht finden, wonach Sie suchen? Unser Support-Team ist hier, um zu helfen.",
 };

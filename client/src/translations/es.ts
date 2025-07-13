@@ -437,4 +437,72 @@ export const es = {
   ],
   emergencySituations: "Situaciones de Emergencia",
   emergencyNotice: "Si estás en peligro inmediato o experimentas una emergencia, contacta servicios de emergencia locales (911) inmediatamente. Este formulario es solo para reportes no urgentes.",
+
+  // Help page
+  helpPageTitle: "Centro de Ayuda | HolaCupid",
+  helpPageDescription: "Encuentra respuestas a preguntas comunes y obtén ayuda usando HolaCupid. Explora nuestro centro de ayuda integral para soporte.",
+  contactSupportDesc: "Obtén ayuda personalizada de nuestro equipo",
+  safetyTipsDesc: "Aprende cómo mantenerte seguro en línea",
+  reportIssueDesc: "Reporta problemas o preocupaciones",
+  browseByCategory: "Explorar por Categoría",
+  gettingStarted: "Comenzando",
+  gettingStartedDesc: "Aprende cómo navegar perfiles y hacer conexiones",
+  gettingStartedItems: [
+    "Cómo navegar perfiles",
+    "Entendiendo nuestro proceso de verificación",
+    "Creando tu primera compra",
+    "Configurando tu cuenta"
+  ],
+  paymentsBilling: "Pagos y Facturación",
+  paymentsBillingDesc: "Información sobre precios, pagos y facturación",
+  paymentsBillingItems: [
+    "Estructura de precios explicada",
+    "Métodos de pago aceptados",
+    "Política de reembolso",
+    "Preguntas de facturación"
+  ],
+  safetySecurity: "Seguridad y Protección",
+  safetySecurityDesc: "Mantente seguro mientras haces conexiones",
+  safetySecurityItems: [
+    "Pautas de seguridad",
+    "Reportar comportamiento inapropiado",
+    "Protección de privacidad",
+    "Insignias de verificación"
+  ],
+  profileManagement: "Gestión de Perfil",
+  profileManagementDesc: "Envía y gestiona tu perfil",
+  profileManagementItems: [
+    "Cómo enviar tu perfil",
+    "Proceso de aprobación del perfil",
+    "Actualizando tu información",
+    "Pautas de fotos"
+  ],
+  faqSection: "Preguntas Frecuentes",
+  faqQuestions: [
+    {
+      question: "¿Cómo funciona HolaCupid?",
+      answer: "HolaCupid es una plataforma donde puedes navegar perfiles verificados y comprar información de contacto para hacer conexiones directas. Simplemente navega perfiles, agrega tus favoritos al carrito y completa tu compra para recibir detalles de contacto."
+    },
+    {
+      question: "¿Están todos los perfiles verificados?",
+      answer: "Sí, todos los perfiles pasan por nuestro proceso de verificación manual para asegurar autenticidad. Verificamos fotos, información de contacto y detalles del perfil antes de la aprobación."
+    },
+    {
+      question: "¿Qué información de contacto recibo?",
+      answer: "Después de la compra, recibirás información de contacto verificada que puede incluir números de teléfono, direcciones de correo electrónico y perfiles de redes sociales, dependiendo de lo que cada persona haya proporcionado."
+    },
+    {
+      question: "¿Cuánto cuesta?",
+      answer: "Los contactos individuales cuestan $2 cada uno para 1-9 contactos. Si compras 10 o más contactos, el precio baja a $1 cada uno. No hay tarifas mensuales ni suscripciones."
+    },
+    {
+      question: "¿Es seguro mi pago?",
+      answer: "Sí, usamos cifrado SSL estándar de la industria y trabajamos con procesadores de pago confiables para asegurar que tu información financiera esté completamente segura."
+    },
+    {
+      question: "¿Cómo envío mi perfil?",
+      answer: "Haz clic en el botón 'Enviar Perfil' en el encabezado, completa el formulario integral con tus fotos e información, y nuestro equipo lo revisará dentro de 24-48 horas."
+    }
+  ],
+  stillNeedHelpDesc: "¿No puedes encontrar lo que buscas? Nuestro equipo de soporte está aquí para ayudar.",
 };
