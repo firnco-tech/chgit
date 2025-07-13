@@ -14,16 +14,13 @@ import { useTranslation } from "@/hooks/useTranslation";
 export default function Browse() {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [ageFilter, setAgeFilter] = useState("all");
   const [locationFilter, setLocationFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("newest");
 
   const { data: profiles, isLoading } = useQuery<Profile[]>({
-    queryKey: ['/api/profiles', { search: searchQuery, age: ageFilter, location: locationFilter }],
+    queryKey: ['/api/profiles', { search: searchQuery, location: locationFilter }],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (searchQuery) params.append('search', searchQuery);
-      if (ageFilter && ageFilter !== 'all') params.append('ageMin', ageFilter.split('-')[0]);
       if (locationFilter && locationFilter !== 'all') params.append('location', locationFilter);
       
       const response = await fetch(`/api/profiles?${params}`);
@@ -33,13 +30,6 @@ export default function Browse() {
   });
 
   const filteredProfiles = profiles ? [...profiles] : [];
-
-  // Sort profiles
-  if (sortBy === "newest") {
-    filteredProfiles.sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
-  } else if (sortBy === "age") {
-    filteredProfiles.sort((a, b) => a.age - b.age);
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -71,24 +61,7 @@ export default function Browse() {
                   </div>
                 </div>
                 
-                {/* Age Range */}
-                <div className="min-w-48">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t.ageRange}
-                  </label>
-                  <Select value={ageFilter} onValueChange={setAgeFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={t.allAges} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">{t.allAges}</SelectItem>
-                      <SelectItem value="18-25">{t.age18to25}</SelectItem>
-                      <SelectItem value="26-30">{t.age26to30}</SelectItem>
-                      <SelectItem value="31-35">{t.age31to35}</SelectItem>
-                      <SelectItem value="36-99">{t.age36plus}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+
                 
                 {/* Location */}
                 <div className="min-w-48">
@@ -110,21 +83,7 @@ export default function Browse() {
                   </Select>
                 </div>
                 
-                {/* Sort */}
-                <div className="min-w-48">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t.sortBy}
-                  </label>
-                  <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="newest">{t.sortByNewest}</SelectItem>
-                      <SelectItem value="age">{t.sortByAge}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+
               </div>
             </CardContent>
           </Card>
@@ -153,24 +112,7 @@ export default function Browse() {
                   </div>
                 </div>
                 
-                {/* Age Range */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Age Range
-                  </label>
-                  <Select value={ageFilter} onValueChange={setAgeFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="All Ages" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Ages</SelectItem>
-                      <SelectItem value="18-25">18-25</SelectItem>
-                      <SelectItem value="26-30">26-30</SelectItem>
-                      <SelectItem value="31-35">31-35</SelectItem>
-                      <SelectItem value="36-99">36+</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+
                 
                 {/* Location */}
                 <div>
@@ -192,21 +134,7 @@ export default function Browse() {
                   </Select>
                 </div>
                 
-                {/* Sort */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Sort By
-                  </label>
-                  <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="newest">Sort by newest</SelectItem>
-                      <SelectItem value="age">Sort by age</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+
               </div>
             </CardContent>
           </Card>
