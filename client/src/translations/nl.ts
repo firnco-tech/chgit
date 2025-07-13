@@ -504,6 +504,5 @@ export const nl = {
       answer: "Klik op de 'Profiel Indienen' knop in de header, vul het uitgebreide formulier in met je foto's en informatie, en ons team zal het binnen 24-48 uur beoordelen."
     }
   ],
-  stillNeedHelp: "Nog steeds hulp nodig?",
   stillNeedHelpDesc: "Kun je niet vinden wat je zoekt? Ons ondersteuningsteam staat klaar om te helpen.",
 };
