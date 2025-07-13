@@ -96,7 +96,7 @@ export function Navbar() {
                       isActive('/favorites') ? 'text-primary' : 'text-gray-500 hover:text-primary'
                     }`}>
                       <Heart className="h-4 w-4" />
-                      Favorites
+                      {t.favorites}
                     </span>
                   </Link>
                 ) : (
@@ -105,7 +105,7 @@ export function Navbar() {
                     className="px-3 py-2 rounded-md text-sm font-medium cursor-pointer text-gray-500 hover:text-primary flex items-center gap-1"
                   >
                     <Heart className="h-4 w-4" />
-                    Favorites
+                    {t.favorites}
                   </button>
                 )}
               </div>
@@ -147,7 +147,7 @@ export function Navbar() {
                       <DropdownMenuItem asChild>
                         <Link href={addLanguageToPath('/favorites', currentLanguage)} className="flex items-center gap-2 cursor-pointer">
                           <Heart className="h-4 w-4" />
-                          <span>Favorites</span>
+                          <span>{t.favorites}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
@@ -242,7 +242,7 @@ export function Navbar() {
                                 onClick={() => setIsMobileMenuOpen(false)}
                               >
                                 <Heart className="h-4 w-4 mr-2" />
-                                Favorites
+                                {t.favorites}
                               </Button>
                             </Link>
                             
@@ -268,7 +268,7 @@ export function Navbar() {
                             }}
                           >
                             <Heart className="h-4 w-4 mr-2" />
-                            Favorites (Login Required)
+                            {t.favorites} (Login Required)
                           </Button>
                         )}
                         
