@@ -38,6 +38,7 @@ import {
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or, ilike, inArray, sql } from "drizzle-orm";
+import { generateMultilingualSlugs } from "@shared/slugUtils";
 
 export interface IStorage {
   // =============================================================================
@@ -340,9 +341,28 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createProfile(profile: InsertProfile): Promise<Profile> {
+    // Generate multilingual slugs for SEO-friendly URLs
+    const slugs = generateMultilingualSlugs({
+      firstName: profile.firstName,
+      location: profile.location
+    });
+    
+    // Add slugs to the profile data
+    const profileWithSlugs = {
+      ...profile,
+      slugEn: slugs.en,
+      slugEs: slugs.es,
+      slugDe: slugs.de,
+      slugIt: slugs.it,
+      slugNl: slugs.nl,
+      slugPt: slugs.pt
+    };
+    
+    console.log('🔍 SLUG GENERATION - Generated slugs:', slugs);
+    
     const [newProfile] = await db
       .insert(profiles)
-      .values([profile as any])
+      .values([profileWithSlugs as any])
       .returning();
     return newProfile;
   }
