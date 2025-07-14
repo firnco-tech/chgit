@@ -97,6 +97,18 @@ export default function AdminEditProfile() {
     }
   }, [profile]);
 
+  // DEBUG: Watch formData changes
+  useEffect(() => {
+    console.log('🔍 ADMIN PANEL DEBUG - FormData changed:', {
+      photos: formData.photos,
+      videos: formData.videos,
+      photosLength: formData.photos?.length,
+      videosLength: formData.videos?.length,
+      photosType: typeof formData.photos,
+      videosType: typeof formData.videos
+    });
+  }, [formData.photos, formData.videos]);
+
   // Update profile mutation
   const updateMutation = useMutation({
     mutationFn: async (data: Partial<Profile>) => {
