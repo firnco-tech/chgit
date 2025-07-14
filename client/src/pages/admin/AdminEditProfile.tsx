@@ -91,10 +91,22 @@ export default function AdminEditProfile() {
       console.log('🔍 ADMIN PANEL DEBUG - Profile data loaded:', profile);
       console.log('🔍 ADMIN PANEL DEBUG - Photos array:', profile.photos);
       console.log('🔍 ADMIN PANEL DEBUG - Videos array:', profile.videos);
-      console.log('🔍 ADMIN PANEL DEBUG - Photos type:', typeof profile.photos);
-      console.log('🔍 ADMIN PANEL DEBUG - Videos type:', typeof profile.videos);
+      console.log('🔍 ADMIN PANEL DEBUG - Contact methods:', profile.contactMethods);
       
-      setFormData(profile);
+      // Extract contact methods from JSON object to individual fields
+      const contactMethods = profile.contactMethods || {};
+      const processedProfile = {
+        ...profile,
+        contactWhatsapp: contactMethods.whatsapp || '',
+        contactInstagram: contactMethods.instagram || '',
+        contactEmail: contactMethods.email || '',
+        contactPhone: contactMethods.phone || '',
+        contactTelegram: contactMethods.telegram || '',
+        contactFacebook: contactMethods.facebook || '',
+        contactTiktok: contactMethods.tiktok || '',
+      };
+      
+      setFormData(processedProfile);
     }
   }, [profile]);
 
@@ -153,17 +165,35 @@ export default function AdminEditProfile() {
     e.preventDefault();
     
     // Clean up the form data before submitting - EXCLUDE timestamp fields
-    const { createdAt, updatedAt, ...updateableData } = formData;
+    const { createdAt, updatedAt, contactWhatsapp, contactInstagram, contactEmail, contactPhone, contactTelegram, contactFacebook, contactTiktok, ...updateableData } = formData;
+    
+    // Prepare contact methods object from individual fields
+    const contactMethods = {
+      whatsapp: formData.contactWhatsapp || '',
+      instagram: formData.contactInstagram || '',
+      email: formData.contactEmail || '',
+      phone: formData.contactPhone || '',
+      telegram: formData.contactTelegram || '',
+      facebook: formData.contactFacebook || '',
+      tiktok: formData.contactTiktok || '',
+    };
+    
+    // Filter out empty contact methods
+    const filteredContactMethods = Object.fromEntries(
+      Object.entries(contactMethods).filter(([_, value]) => value && value.trim() !== '')
+    );
     
     const cleanedData = {
       ...updateableData,
+      // Contact methods as JSON object
+      contactMethods: filteredContactMethods,
       // Ensure arrays are properly formatted
       photos: Array.isArray(formData.photos) ? formData.photos : [],
       videos: Array.isArray(formData.videos) ? formData.videos : [],
       interests: Array.isArray(formData.interests) ? formData.interests : [],
       languages: Array.isArray(formData.languages) ? formData.languages : [],
       lookingFor: Array.isArray(formData.lookingFor) ? formData.lookingFor : [],
-      contactMethods: formData.contactMethods || {},
+      children: Array.isArray(formData.children) ? formData.children : [],
       inactivePhotos: Array.isArray(formData.inactivePhotos) ? formData.inactivePhotos : [],
       inactiveVideos: Array.isArray(formData.inactiveVideos) ? formData.inactiveVideos : [],
       // Convert string values to numbers where needed
@@ -174,6 +204,16 @@ export default function AdminEditProfile() {
       isFeatured: typeof formData.isFeatured === 'string' ? formData.isFeatured === 'true' : formData.isFeatured,
     };
     
+    console.log('🔍 CONTACT METHODS DEBUG - Individual fields:', {
+      contactWhatsapp: formData.contactWhatsapp,
+      contactInstagram: formData.contactInstagram,
+      contactEmail: formData.contactEmail,
+      contactPhone: formData.contactPhone,
+      contactTelegram: formData.contactTelegram,
+      contactFacebook: formData.contactFacebook,
+      contactTiktok: formData.contactTiktok,
+    });
+    console.log('🔍 CONTACT METHODS DEBUG - Filtered object:', filteredContactMethods);
     console.log('Submitting cleaned form data (timestamps excluded):', cleanedData);
     updateMutation.mutate(cleanedData);
   };
@@ -999,19 +1039,61 @@ export default function AdminEditProfile() {
               <CardTitle>Profile Status</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  checked={formData.isApproved || false}
-                  onCheckedChange={(checked) => handleInputChange('isApproved', checked)}
-                />
-                <Label>Profile is approved and visible to users</Label>
+              <div>
+                <Label htmlFor="status">Profile Status</Label>
+                <Select
+                  value={formData.status || 'PENDING'}
+                  onValueChange={(value) => {
+                    handleInputChange('status', value);
+                    // Update isApproved based on status
+                    if (value === 'ACTIVE') {
+                      handleInputChange('isApproved', true);
+                    } else {
+                      handleInputChange('isApproved', false);
+                    }
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="PENDING">PENDING</SelectItem>
+                    <SelectItem value="ACTIVE">ACTIVE</SelectItem>
+                    <SelectItem value="INACTIVE">INACTIVE</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
+              
               <div className="flex items-center space-x-2">
                 <Checkbox
                   checked={formData.isFeatured || false}
                   onCheckedChange={(checked) => handleInputChange('isFeatured', checked)}
                 />
-                <Label>Feature this profile (premium visibility)</Label>
+                <Label>Featured</Label>
+              </div>
+              
+              <div className="flex space-x-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    handleInputChange('status', 'ACTIVE');
+                    handleInputChange('isApproved', true);
+                  }}
+                  className="flex-1"
+                >
+                  Approve Profile
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    handleInputChange('isFeatured', !formData.isFeatured);
+                  }}
+                  className="flex-1"
+                >
+                  {formData.isFeatured ? 'Remove Featured' : 'Make Featured'}
+                </Button>
               </div>
             </CardContent>
           </Card>
