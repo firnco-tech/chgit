@@ -599,6 +599,16 @@ RESTful API endpoints include:
   - PUSHED: All critical fixes successfully committed to GitHub repository
   - STATUS: Admin panel now fully functional with all major issues resolved and ready for deployment
 
+- July 14, 2025. CRITICAL AUTHENTICATION FIX: 401 Error Resolution - COMPLETED
+  - IDENTIFIED: Frontend authentication errors causing 401 responses when loading profile pages
+  - RESOLVED: Changed `/api/auth/user` endpoint from `requireAuth` to `optionalAuth` middleware
+  - IMPLEMENTED: Authentication endpoint now returns `null` instead of 401 errors for unauthenticated users
+  - ENHANCED: Frontend authentication hooks work properly without throwing console errors
+  - VERIFIED: Profile pages load correctly without authentication errors in browser console
+  - COMPLETED: SEO-friendly URLs active with backward compatibility for numeric IDs
+  - ACHIEVED: Both URL formats work simultaneously (/profile/68 and /it/lamanzana-da-santo-domingo-repubblica-dominicana)
+  - STATUS: Platform ready for deployment with authentication system fully functional
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
