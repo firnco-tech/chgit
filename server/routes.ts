@@ -6,7 +6,7 @@ import { nanoid } from "nanoid";
 import { gcsUpload } from "./s3-config";
 import Stripe from "stripe";
 import { storage } from "./storage";
-import { requireAuth, requireAdminAuth, hashPassword, verifyPassword, createUserSession } from "./auth";
+import { requireAuth, requireAdminAuth, optionalAuth, hashPassword, verifyPassword, createUserSession } from "./auth";
 import { 
   requireSuperAdminAuth, 
   handleSuperAdminLogin, 
@@ -846,13 +846,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Get current user
-  app.get("/api/auth/user", requireAuth, async (req, res) => {
+  // Get current user (optional authentication - returns null if not authenticated)
+  app.get("/api/auth/user", optionalAuth, async (req, res) => {
+    if (!req.user) {
+      return res.json(null); // Return null instead of 401 error
+    }
+    
     res.json({
-      id: req.user!.id,
-      email: req.user!.email,
-      username: req.user!.username,
-      role: req.user!.role,
+      id: req.user.id,
+      email: req.user.email,
+      username: req.user.username,
+      role: req.user.role,
     });
   });
   
