@@ -131,6 +131,7 @@ export interface IStorage {
     offset?: number;
   }): Promise<Profile[]>;
   getProfileCountByStatus(): Promise<{ approved: number; pending: number; total: number }>;
+  getTotalProfilesCount(filters?: { approved?: boolean }): Promise<number>;
   
   // Admin order management
   getOrdersForAdmin(filters?: {
@@ -633,6 +634,17 @@ export class DatabaseStorage implements IStorage {
       pending: pendingCount.count,
       total: totalCount.count
     };
+  }
+
+  async getTotalProfilesCount(filters?: { approved?: boolean }): Promise<number> {
+    let query = db.select({ count: sql<number>`count(*)` }).from(profiles);
+    
+    if (filters?.approved !== undefined) {
+      query = query.where(eq(profiles.isApproved, filters.approved));
+    }
+    
+    const [result] = await query;
+    return result.count;
   }
 
   // Admin order management

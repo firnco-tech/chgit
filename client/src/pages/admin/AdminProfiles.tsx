@@ -76,7 +76,7 @@ export default function AdminProfiles() {
   }
 
   // Fetch profiles with pagination
-  const { data: profiles = [], isLoading, error } = useQuery<Profile[]>({
+  const { data = { profiles: [], totalCount: 0 }, isLoading, error } = useQuery<{ profiles: Profile[], totalCount: number }>({
     queryKey: ['/api/admin/profiles', statusFilter, currentPage, itemsPerPage],
     queryFn: async () => {
       const response = await fetch(`/api/admin/profiles?${queryParams}`);
@@ -89,7 +89,7 @@ export default function AdminProfiles() {
   });
 
   // Filter profiles by search query on frontend
-  const filteredProfiles = profiles.filter(profile => {
+  const filteredProfiles = data.profiles.filter(profile => {
     if (!searchQuery) return true;
     const searchLower = searchQuery.toLowerCase();
     return (
@@ -112,8 +112,8 @@ export default function AdminProfiles() {
     setCurrentPage(page);
   };
 
-  const totalPages = Math.ceil(profiles.length / itemsPerPage);
-  const showPagination = profiles.length > 0 && totalPages > 1;
+  const totalPages = Math.ceil(data.totalCount / itemsPerPage);
+  const showPagination = data.totalCount > 0 && totalPages > 1;
 
   return (
     <div className="min-h-screen bg-gray-50">

@@ -633,7 +633,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     auditLog('view_admin_profiles', 'profile'), 
     async (req, res) => {
     try {
-      const { status, limit = 100, offset = 0, search } = req.query;
+      const { status, limit = 50, offset = 0, search } = req.query;
       const approved = status === 'approved' ? true : status === 'pending' ? false : undefined;
       
       console.log('🔍 ADMIN PROFILES API - Query parameters:', { status, approved, limit, offset, search });
@@ -642,18 +642,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (search && search.toString().trim()) {
         const profiles = await storage.searchAllProfiles(search.toString().trim());
         console.log('🔍 ADMIN PROFILES API - Search returned:', profiles.length, 'profiles for query:', search);
-        return res.json(profiles);
+        return res.json({ profiles, totalCount: profiles.length });
       }
       
+      // Get profiles and total count
       const profiles = await storage.getProfilesForAdmin({
         approved,
         limit: parseInt(limit as string),
         offset: parseInt(offset as string)
       });
       
-      console.log('🔍 ADMIN PROFILES API - Profiles returned:', profiles.length);
+      const totalCount = await storage.getTotalProfilesCount({ approved });
       
-      res.json(profiles);
+      console.log('🔍 ADMIN PROFILES API - Profiles returned:', profiles.length, 'Total count:', totalCount);
+      
+      res.json({ profiles, totalCount });
     } catch (error: any) {
       console.error('🔍 ADMIN PROFILES API - Error:', error);
       res.status(500).json({ message: "Error fetching admin profiles: " + error.message });
