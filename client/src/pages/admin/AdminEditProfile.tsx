@@ -76,6 +76,7 @@ export default function AdminEditProfile() {
 
   // Form state
   const [formData, setFormData] = useState<Partial<Profile>>({});
+  const [isUploading, setIsUploading] = useState(false);
 
   // Fetch profile data
   const { data: profile, isLoading } = useQuery<Profile>({
@@ -636,32 +637,71 @@ export default function AdminEditProfile() {
                       type="button" 
                       className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
                       onClick={() => document.getElementById('unified-media-upload')?.click()}
+                      disabled={isUploading}
                     >
-                      Choose Files
+                      {isUploading ? 'Uploading...' : 'Choose Files'}
                     </Button>
                     <input
                       type="file"
                       accept="image/*,video/*"
                       multiple
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const files = Array.from(e.target.files || []);
-                        const photoFiles = files.filter(file => file.type.startsWith('image/'));
-                        const videoFiles = files.filter(file => file.type.startsWith('video/'));
+                        if (files.length === 0) return;
                         
-                        if (photoFiles.length > 0) {
-                          const photoNames = photoFiles.map(file => file.name);
-                          const currentPhotos = formData.photos || [];
-                          const newPhotos = [...currentPhotos, ...photoNames];
-                          handleInputChange('photos', newPhotos);
-                          if (!formData.primaryPhoto && photoNames.length > 0) {
-                            handleInputChange('primaryPhoto', photoNames[0]);
+                        setIsUploading(true);
+                        
+                        try {
+                          // Create FormData for file upload
+                          const uploadFormData = new FormData();
+                          files.forEach(file => {
+                            uploadFormData.append('files', file);
+                          });
+                          
+                          // Upload files to server
+                          const response = await fetch('/api/upload', {
+                            method: 'POST',
+                            body: uploadFormData,
+                          });
+                          
+                          if (!response.ok) {
+                            throw new Error('Upload failed');
                           }
-                        }
-                        
-                        if (videoFiles.length > 0) {
-                          const videoNames = videoFiles.map(file => file.name);
+                          
+                          const uploadResult = await response.json();
+                          console.log('🔍 Upload result:', uploadResult);
+                          
+                          // Process uploaded files
+                          const currentPhotos = formData.photos || [];
                           const currentVideos = formData.videos || [];
-                          handleInputChange('videos', [...currentVideos, ...videoNames]);
+                          const newPhotos = [...currentPhotos];
+                          const newVideos = [...currentVideos];
+                          
+                          uploadResult.files.forEach((file: any) => {
+                            if (file.mimetype.startsWith('image/')) {
+                              newPhotos.push(file.url);
+                            } else if (file.mimetype.startsWith('video/')) {
+                              newVideos.push(file.url);
+                            }
+                          });
+                          
+                          // Update form data
+                          handleInputChange('photos', newPhotos);
+                          handleInputChange('videos', newVideos);
+                          
+                          // Set primary photo if none exists
+                          if (!formData.primaryPhoto && newPhotos.length > currentPhotos.length) {
+                            handleInputChange('primaryPhoto', newPhotos[currentPhotos.length]);
+                          }
+                          
+                          // Clear file input
+                          e.target.value = '';
+                          
+                        } catch (error) {
+                          console.error('Upload error:', error);
+                          alert('Upload failed. Please try again.');
+                        } finally {
+                          setIsUploading(false);
                         }
                       }}
                       className="hidden"
