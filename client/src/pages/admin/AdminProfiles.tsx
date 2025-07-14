@@ -33,8 +33,14 @@ import {
 import { Profile } from "@shared/schema";
 
 function getProfileStatus(profile: Profile): 'PENDING' | 'ACTIVE' | 'INACTIVE' {
+  // Use the new status field if available, otherwise fall back to old logic
+  if (profile.status) {
+    return profile.status as 'PENDING' | 'ACTIVE' | 'INACTIVE';
+  }
+  
+  // Fallback to old logic for backward compatibility
   if (!profile.isApproved) return 'PENDING';
-  return profile.isApproved ? 'ACTIVE' : 'INACTIVE';
+  return 'ACTIVE'; // All approved profiles are ACTIVE by default
 }
 
 function getStatusBadgeClass(status: 'PENDING' | 'ACTIVE' | 'INACTIVE'): string {
