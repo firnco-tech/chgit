@@ -33,7 +33,7 @@ import NotFound from "@/pages/not-found";
 // Admin Panel Components - Isolated from main site
 import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
-import AdminEditProfile from "@/pages/admin/AdminEditProfile";
+import AdminEditProfile from "@/pages/admin/AdminEditProfile_FIXED";
 import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminManagement from "@/pages/admin/AdminManagement";
 import AdminProfiles from "@/pages/admin/AdminProfiles";
