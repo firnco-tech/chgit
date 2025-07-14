@@ -619,12 +619,80 @@ export default function AdminEditProfile() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label className="text-base font-medium">Current Photos</Label>
-                {/* DEBUG: Add debugging for photos rendering */}
-                {console.log('🔍 ADMIN PANEL DEBUG - Rendering photos:', formData.photos, 'Length:', formData.photos?.length)}
-                {formData.photos && formData.photos.length > 0 ? (
+            <CardContent className="space-y-6">
+              
+              {/* UNIFIED UPLOAD AREA - MATCHES LIVE SITE */}
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50">
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                    <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Upload Photos & Videos</h3>
+                    <p className="text-gray-600 mb-4">Drag and drop your media files here, or click to browse</p>
+                    <Button 
+                      type="button" 
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
+                      onClick={() => document.getElementById('unified-media-upload')?.click()}
+                    >
+                      Choose Files
+                    </Button>
+                    <input
+                      type="file"
+                      accept="image/*,video/*"
+                      multiple
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files || []);
+                        const photoFiles = files.filter(file => file.type.startsWith('image/'));
+                        const videoFiles = files.filter(file => file.type.startsWith('video/'));
+                        
+                        if (photoFiles.length > 0) {
+                          const photoNames = photoFiles.map(file => file.name);
+                          const currentPhotos = formData.photos || [];
+                          const newPhotos = [...currentPhotos, ...photoNames];
+                          handleInputChange('photos', newPhotos);
+                          if (!formData.primaryPhoto && photoNames.length > 0) {
+                            handleInputChange('primaryPhoto', photoNames[0]);
+                          }
+                        }
+                        
+                        if (videoFiles.length > 0) {
+                          const videoNames = videoFiles.map(file => file.name);
+                          const currentVideos = formData.videos || [];
+                          handleInputChange('videos', [...currentVideos, ...videoNames]);
+                        }
+                      }}
+                      className="hidden"
+                      id="unified-media-upload"
+                    />
+                  </div>
+                </div>
+                
+                {/* MEDIA GUIDELINES - MATCHES LIVE SITE */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
+                  <h4 className="font-medium text-blue-900 mb-2">Media Guidelines:</h4>
+                  <ul className="text-sm text-blue-800 space-y-1 text-left">
+                    <li>• Upload up to 10 photos and videos (any mix)</li>
+                    <li>• Accepted formats: JPG, PNG, MP4, MOV, AVI</li>
+                    <li>• Maximum file size: 10MB per file</li>
+                    <li>• Videos should be under 2 minutes for best performance</li>
+                    <li>• 3 slots remaining</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* PHOTOS SECTION */}
+              {formData.photos && formData.photos.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                    </svg>
+                    Photos ({formData.photos.length})
+                  </h3>
+                  
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {formData.photos.map((photo, index) => (
                       <div key={index} className="space-y-2">
@@ -639,21 +707,10 @@ export default function AdminEditProfile() {
                             className={`w-full h-40 object-cover ${
                               formData.inactivePhotos?.includes(photo) ? 'grayscale' : ''
                             }`}
-                            onError={(e) => {
-                              const target = e.currentTarget;
-                              target.src = `data:image/svg+xml;base64,${btoa(`
-                                <svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150">
-                                  <rect width="200" height="150" fill="#f3f4f6"/>
-                                  <circle cx="100" cy="60" r="20" fill="#d1d5db"/>
-                                  <path d="M70 90 L130 90 L120 110 L80 110 Z" fill="#d1d5db"/>
-                                  <text x="100" y="130" text-anchor="middle" font-family="Arial" font-size="12" fill="#6b7280">Image Preview</text>
-                                </svg>
-                              `)}`;
-                            }}
                             loading="lazy"
                           />
                           
-                          {/* Primary Photo Badge - Only visual indicator */}
+                          {/* Primary Photo Badge */}
                           {formData.primaryPhoto === photo && (
                             <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-semibold shadow-md">
                               ⭐ Primary
@@ -661,9 +718,8 @@ export default function AdminEditProfile() {
                           )}
                         </div>
                         
-                        {/* Photo Controls Below Image */}
+                        {/* Photo Controls */}
                         <div className="space-y-2">
-                          {/* File Name */}
                           <p className="text-xs text-gray-600 truncate" title={photo}>{photo}</p>
                           
                           {/* Primary Selection */}
@@ -673,10 +729,8 @@ export default function AdminEditProfile() {
                               onCheckedChange={(checked) => {
                                 if (checked) {
                                   handleInputChange('primaryPhoto', photo);
-                                  // Auto-save primary photo change
                                   setTimeout(() => {
-                                    const saveData = { primaryPhoto: photo };
-                                    updateMutation.mutate(saveData);
+                                    updateMutation.mutate({ primaryPhoto: photo });
                                   }, 100);
                                 }
                               }}
@@ -692,22 +746,16 @@ export default function AdminEditProfile() {
                               onCheckedChange={(checked) => {
                                 const inactivePhotos = formData.inactivePhotos || [];
                                 if (checked) {
-                                  // Remove from inactive list (make active)
                                   const newInactive = inactivePhotos.filter(p => p !== photo);
                                   handleInputChange('inactivePhotos', newInactive);
-                                  // Auto-save inactive status change
                                   setTimeout(() => {
-                                    const saveData = { inactivePhotos: newInactive };
-                                    updateMutation.mutate(saveData);
+                                    updateMutation.mutate({ inactivePhotos: newInactive });
                                   }, 100);
                                 } else {
-                                  // Add to inactive list
                                   const newInactive = [...inactivePhotos, photo];
                                   handleInputChange('inactivePhotos', newInactive);
-                                  // Auto-save inactive status change
                                   setTimeout(() => {
-                                    const saveData = { inactivePhotos: newInactive };
-                                    updateMutation.mutate(saveData);
+                                    updateMutation.mutate({ inactivePhotos: newInactive });
                                   }, 100);
                                 }
                               }}
@@ -718,7 +766,7 @@ export default function AdminEditProfile() {
                             </Label>
                           </div>
                           
-                          {/* Remove Button - Much Smaller */}
+                          {/* Remove Button */}
                           <Button
                             type="button"
                             variant="outline"
@@ -738,42 +786,18 @@ export default function AdminEditProfile() {
                       </div>
                     ))}
                   </div>
-                ) : (
-                  <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
-                    <p className="text-gray-500 text-sm">No photos uploaded</p>
-                  </div>
-                )}
-                
-                <div className="mt-4">
-                  <Label className="text-sm font-medium">Add New Photos</Label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center mt-2">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={(e) => {
-                        const files = Array.from(e.target.files || []);
-                        const fileNames = files.map(file => file.name);
-                        const currentPhotos = formData.photos || [];
-                        const newPhotos = [...currentPhotos, ...fileNames];
-                        handleInputChange('photos', newPhotos);
-                        if (!formData.primaryPhoto && fileNames.length > 0) {
-                          handleInputChange('primaryPhoto', fileNames[0]);
-                        }
-                      }}
-                      className="hidden"
-                      id="admin-photo-upload"
-                    />
-                    <label htmlFor="admin-photo-upload" className="cursor-pointer">
-                      <div className="text-sm text-gray-600">Click to upload photos</div>
-                    </label>
-                  </div>
                 </div>
-              </div>
+              )}
 
-              <div>
-                <Label className="text-base font-medium">Current Videos</Label>
-                {formData.videos && formData.videos.length > 0 ? (
+              {/* VIDEOS SECTION */}
+              {formData.videos && formData.videos.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" clipRule="evenodd" />
+                    </svg>
+                    Videos ({formData.videos.length})
+                  </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {formData.videos.map((video, index) => (
                       <div key={index} className="space-y-2">
@@ -786,40 +810,13 @@ export default function AdminEditProfile() {
                             src={getMediaUrl(video, 'video')}
                             className="w-full h-48 object-cover"
                             controls
+                            muted
                             preload="metadata"
-                            poster={`data:image/svg+xml;base64,${btoa(`
-                              <svg xmlns="http://www.w3.org/2000/svg" width="320" height="240" viewBox="0 0 320 240">
-                                <rect width="320" height="240" fill="#1f2937"/>
-                                <circle cx="160" cy="120" r="30" fill="#374151" stroke="#9ca3af" stroke-width="2"/>
-                                <polygon points="150,105 150,135 175,120" fill="#9ca3af"/>
-                                <text x="160" y="180" text-anchor="middle" font-family="Arial" font-size="14" fill="#9ca3af">Video Preview</text>
-                              </svg>
-                            `)}`}
-                            onError={(e) => {
-                              const target = e.currentTarget;
-                              target.style.display = 'none';
-                              const fallback = target.nextElementSibling as HTMLElement;
-                              if (fallback) fallback.style.display = 'flex';
-                            }}
                           />
-                          
-                          {/* Fallback for failed videos */}
-                          <div className="w-full h-48 rounded-lg border-2 border-gray-200 bg-gray-800 flex flex-col items-center justify-center text-white" style={{display: 'none'}}>
-                            <div className="text-center space-y-2">
-                              <div className="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center">
-                                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                                </svg>
-                              </div>
-                              <div className="text-sm font-medium">Video Preview</div>
-                              <div className="text-xs text-gray-400 px-2 break-all">{video}</div>
-                            </div>
-                          </div>
                         </div>
                         
-                        {/* Video Controls Below Video */}
+                        {/* Video Controls */}
                         <div className="space-y-2">
-                          {/* File Name */}
                           <p className="text-xs text-gray-600 truncate" title={video}>{video}</p>
                           
                           {/* Active/Inactive Toggle */}
@@ -829,22 +826,16 @@ export default function AdminEditProfile() {
                               onCheckedChange={(checked) => {
                                 const inactiveVideos = formData.inactiveVideos || [];
                                 if (checked) {
-                                  // Remove from inactive list (make active)
                                   const newInactive = inactiveVideos.filter(v => v !== video);
                                   handleInputChange('inactiveVideos', newInactive);
-                                  // Auto-save inactive status change
                                   setTimeout(() => {
-                                    const saveData = { inactiveVideos: newInactive };
-                                    updateMutation.mutate(saveData);
+                                    updateMutation.mutate({ inactiveVideos: newInactive });
                                   }, 100);
                                 } else {
-                                  // Add to inactive list
                                   const newInactive = [...inactiveVideos, video];
                                   handleInputChange('inactiveVideos', newInactive);
-                                  // Auto-save inactive status change
                                   setTimeout(() => {
-                                    const saveData = { inactiveVideos: newInactive };
-                                    updateMutation.mutate(saveData);
+                                    updateMutation.mutate({ inactiveVideos: newInactive });
                                   }, 100);
                                 }
                               }}
@@ -855,7 +846,7 @@ export default function AdminEditProfile() {
                             </Label>
                           </div>
                           
-                          {/* Remove Button - Much Smaller */}
+                          {/* Remove Button */}
                           <Button
                             type="button"
                             variant="outline"
@@ -872,38 +863,8 @@ export default function AdminEditProfile() {
                       </div>
                     ))}
                   </div>
-                ) : (
-                  <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
-                    <div className="flex flex-col items-center space-y-2">
-                      <svg className="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                      </svg>
-                      <p className="text-gray-500 text-sm">No videos uploaded</p>
-                    </div>
-                  </div>
-                )}
-                
-                <div className="mt-4">
-                  <Label className="text-sm font-medium">Add New Videos</Label>
-                  <div className="border-2 border-dashed border-purple-300 rounded-lg p-4 text-center mt-2">
-                    <input
-                      type="file"
-                      accept="video/*"
-                      onChange={(e) => {
-                        const files = Array.from(e.target.files || []);
-                        const fileNames = files.map(file => file.name);
-                        const currentVideos = formData.videos || [];
-                        handleInputChange('videos', [...currentVideos, ...fileNames]);
-                      }}
-                      className="hidden"
-                      id="admin-video-upload"
-                    />
-                    <label htmlFor="admin-video-upload" className="cursor-pointer">
-                      <div className="text-sm text-gray-600">Click to upload videos</div>
-                    </label>
-                  </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
@@ -918,18 +879,18 @@ export default function AdminEditProfile() {
                   <Label htmlFor="contactWhatsapp">WhatsApp</Label>
                   <Input
                     id="contactWhatsapp"
-                    value={(formData.contactMethods as any)?.whatsapp || ''}
-                    onChange={(e) => handleContactMethodChange('whatsapp', e.target.value)}
-                    placeholder="WhatsApp number"
+                    value={formData.contactWhatsapp || ''}
+                    onChange={(e) => handleInputChange('contactWhatsapp', e.target.value)}
+                    placeholder="e.g., +1 (555) 123-4567"
                   />
                 </div>
                 <div>
                   <Label htmlFor="contactInstagram">Instagram</Label>
                   <Input
                     id="contactInstagram"
-                    value={(formData.contactMethods as any)?.instagram || ''}
-                    onChange={(e) => handleContactMethodChange('instagram', e.target.value)}
-                    placeholder="Instagram handle"
+                    value={formData.contactInstagram || ''}
+                    onChange={(e) => handleInputChange('contactInstagram', e.target.value)}
+                    placeholder="e.g., @username"
                   />
                 </div>
                 <div>
@@ -937,146 +898,85 @@ export default function AdminEditProfile() {
                   <Input
                     id="contactEmail"
                     type="email"
-                    value={(formData.contactMethods as any)?.email || ''}
-                    onChange={(e) => handleContactMethodChange('email', e.target.value)}
-                    placeholder="Email address"
+                    value={formData.contactEmail || ''}
+                    onChange={(e) => handleInputChange('contactEmail', e.target.value)}
+                    placeholder="e.g., contact@example.com"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="contactPhone">Phone</Label>
+                  <Input
+                    id="contactPhone"
+                    value={formData.contactPhone || ''}
+                    onChange={(e) => handleInputChange('contactPhone', e.target.value)}
+                    placeholder="e.g., +1 (555) 123-4567"
                   />
                 </div>
                 <div>
                   <Label htmlFor="contactTelegram">Telegram</Label>
                   <Input
                     id="contactTelegram"
-                    value={(formData.contactMethods as any)?.telegram || ''}
-                    onChange={(e) => handleContactMethodChange('telegram', e.target.value)}
-                    placeholder="Telegram username"
+                    value={formData.contactTelegram || ''}
+                    onChange={(e) => handleInputChange('contactTelegram', e.target.value)}
+                    placeholder="e.g., @telegram_username"
                   />
                 </div>
                 <div>
                   <Label htmlFor="contactFacebook">Facebook</Label>
                   <Input
                     id="contactFacebook"
-                    value={(formData.contactMethods as any)?.facebook || ''}
-                    onChange={(e) => handleContactMethodChange('facebook', e.target.value)}
-                    placeholder="Facebook profile"
+                    value={formData.contactFacebook || ''}
+                    onChange={(e) => handleInputChange('contactFacebook', e.target.value)}
+                    placeholder="e.g., facebook.com/username"
                   />
                 </div>
                 <div>
                   <Label htmlFor="contactTiktok">TikTok</Label>
                   <Input
                     id="contactTiktok"
-                    value={(formData.contactMethods as any)?.tiktok || ''}
-                    onChange={(e) => handleContactMethodChange('tiktok', e.target.value)}
-                    placeholder="TikTok handle"
+                    value={formData.contactTiktok || ''}
+                    onChange={(e) => handleInputChange('contactTiktok', e.target.value)}
+                    placeholder="e.g., @tiktok_username"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="price">Contact Information Price ($)</Label>
+                  <Input
+                    id="price"
+                    type="number"
+                    value={formData.price || ''}
+                    onChange={(e) => handleInputChange('price', parseFloat(e.target.value))}
+                    placeholder="e.g., 29.99"
                   />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Pricing */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Pricing</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="price">Contact Information Price ($)</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  step="0.01"
-                  value={formData.price || ''}
-                  onChange={(e) => handleInputChange('price', parseFloat(e.target.value))}
-                  placeholder="Price for contact information access"
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Status Settings */}
+          {/* Profile Status */}
           <Card>
             <CardHeader>
               <CardTitle>Profile Status</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="status">Profile Status</Label>
-                  <Select 
-                    value={formData.status || 'PENDING'} 
-                    onValueChange={(value) => {
-                      handleInputChange('status', value);
-                      // Update isApproved for backward compatibility
-                      handleInputChange('isApproved', value === 'ACTIVE');
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="PENDING">PENDING</SelectItem>
-                      <SelectItem value="ACTIVE">ACTIVE</SelectItem>
-                      <SelectItem value="INACTIVE">INACTIVE</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="isFeatured"
-                    checked={formData.isFeatured || false}
-                    onCheckedChange={(checked) => handleInputChange('isFeatured', checked)}
-                  />
-                  <Label htmlFor="isFeatured">Featured</Label>
-                </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  checked={formData.isApproved || false}
+                  onCheckedChange={(checked) => handleInputChange('isApproved', checked)}
+                />
+                <Label>Profile is approved and visible to users</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  checked={formData.isFeatured || false}
+                  onCheckedChange={(checked) => handleInputChange('isFeatured', checked)}
+                />
+                <Label>Feature this profile (premium visibility)</Label>
               </div>
             </CardContent>
           </Card>
 
-          {/* Quick Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-3">
-                <Button 
-                  type="button"
-                  variant={formData.isApproved ? "default" : "outline"}
-                  onClick={() => {
-                    handleInputChange('isApproved', !formData.isApproved);
-                    // Auto-save after approval change
-                    setTimeout(() => {
-                      const quickSaveData = { isApproved: !formData.isApproved };
-                      updateMutation.mutate(quickSaveData);
-                    }, 100);
-                  }}
-                  disabled={updateMutation.isPending}
-                  className={formData.isApproved ? "bg-green-600 hover:bg-green-700" : ""}
-                >
-                  {formData.isApproved ? 'Approved ✓' : 'Approve Profile'}
-                </Button>
-                
-                <Button 
-                  type="button"
-                  variant={formData.isFeatured ? "default" : "outline"}
-                  onClick={() => {
-                    handleInputChange('isFeatured', !formData.isFeatured);
-                    // Auto-save after featured change
-                    setTimeout(() => {
-                      const quickSaveData = { isFeatured: !formData.isFeatured };
-                      updateMutation.mutate(quickSaveData);
-                    }, 100);
-                  }}
-                  disabled={updateMutation.isPending}
-                  className={formData.isFeatured ? "bg-blue-600 hover:bg-blue-700" : ""}
-                >
-                  {formData.isFeatured ? 'Featured ⭐' : 'Make Featured'}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Form Actions */}
+          {/* Save Button */}
           <div className="flex justify-end space-x-4">
             <Button type="button" variant="outline" onClick={handleBack}>
               <X className="h-4 w-4 mr-2" />
