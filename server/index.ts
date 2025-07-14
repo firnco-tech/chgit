@@ -46,6 +46,14 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
+console.log(`[SERVER START] App initialized. Incoming request check...`);
+
+// Enhanced request logging middleware - FIRST middleware to catch all requests
+app.use((req, res, next) => {
+  console.log(`[REQUEST] Method: ${req.method}, URL: ${req.originalUrl}, Host: ${req.get('host')}, Protocol: ${req.protocol}, X-Forwarded-Proto: ${req.get('x-forwarded-proto')}`);
+  next();
+});
+
 // Trust proxy for cookie handling in development/production environments
 app.set('trust proxy', 1);
 
