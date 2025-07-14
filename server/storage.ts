@@ -242,7 +242,44 @@ export class DatabaseStorage implements IStorage {
 
   async getProfile(id: number): Promise<Profile | undefined> {
     const [profile] = await db.select().from(profiles).where(eq(profiles.id, id));
-    return profile || undefined;
+    
+    if (!profile) {
+      return undefined;
+    }
+    
+    // DEBUG: Log raw profile data from database to identify array parsing issue
+    console.log('🔍 STORAGE DEBUG - Raw profile data from DB:', {
+      id: profile.id,
+      firstName: profile.firstName,
+      photos: profile.photos,
+      videos: profile.videos,
+      photosType: typeof profile.photos,
+      videosType: typeof profile.videos,
+      photosLength: profile.photos?.length,
+      videosLength: profile.videos?.length
+    });
+    
+    // Ensure photos and videos are proper arrays (PostgreSQL array handling)
+    const processedProfile = {
+      ...profile,
+      photos: Array.isArray(profile.photos) ? profile.photos : (profile.photos ? [profile.photos] : []),
+      videos: Array.isArray(profile.videos) ? profile.videos : (profile.videos ? [profile.videos] : []),
+      inactivePhotos: Array.isArray(profile.inactivePhotos) ? profile.inactivePhotos : (profile.inactivePhotos ? [profile.inactivePhotos] : []),
+      inactiveVideos: Array.isArray(profile.inactiveVideos) ? profile.inactiveVideos : (profile.inactiveVideos ? [profile.inactiveVideos] : [])
+    };
+    
+    console.log('🔍 STORAGE DEBUG - Processed profile data:', {
+      id: processedProfile.id,
+      firstName: processedProfile.firstName,
+      photos: processedProfile.photos,
+      videos: processedProfile.videos,
+      photosType: typeof processedProfile.photos,
+      videosType: typeof processedProfile.videos,
+      photosLength: processedProfile.photos?.length,
+      videosLength: processedProfile.videos?.length
+    });
+    
+    return processedProfile;
   }
 
   async getProfileBySlug(slug: string, language: string): Promise<Profile | undefined> {

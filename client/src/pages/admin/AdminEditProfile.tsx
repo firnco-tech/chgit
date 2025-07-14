@@ -86,6 +86,13 @@ export default function AdminEditProfile() {
   // Update form data when profile loads
   useEffect(() => {
     if (profile) {
+      // DEBUG: Log the profile data to identify media loading issue
+      console.log('🔍 ADMIN PANEL DEBUG - Profile data loaded:', profile);
+      console.log('🔍 ADMIN PANEL DEBUG - Photos array:', profile.photos);
+      console.log('🔍 ADMIN PANEL DEBUG - Videos array:', profile.videos);
+      console.log('🔍 ADMIN PANEL DEBUG - Photos type:', typeof profile.photos);
+      console.log('🔍 ADMIN PANEL DEBUG - Videos type:', typeof profile.videos);
+      
       setFormData(profile);
     }
   }, [profile]);
@@ -603,6 +610,8 @@ export default function AdminEditProfile() {
             <CardContent className="space-y-4">
               <div>
                 <Label className="text-base font-medium">Current Photos</Label>
+                {/* DEBUG: Add debugging for photos rendering */}
+                {console.log('🔍 ADMIN PANEL DEBUG - Rendering photos:', formData.photos, 'Length:', formData.photos?.length)}
                 {formData.photos && formData.photos.length > 0 ? (
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {formData.photos.map((photo, index) => (
