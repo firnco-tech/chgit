@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import { ProfileCard } from "@/components/profile-card";
 import { FavoriteHeart } from "@/components/FavoriteHeart";
-import { Loader2, Search } from "lucide-react";
+import { Loader2, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Profile } from "@shared/schema";
 import SEO, { structuredDataSchemas } from "@/components/SEO";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -15,6 +15,25 @@ export default function Browse() {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [locationFilter, setLocationFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  
+  // Responsive items per page: 20 desktop, 12 mobile
+  const [itemsPerPage, setItemsPerPage] = useState(20);
+  
+  useEffect(() => {
+    const updateItemsPerPage = () => {
+      setItemsPerPage(window.innerWidth >= 1024 ? 20 : 12);
+    };
+    
+    updateItemsPerPage();
+    window.addEventListener('resize', updateItemsPerPage);
+    return () => window.removeEventListener('resize', updateItemsPerPage);
+  }, []);
+  
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, locationFilter]);
 
   const { data: profiles, isLoading } = useQuery<Profile[]>({
     queryKey: ['/api/profiles', { search: searchQuery, location: locationFilter }],
@@ -30,6 +49,17 @@ export default function Browse() {
   });
 
   const filteredProfiles = profiles ? [...profiles] : [];
+  
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredProfiles.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedProfiles = filteredProfiles.slice(startIndex, endIndex);
+  
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -145,6 +175,11 @@ export default function Browse() {
           <span className="text-gray-600">
             {filteredProfiles.length} profiles found
           </span>
+          {totalPages > 1 && (
+            <span className="text-sm text-gray-500">
+              Page {currentPage} of {totalPages}
+            </span>
+          )}
         </div>
         
         {/* Profile Grid */}
@@ -157,11 +192,53 @@ export default function Browse() {
             <p className="text-gray-500">No profiles found matching your criteria.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredProfiles.map((profile) => (
-              <ProfileCard key={profile.id} profile={profile} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {paginatedProfiles.map((profile) => (
+                <ProfileCard key={profile.id} profile={profile} />
+              ))}
+            </div>
+            
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-2 mt-8">
+                <Button
+                  variant="outline"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  size="sm"
+                >
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  Previous
+                </Button>
+                
+                {/* Page Numbers */}
+                <div className="flex gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? "default" : "outline"}
+                      onClick={() => handlePageChange(page)}
+                      size="sm"
+                      className="min-w-[40px]"
+                    >
+                      {page}
+                    </Button>
+                  ))}
+                </div>
+                
+                <Button
+                  variant="outline"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  size="sm"
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
