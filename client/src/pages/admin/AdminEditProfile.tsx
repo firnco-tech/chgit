@@ -438,6 +438,7 @@ export default function AdminEditProfile() {
                       <SelectItem value="Divorced">Divorced</SelectItem>
                       <SelectItem value="Widowed">Widowed</SelectItem>
                       <SelectItem value="Separated">Separated</SelectItem>
+                      <SelectItem value="It's complicated">It's complicated</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -466,7 +467,8 @@ export default function AdminEditProfile() {
                       <SelectItem value="Athletic">Athletic</SelectItem>
                       <SelectItem value="Average">Average</SelectItem>
                       <SelectItem value="Curvy">Curvy</SelectItem>
-                      <SelectItem value="Plus Size">Plus Size</SelectItem>
+                      <SelectItem value="Full figured">Full figured</SelectItem>
+                      <SelectItem value="Muscular">Muscular</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -559,8 +561,9 @@ export default function AdminEditProfile() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Non-smoker">Non-smoker</SelectItem>
-                      <SelectItem value="Social smoker">Social smoker</SelectItem>
-                      <SelectItem value="Regular smoker">Regular smoker</SelectItem>
+                      <SelectItem value="Occasional">Occasional</SelectItem>
+                      <SelectItem value="Regular">Regular</SelectItem>
+                      <SelectItem value="Heavy">Heavy</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
