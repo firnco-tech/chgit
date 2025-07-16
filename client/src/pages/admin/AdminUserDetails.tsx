@@ -58,13 +58,19 @@ interface Order {
 }
 
 export default function AdminUserDetails() {
-  const { userId } = useParams<{ userId: string }>();
+  const params = useParams<{ userId: string }>();
+  const userId = params.userId;
+
+  console.log('🔍 ADMIN USER DETAILS - Route params:', params, 'User ID:', userId);
+  console.log('🔍 ADMIN USER DETAILS - Current URL:', window.location.href);
 
   // Query for user details
-  const { data: user, isLoading: userLoading } = useQuery<User>({
+  const { data: user, isLoading: userLoading, error: userError } = useQuery<User>({
     queryKey: [`/api/admin/users/${userId}`],
     enabled: !!userId,
   });
+
+  console.log('🔍 ADMIN USER DETAILS - Query state:', { user, userLoading, userError, userId });
 
   // Query for user favorites
   const { data: favorites = [], isLoading: favoritesLoading } = useQuery<UserFavorite[]>({
