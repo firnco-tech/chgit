@@ -486,6 +486,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User's own orders - Get current user's orders - AUTHENTICATED USER ONLY
+  app.get("/api/orders/my-orders", requireAuth, async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      
+      if (!userId || typeof userId !== 'number') {
+        return res.status(400).json({ 
+          message: "Invalid user ID - authentication required",
+          requiresLogin: true
+        });
+      }
+      
+      const orders = await storage.getUserOrdersWithItems(userId);
+      res.json(orders);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching user orders: " + error.message });
+    }
+  });
+
   // Get order details (for customers to retrieve their purchase)
   app.get("/api/orders/:id", async (req, res) => {
     try {
@@ -771,24 +790,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // User's own orders - Get current user's orders - AUTHENTICATED USER ONLY
-  app.get("/api/orders/my-orders", requireAuth, async (req, res) => {
-    try {
-      const userId = req.user!.id;
-      console.log('🔍 USER ORDERS - User ID:', userId, 'User object:', req.user);
-      
-      if (!userId || isNaN(userId)) {
-        return res.status(400).json({ message: "Invalid user ID" });
-      }
-      
-      const orders = await storage.getUserOrdersWithItems(userId);
-      res.json(orders);
-    } catch (error: any) {
-      console.error('🔍 USER ORDERS - Error:', error);
-      res.status(500).json({ message: "Error fetching user orders: " + error.message });
-    }
-  });
-
   // =============================================================================
   // FRONT-END USER AUTHENTICATION API ROUTES - STEP 1 IMPLEMENTATION
   // =============================================================================
@@ -908,6 +909,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       role: req.user.role,
     });
   });
+
+  // DEBUG: Test authentication middleware
+  app.get("/api/auth/debug", requireAuth, async (req, res) => {
+    res.json({
+      session: req.session,
+      user: req.user,
+      userId: req.user?.id,
+      userIdType: typeof req.user?.id,
+    });
+  });
   
   // =============================================================================
   // USER FAVORITES API ROUTES - REQUIRES AUTHENTICATION (STEP 1 ENFORCEMENT)
@@ -975,16 +986,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Frontend user order history - PROTECTED ROUTE  
-  app.get("/api/orders/my-orders", requireAuth, async (req, res) => {
-    try {
-      const userId = req.user!.id; // From authenticated session
-      const orders = await storage.getUserOrdersWithItems(userId);
-      res.json(orders);
-    } catch (error: any) {
-      res.status(500).json({ message: "Error fetching user orders: " + error.message });
-    }
-  });
+
 
   // =============================================================================
   // ADMIN AUTHENTICATION ROUTES - Admin panel login and authentication

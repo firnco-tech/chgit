@@ -52,10 +52,14 @@ export const createUserSession = async (userId: number): Promise<string> => {
 };
 
 export const validateSession = async (sessionId: string) => {
+  console.log('🔍 VALIDATE SESSION - Input sessionId:', sessionId);
   if (!sessionId) return null;
   
   const session = await storage.getUserSession(sessionId);
+  console.log('🔍 VALIDATE SESSION - Retrieved session from storage:', session);
+  
   if (!session || session.expiresAt < new Date()) {
+    console.log('🔍 VALIDATE SESSION - Session not found or expired');
     // Clean up expired session
     if (session) {
       await storage.deleteUserSession(sessionId);
@@ -63,18 +67,25 @@ export const validateSession = async (sessionId: string) => {
     return null;
   }
   
+  console.log('🔍 VALIDATE SESSION - Session userId:', session.userId);
   const user = await storage.getUserById(session.userId);
+  console.log('🔍 VALIDATE SESSION - Retrieved user from storage:', user);
+  
   if (!user || !user.isActive) {
+    console.log('🔍 VALIDATE SESSION - User not found or inactive');
     return null;
   }
   
-  return {
+  const result = {
     id: user.id,
     email: user.email,
     username: user.username,
     role: user.role,
     isAdmin: false, // Regular users are never admin
   };
+  
+  console.log('🔍 VALIDATE SESSION - Final result:', result);
+  return result;
 };
 
 /**
@@ -87,18 +98,25 @@ export const validateSession = async (sessionId: string) => {
  */
 export const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log('🔍 AUTH DEBUG - Full session object:', req.session);
+    console.log('🔍 AUTH DEBUG - Session ID from req.session.userId:', req.session?.userId);
+    
     const sessionId = req.session?.userId;
     
     if (!sessionId) {
+      console.log('🔍 AUTH DEBUG - No session ID found');
       return res.status(401).json({ 
         message: 'Authentication required',
         requiresLogin: true 
       });
     }
     
+    console.log('🔍 AUTH DEBUG - About to validate session:', sessionId);
     const user = await validateSession(sessionId);
+    console.log('🔍 AUTH DEBUG - Validated user result:', user);
     
     if (!user) {
+      console.log('🔍 AUTH DEBUG - No user found or session invalid');
       // Clear invalid session
       req.session.destroy((err: any) => {
         if (err) console.error('Session destroy error:', err);
@@ -112,12 +130,14 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
     
     // CRITICAL: Ensure admin users cannot use front-end features
     if (user.isAdmin || user.role === 'admin') {
+      console.log('🔍 AUTH DEBUG - Admin user blocked from front-end');
       return res.status(403).json({ 
         message: 'Admin users cannot access user features',
         error: 'ADMIN_ACCESS_DENIED'
       });
     }
     
+    console.log('🔍 AUTH DEBUG - Setting req.user to:', user);
     req.user = user;
     next();
   } catch (error) {

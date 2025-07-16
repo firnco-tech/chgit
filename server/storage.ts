@@ -771,6 +771,7 @@ export class DatabaseStorage implements IStorage {
   async getUserOrdersWithItems(userId: number): Promise<(Order & { items: (OrderItem & { profile: Profile })[] })[]> {
     // First get the user's email
     const [user] = await db.select({ email: users.email }).from(users).where(eq(users.id, userId));
+    
     if (!user) {
       return [];
     }
