@@ -655,6 +655,14 @@ RESTful API endpoints include:
   - TESTED: Complete authentication flow working correctly with proper session management
   - STATUS: All user order history and admin user details functionality now working perfectly
 
+- July 16, 2025. User Experience Enhancement: Removed Submit Profile from User Menu - COMPLETED
+  - REMOVED: "Submit Profile" option from desktop dropdown menu for logged-in users
+  - CLEANED: Removed unused FileText import from navbar component
+  - VERIFIED: Mobile menu already didn't have Submit Profile option
+  - ENHANCED: Cleaner user menu experience with only relevant options (Favorites, My Orders, Contact, Logout)
+  - MAINTAINED: Submit Profile still accessible via homepage and other navigation paths
+  - STATUS: Both desktop and mobile user menus now consistent and streamlined
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.

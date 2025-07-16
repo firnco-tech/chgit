@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingCart, Heart, User, LogOut, LogIn, Menu, ChevronDown, FileText, Mail, HelpCircle } from "lucide-react";
+import { ShoppingCart, Heart, User, LogOut, LogIn, Menu, ChevronDown, Mail, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/hooks/useAuth";
@@ -153,12 +153,6 @@ export function Navbar() {
                         My Orders
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link href={addLanguageToPath('/submit-profile', currentLanguage)} className="flex items-center gap-2 cursor-pointer">
-                          <FileText className="h-4 w-4" />
-                          <span>Submit Profile</span>
-                        </Link>
-                      </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link href={addLanguageToPath('/contact', currentLanguage)} className="flex items-center gap-2 cursor-pointer">
                           <Mail className="h-4 w-4" />
