@@ -721,6 +721,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin user favorites - Get specific user's favorites - ADMIN ONLY
+  app.get("/api/admin/users/:userId/favorites", 
+    requireAdmin, 
+    auditLog('view_user_favorites', 'user', (req) => parseInt(req.params.userId)), 
+    async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const favorites = await storage.getUserFavorites(userId);
+      res.json(favorites);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching user favorites: " + error.message });
+    }
+  });
+
+  // Admin user orders - Get specific user's order history - ADMIN ONLY
+  app.get("/api/admin/users/:userId/orders", 
+    requireAdmin, 
+    auditLog('view_user_orders', 'user', (req) => parseInt(req.params.userId)), 
+    async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const orders = await storage.getUserOrdersWithItems(userId);
+      res.json(orders);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching user orders: " + error.message });
+    }
+  });
+
   // Admin get user favorites - ADMIN ONLY
   app.get("/api/admin/user-favorites/:userId", requireAdminAuth, async (req, res) => {
     try {
@@ -926,6 +954,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ isFavorited });
     } catch (error: any) {
       res.status(500).json({ message: "Error checking favorite status: " + error.message });
+    }
+  });
+
+  // Frontend user order history - PROTECTED ROUTE  
+  app.get("/api/orders/my-orders", requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.id; // From authenticated session
+      const orders = await storage.getUserOrdersWithItems(userId);
+      res.json(orders);
+    } catch (error: any) {
+      res.status(500).json({ message: "Error fetching user orders: " + error.message });
     }
   });
 

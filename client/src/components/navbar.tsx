@@ -144,12 +144,15 @@ export function Navbar() {
                     <DropdownMenuContent align="end" className="w-56">
                       <DropdownMenuLabel>My Account</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link href={addLanguageToPath('/favorites', currentLanguage)} className="flex items-center gap-2 cursor-pointer">
-                          <Heart className="h-4 w-4" />
-                          <span>{t.favorites}</span>
-                        </Link>
+                      <DropdownMenuItem onClick={() => setLocation(addLanguageToPath('/favorites', currentLanguage))}>
+                        <Heart className="mr-2 h-4 w-4" />
+                        {t.favorites}
                       </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setLocation(addLanguageToPath('/my-orders', currentLanguage))}>
+                        <ShoppingCart className="mr-2 h-4 w-4" />
+                        My Orders
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link href={addLanguageToPath('/submit-profile', currentLanguage)} className="flex items-center gap-2 cursor-pointer">
                           <FileText className="h-4 w-4" />
@@ -243,6 +246,17 @@ export function Navbar() {
                               >
                                 <Heart className="h-4 w-4 mr-2" />
                                 {t.favorites}
+                              </Button>
+                            </Link>
+                            
+                            <Link href={addLanguageToPath('/my-orders', currentLanguage)}>
+                              <Button 
+                                variant="ghost" 
+                                className={`w-full justify-start ${isActive('/my-orders') ? 'bg-primary/10 text-primary' : ''}`}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                              >
+                                <ShoppingCart className="h-4 w-4 mr-2" />
+                                My Orders
                               </Button>
                             </Link>
                             

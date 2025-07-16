@@ -27,6 +27,7 @@ import Report from "@/pages/report";
 import Checkout from "@/pages/checkout";
 import CartPage from "@/pages/cart";
 import Favorites from "@/pages/favorites";
+import OrderHistory from "@/pages/OrderHistory";
 import PaymentSuccess from "@/pages/payment-success";
 import NotFound from "@/pages/not-found";
 
@@ -35,6 +36,7 @@ import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminEditProfile from "@/pages/admin/AdminEditProfile";
 import AdminUsers from "@/pages/admin/AdminUsers";
+import AdminUserDetails from "@/pages/admin/AdminUserDetails";
 import AdminManagement from "@/pages/admin/AdminManagement";
 import AdminProfiles from "@/pages/admin/AdminProfiles";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
@@ -44,6 +46,7 @@ function AdminRoutes() {
   return (
     <Switch>
       <Route path="/admin/profiles" component={AdminProfiles} />
+      <Route path="/admin/users/:userId/details" component={AdminUserDetails} />
       <Route path="/admin/users" component={AdminUsers} />
       <Route path="/admin/admins" component={AdminManagement} />
       <Route path="/admin/edit-profile/:id" component={AdminEditProfile} />
@@ -77,6 +80,7 @@ function MainSiteRouter() {
           <Route path="/:lang/checkout" component={Checkout} />
           <Route path="/:lang/cart" component={CartPage} />
           <Route path="/:lang/favorites" component={Favorites} />
+          <Route path="/:lang/my-orders" component={OrderHistory} />
           <Route path="/:lang/payment-success" component={PaymentSuccess} />
           
           {/* Profile route with cleaner SEO-friendly URLs - Must be last to avoid conflicts */}

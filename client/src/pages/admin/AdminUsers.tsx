@@ -16,6 +16,7 @@ import { User as UserType } from "@shared/schema";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
+import { Link } from "wouter";
 
 interface AdminUserView {
   id: number;
@@ -170,14 +171,15 @@ export default function AdminUsers() {
                         
                         {/* Action Buttons */}
                         <div className="flex items-center gap-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handleViewDetails(user)}
-                          >
-                            <Eye className="h-4 w-4 mr-1" />
-                            View Details
-                          </Button>
+                          <Link href={`/admin/users/${user.id}/details`}>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                            >
+                              <Eye className="h-4 w-4 mr-1" />
+                              View Details
+                            </Button>
+                          </Link>
                           <Button 
                             variant={user.isActive ? "destructive" : "default"} 
                             size="sm"
