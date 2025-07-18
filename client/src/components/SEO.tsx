@@ -107,7 +107,7 @@ export function SEO({
   customTitle,
   customDescription,
   customKeywords,
-  ogImage = 'https://holacupid.com/og-image.jpg',
+  ogImage,
   canonicalUrl,
   structuredData,
   profileData
@@ -135,10 +135,11 @@ export function SEO({
     );
   }
   
-  const currentUrl = canonicalUrl || `https://holacupid.com${window.location.pathname}`;
+  const currentUrl = canonicalUrl || `${window.location.origin}${window.location.pathname}`;
   
   // Default fallback image for Open Graph when no profile image is available
-  const defaultOgImage = 'https://holacupid.com/og-default.jpg';
+  const currentDomain = window.location.origin;
+  const defaultOgImage = `${currentDomain}/og-default.svg`;
   const finalOgImage = ogImage || defaultOgImage;
   
   // Alternative language URLs for SEO

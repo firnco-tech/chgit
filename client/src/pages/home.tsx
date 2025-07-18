@@ -27,6 +27,7 @@ export default function Home() {
     <div className="min-h-screen">
       <SEO 
         page="homepage" 
+        ogImage={`${window.location.origin}/og-default.svg`}
         structuredData={{
           ...structuredDataSchemas.website,
           ...structuredDataSchemas.organization,
