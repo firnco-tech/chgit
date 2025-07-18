@@ -60,6 +60,21 @@ export default function ProfilePage() {
     return orderedPhotos;
   };
 
+  // Get the primary photo for Open Graph image
+  const getPrimaryPhotoForOG = (profile: Profile) => {
+    if (!profile) return undefined;
+    
+    // Use primary photo if available, otherwise use first photo
+    const primaryPhoto = profile.primaryPhoto || (profile.photos && profile.photos[0]);
+    
+    // Convert to full URL for Open Graph
+    if (primaryPhoto) {
+      return getMediaUrl(primaryPhoto, 'image');
+    }
+    
+    return undefined;
+  };
+
   // Determine if the slug is actually a numeric ID (for backward compatibility)
   const isNumericId = slug && /^\d+$/.test(slug);
   const apiEndpoint = isNumericId 
@@ -114,13 +129,14 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <SEO 
-        page="browse" 
+        page="profile" 
         profileData={{
           name: profile.firstName,
           age: profile.age,
           location: profile.location,
           photos: profile.photos || undefined
         }}
+        ogImage={getPrimaryPhotoForOG(profile)}
         structuredData={{
           "@type": "Person",
           "name": profile.firstName,

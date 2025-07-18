@@ -137,6 +137,10 @@ export function SEO({
   
   const currentUrl = canonicalUrl || `https://holacupid.com${window.location.pathname}`;
   
+  // Default fallback image for Open Graph when no profile image is available
+  const defaultOgImage = 'https://holacupid.com/og-default.jpg';
+  const finalOgImage = ogImage || defaultOgImage;
+  
   // Alternative language URLs for SEO
   const alternateLanguages = ['en', 'es', 'de', 'it', 'pt', 'nl'] as SupportedLanguage[];
   const basePath = window.location.pathname.replace(/^\/[a-z]{2}\//, '/').replace(/^\/[a-z]{2}$/, '/');
@@ -173,7 +177,7 @@ export function SEO({
       <meta property="og:description" content={description} />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={currentUrl} />
-      <meta property="og:image" content={ogImage} />
+      <meta property="og:image" content={finalOgImage} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:site_name" content="HolaCupid" />
@@ -183,7 +187,7 @@ export function SEO({
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:image" content={finalOgImage} />
       <meta name="twitter:site" content="@holacupid" />
       
       {/* Additional Meta Tags */}
