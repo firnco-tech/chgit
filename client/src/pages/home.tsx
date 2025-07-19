@@ -54,18 +54,18 @@ export default function Home() {
       </section>
 
       {/* Hero Section */}
-      <section className="gradient-hero text-white py-20">
+      <section className="gradient-hero-with-bg text-white py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 hero-text-shadow">
               {t.heroTitle}
             </h1>
-            <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto hero-text-shadow">
               {t.heroSubtitle}
             </p>
             <div className="flex justify-center">
               <Link href={addLanguageToPath('/browse', currentLanguage)}>
-                <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
+                <Button size="lg" className="bg-white text-primary hover:bg-gray-100 shadow-lg">
                   {t.browseProfiles}
                 </Button>
               </Link>
