@@ -320,26 +320,26 @@ export default function SubmitProfile() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="4'10&quot;">4'10"</SelectItem>
-                            <SelectItem value="4'11&quot;">4'11"</SelectItem>
-                            <SelectItem value="5'0&quot;">5'0"</SelectItem>
-                            <SelectItem value="5'1&quot;">5'1"</SelectItem>
-                            <SelectItem value="5'2&quot;">5'2"</SelectItem>
-                            <SelectItem value="5'3&quot;">5'3"</SelectItem>
-                            <SelectItem value="5'4&quot;">5'4"</SelectItem>
-                            <SelectItem value="5'5&quot;">5'5"</SelectItem>
-                            <SelectItem value="5'6&quot;">5'6"</SelectItem>
-                            <SelectItem value="5'7&quot;">5'7"</SelectItem>
-                            <SelectItem value="5'8&quot;">5'8"</SelectItem>
-                            <SelectItem value="5'9&quot;">5'9"</SelectItem>
-                            <SelectItem value="5'10&quot;">5'10"</SelectItem>
-                            <SelectItem value="5'11&quot;">5'11"</SelectItem>
-                            <SelectItem value="6'0&quot;">6'0"</SelectItem>
-                            <SelectItem value="6'1&quot;">6'1"</SelectItem>
-                            <SelectItem value="6'2&quot;">6'2"</SelectItem>
-                            <SelectItem value="6'3&quot;">6'3"</SelectItem>
-                            <SelectItem value="6'4&quot;">6'4"</SelectItem>
-                            <SelectItem value="6'5&quot;">6'5"</SelectItem>
+                            <SelectItem value="4'10&quot;">4'10" (147 cm)</SelectItem>
+                            <SelectItem value="4'11&quot;">4'11" (150 cm)</SelectItem>
+                            <SelectItem value="5'0&quot;">5'0" (152 cm)</SelectItem>
+                            <SelectItem value="5'1&quot;">5'1" (155 cm)</SelectItem>
+                            <SelectItem value="5'2&quot;">5'2" (157 cm)</SelectItem>
+                            <SelectItem value="5'3&quot;">5'3" (160 cm)</SelectItem>
+                            <SelectItem value="5'4&quot;">5'4" (163 cm)</SelectItem>
+                            <SelectItem value="5'5&quot;">5'5" (165 cm)</SelectItem>
+                            <SelectItem value="5'6&quot;">5'6" (168 cm)</SelectItem>
+                            <SelectItem value="5'7&quot;">5'7" (170 cm)</SelectItem>
+                            <SelectItem value="5'8&quot;">5'8" (173 cm)</SelectItem>
+                            <SelectItem value="5'9&quot;">5'9" (175 cm)</SelectItem>
+                            <SelectItem value="5'10&quot;">5'10" (178 cm)</SelectItem>
+                            <SelectItem value="5'11&quot;">5'11" (180 cm)</SelectItem>
+                            <SelectItem value="6'0&quot;">6'0" (183 cm)</SelectItem>
+                            <SelectItem value="6'1&quot;">6'1" (185 cm)</SelectItem>
+                            <SelectItem value="6'2&quot;">6'2" (188 cm)</SelectItem>
+                            <SelectItem value="6'3&quot;">6'3" (191 cm)</SelectItem>
+                            <SelectItem value="6'4&quot;">6'4" (193 cm)</SelectItem>
+                            <SelectItem value="6'5&quot;">6'5" (196 cm)</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
