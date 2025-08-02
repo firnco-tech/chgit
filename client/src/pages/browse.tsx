@@ -28,22 +28,8 @@ export default function Browse() {
       const searchParams = new URLSearchParams(queryString);
       const isFeatured = searchParams.get('featured') === 'true';
       setFeaturedOnly(isFeatured);
-      
-      // DIAGNOSTIC LOGGING
-      console.log('URL Parameter Processing:', {
-        location,
-        queryString,
-        featuredParameter: searchParams.get('featured'),
-        isFeatured,
-        allParams: Object.fromEntries(searchParams)
-      });
     } else {
       setFeaturedOnly(false);
-      console.log('URL Parameter Processing:', {
-        location,
-        queryString: null,
-        featuredOnly: false
-      });
     }
   }, [location]);
   
@@ -60,15 +46,15 @@ export default function Browse() {
     return () => window.removeEventListener('resize', updateItemsPerPage);
   }, []);
   
-  // Reset to page 1 when filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, locationFilter, urlFeaturedOnly]);
-
   // Get featuredOnly directly from URL for useQuery to ensure synchronization
   const queryString = location.split('?')[1];
   const urlParams = queryString ? new URLSearchParams(queryString) : new URLSearchParams();
   const urlFeaturedOnly = urlParams.get('featured') === 'true';
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, locationFilter, urlFeaturedOnly]);
 
   const { data: profiles, isLoading } = useQuery<Profile[]>({
     queryKey: ['/api/profiles', { search: searchQuery, location: locationFilter, featured: urlFeaturedOnly }],
@@ -79,30 +65,9 @@ export default function Browse() {
       if (urlFeaturedOnly) params.append('featured', 'true');
       
       const apiUrl = `/api/profiles?${params}`;
-      
-      // DIAGNOSTIC LOGGING
-      console.log('useQuery API Call Debug:', {
-        urlFeaturedOnly,
-        featuredOnly,
-        searchQuery,
-        locationFilter,
-        queryKey: ['/api/profiles', { search: searchQuery, location: locationFilter, featured: urlFeaturedOnly }],
-        apiUrl,
-        paramsString: params.toString()
-      });
-      
       const response = await fetch(apiUrl);
       if (!response.ok) throw new Error('Failed to fetch profiles');
-      const data = await response.json();
-      
-      console.log('useQuery API Response:', {
-        profileCount: data.length,
-        firstProfile: data[0]?.firstName || 'No profiles',
-        urlFeaturedOnly,
-        featuredOnly
-      });
-      
-      return data;
+      return response.json();
     },
   });
 
