@@ -16,13 +16,21 @@ export default function Browse() {
   const { t } = useTranslation();
   const [location] = useLocation();
   
-  // Check for featured parameter
-  const searchParams = new URLSearchParams(location.split('?')[1]);
-  const featuredOnly = searchParams.get('featured') === 'true';
-  
   const [searchQuery, setSearchQuery] = useState("");
   const [locationFilter, setLocationFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [featuredOnly, setFeaturedOnly] = useState(false);
+  
+  // Check for featured parameter reactively
+  useEffect(() => {
+    const queryString = location.split('?')[1];
+    if (queryString) {
+      const searchParams = new URLSearchParams(queryString);
+      setFeaturedOnly(searchParams.get('featured') === 'true');
+    } else {
+      setFeaturedOnly(false);
+    }
+  }, [location]);
   
   // Responsive items per page: 20 desktop, 12 mobile
   const [itemsPerPage, setItemsPerPage] = useState(20);
@@ -40,7 +48,7 @@ export default function Browse() {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, locationFilter]);
+  }, [searchQuery, locationFilter, featuredOnly]);
 
   const { data: profiles, isLoading } = useQuery<Profile[]>({
     queryKey: ['/api/profiles', { search: searchQuery, location: locationFilter, featured: featuredOnly }],
