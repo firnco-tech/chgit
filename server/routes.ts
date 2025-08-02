@@ -149,7 +149,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const profiles = await storage.getProfiles({ 
         approved: true, 
-        featured: true 
+        featured: true,
+        randomize: true,
+        limit: 16
       });
       res.json(profiles);
     } catch (error: any) {

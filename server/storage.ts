@@ -72,6 +72,8 @@ export interface IStorage {
     contactMethods?: string[];
     approved?: boolean;
     featured?: boolean;
+    limit?: number;
+    randomize?: boolean;
   }): Promise<Profile[]>;
   createProfile(profile: InsertProfile): Promise<Profile>;
   updateProfile(id: number, profile: Partial<Profile>): Promise<Profile | undefined>;
@@ -313,6 +315,8 @@ export class DatabaseStorage implements IStorage {
     contactMethods?: string[];
     approved?: boolean;
     featured?: boolean;
+    limit?: number;
+    randomize?: boolean;
   }): Promise<Profile[]> {
     const conditions = [];
     
@@ -332,13 +336,25 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(profiles.location, filters.location));
     }
     
+    let query = db.select().from(profiles);
+    
     if (conditions.length > 0) {
-      return await db.select().from(profiles)
-        .where(and(...conditions))
-        .orderBy(desc(profiles.createdAt));
+      query = query.where(and(...conditions));
     }
     
-    return await db.select().from(profiles).orderBy(desc(profiles.createdAt));
+    // Apply ordering: randomize if requested, otherwise by creation date
+    if (filters?.randomize) {
+      query = query.orderBy(sql`RANDOM()`);
+    } else {
+      query = query.orderBy(desc(profiles.createdAt));
+    }
+    
+    // Apply limit if specified
+    if (filters?.limit) {
+      query = query.limit(filters.limit);
+    }
+    
+    return await query;
   }
 
   async createProfile(profile: InsertProfile): Promise<Profile> {
