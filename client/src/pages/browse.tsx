@@ -65,9 +65,27 @@ export default function Browse() {
       if (urlFeaturedOnly) params.append('featured', 'true');
       
       const apiUrl = `/api/profiles?${params}`;
+      
+      // DEBUG: Log the API call details
+      console.log('DEBUG: useQuery API call', {
+        urlFeaturedOnly,
+        searchQuery,
+        locationFilter,
+        params: params.toString(),
+        apiUrl
+      });
+      
       const response = await fetch(apiUrl);
       if (!response.ok) throw new Error('Failed to fetch profiles');
-      return response.json();
+      const data = await response.json();
+      
+      console.log('DEBUG: API response', {
+        profileCount: data.length,
+        apiUrl,
+        urlFeaturedOnly
+      });
+      
+      return data;
     },
   });
 
@@ -92,7 +110,7 @@ export default function Browse() {
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-6">
-          {featuredOnly ? t.featuredProfiles : t.browsePageTitle}
+          {urlFeaturedOnly ? t.featuredProfiles : t.browsePageTitle}
         </h2>
         
         {/* Desktop Horizontal Filters */}
