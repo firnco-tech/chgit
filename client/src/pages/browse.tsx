@@ -28,21 +28,8 @@ export default function Browse() {
       const searchParams = new URLSearchParams(queryString);
       const isFeatured = searchParams.get('featured') === 'true';
       setFeaturedOnly(isFeatured);
-      
-      // DIAGNOSTIC LOG
-      console.log('Browse Page Filter Status:', { 
-        location, 
-        queryString, 
-        featuredOnly: isFeatured, 
-        searchParamsString: searchParams.toString() 
-      });
     } else {
       setFeaturedOnly(false);
-      console.log('Browse Page Filter Status:', { 
-        location, 
-        queryString: null, 
-        featuredOnly: false 
-      });
     }
   }, [location]);
   
@@ -73,24 +60,9 @@ export default function Browse() {
       if (featuredOnly) params.append('featured', 'true');
       
       const apiUrl = `/api/profiles?${params}`;
-      // DIAGNOSTIC LOG
-      console.log('API Call Details:', { 
-        featuredOnly, 
-        apiUrl, 
-        paramsString: params.toString() 
-      });
-      
       const response = await fetch(apiUrl);
       if (!response.ok) throw new Error('Failed to fetch profiles');
-      const data = await response.json();
-      
-      // DIAGNOSTIC LOG
-      console.log('API Response:', { 
-        profileCount: data.length, 
-        firstProfile: data[0]?.firstName || 'No profiles' 
-      });
-      
-      return data;
+      return response.json();
     },
   });
 

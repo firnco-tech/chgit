@@ -90,8 +90,13 @@ export const getPathWithoutLanguage = (path: string = window.location.pathname):
 
 // Add language prefix to path
 export const addLanguageToPath = (path: string, language: SupportedLanguage): string => {
-  const cleanPath = getPathWithoutLanguage(path);
-  return `/${language}${cleanPath === '/' ? '' : cleanPath}`;
+  // Split path and query string
+  const [pathname, queryString] = path.split('?');
+  const cleanPath = getPathWithoutLanguage(pathname);
+  const finalPath = `/${language}${cleanPath === '/' ? '' : cleanPath}`;
+  
+  // Preserve query string if it exists
+  return queryString ? `${finalPath}?${queryString}` : finalPath;
 };
 
 // Persist language preference
