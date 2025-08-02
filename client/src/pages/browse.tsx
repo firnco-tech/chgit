@@ -50,6 +50,15 @@ export default function Browse() {
   const queryString = location.split('?')[1];
   const urlParams = queryString ? new URLSearchParams(queryString) : new URLSearchParams();
   const urlFeaturedOnly = urlParams.get('featured') === 'true';
+  
+  // DEBUG: Log URL parsing details
+  console.log('DEBUG: URL parsing', {
+    location,
+    queryString,
+    allUrlParams: Object.fromEntries(urlParams),
+    featuredParam: urlParams.get('featured'),
+    urlFeaturedOnly
+  });
 
   // Reset to page 1 when filters change
   useEffect(() => {
