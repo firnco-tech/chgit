@@ -47,14 +47,16 @@ export default function Browse() {
   }, []);
   
   // Get featuredOnly directly from URL for useQuery to ensure synchronization
-  const queryString = location.split('?')[1];
-  const urlParams = queryString ? new URLSearchParams(queryString) : new URLSearchParams();
+  // Use window.location.search instead of Wouter's location for query parameters
+  const browserQueryString = typeof window !== 'undefined' ? window.location.search.substring(1) : '';
+  const urlParams = browserQueryString ? new URLSearchParams(browserQueryString) : new URLSearchParams();
   const urlFeaturedOnly = urlParams.get('featured') === 'true';
   
   // DEBUG: Log URL parsing details
   console.log('DEBUG: URL parsing', {
     location,
-    queryString,
+    browserQueryString,
+    windowLocationSearch: typeof window !== 'undefined' ? window.location.search : 'N/A',
     allUrlParams: Object.fromEntries(urlParams),
     featuredParam: urlParams.get('featured'),
     urlFeaturedOnly
