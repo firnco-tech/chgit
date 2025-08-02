@@ -7,6 +7,7 @@ HolaCupid is a full-stack dating platform connecting users with Dominican women.
 - **Google Analytics 4 Integration**: GA4 tracking implemented with measurement ID G-EJ8GKBRN3G in HTML head for comprehensive user analytics
 - **Contact Page Redesign**: Streamlined to email-only contact method (admin@holacupid.com), removed contact form, updated common questions section with customer service focus (replacements, refunds, information currency), converted to single-column layout for better user experience
 - **Enhanced User Experience**: Hero section with success story collage background, dual measurement system (feet/inches + centimeters) for international users, consistent profile name display across all pages
+- **Browse Featured Fix (Jan 13, 2025)**: Resolved critical bug where "Browse Featured Only" button showed all 96 profiles instead of 13 featured profiles. Fixed Wouter router query parameter issue by switching from useLocation() to window.location.search for URL parameter parsing.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
