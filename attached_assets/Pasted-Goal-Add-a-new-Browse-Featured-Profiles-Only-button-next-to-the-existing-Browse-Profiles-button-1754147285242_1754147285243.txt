@@ -1,0 +1,37 @@
+Goal: Add a new "Browse Featured Profiles Only" button next to the existing "Browse Profiles" button on the homepage, which links to the featured profiles page.
+
+Replit, please propose your approach and strategy for implementing this new button. Focus on the smallest, most targeted adjustments to the site code to avoid any breakage of existing UI, navigation, or functionality. Present your plan for my review and approval before any code is modified.
+
+Replit's Strategy & Implementation Plan:
+
+Frontend (UI) Modification:
+
+Replit: Identify the component that renders the main navigation bar (e.g., client/src/components/Header.tsx, client/src/components/Navbar.tsx, or similar).
+
+Replit: Propose the exact location in the code to add the new button, ensuring it appears correctly next to the existing "Browse Profiles" button.
+
+Button Functionality:
+
+Replit: Propose a link/route for this new button. It will likely point to the existing "Browse Profiles" page but with an added query parameter (e.g., holacupid.com/en/browse?featured=true). This will allow the existing browse page to handle the request but filter for only featured profiles.
+
+Backend Modification (If Necessary):
+
+Replit: Acknowledge that the backend's getProfiles() method already has a featured filter, which was used for the homepage's featured profiles. Confirm that no new API endpoint is needed, as the existing one can be reused with the query parameter.
+
+Frontend (Logic) Modification:
+
+Replit: Identify the component that renders the "Browse Profiles" page (e.g., client/src/pages/BrowseProfiles.tsx) and propose a small code change to check for the featured=true query parameter. If the parameter is present, the component should adjust its API call to request only the featured profiles.
+
+General Strategy & Safeguards:
+
+Replit: Explain how this approach uses existing code (the getProfiles method and the featured filter) to minimize new code.
+
+Replit: Specify your testing strategy to confirm:
+
+The new button appears correctly on the UI.
+
+The "Browse Profiles" button continues to function normally, showing all profiles.
+
+The new "Browse Featured Profiles Only" button correctly filters the profiles to show only the featured ones.
+
+Replit: Present your complete approach and strategy, identifying specific file paths and detailing the proposed changes, for my review and approval before any code is modified.
