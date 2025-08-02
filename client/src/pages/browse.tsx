@@ -52,15 +52,7 @@ export default function Browse() {
   const urlParams = browserQueryString ? new URLSearchParams(browserQueryString) : new URLSearchParams();
   const urlFeaturedOnly = urlParams.get('featured') === 'true';
   
-  // DEBUG: Log URL parsing details
-  console.log('DEBUG: URL parsing', {
-    location,
-    browserQueryString,
-    windowLocationSearch: typeof window !== 'undefined' ? window.location.search : 'N/A',
-    allUrlParams: Object.fromEntries(urlParams),
-    featuredParam: urlParams.get('featured'),
-    urlFeaturedOnly
-  });
+
 
   // Reset to page 1 when filters change
   useEffect(() => {
@@ -77,26 +69,9 @@ export default function Browse() {
       
       const apiUrl = `/api/profiles?${params}`;
       
-      // DEBUG: Log the API call details
-      console.log('DEBUG: useQuery API call', {
-        urlFeaturedOnly,
-        searchQuery,
-        locationFilter,
-        params: params.toString(),
-        apiUrl
-      });
-      
       const response = await fetch(apiUrl);
       if (!response.ok) throw new Error('Failed to fetch profiles');
-      const data = await response.json();
-      
-      console.log('DEBUG: API response', {
-        profileCount: data.length,
-        apiUrl,
-        urlFeaturedOnly
-      });
-      
-      return data;
+      return response.json();
     },
   });
 
