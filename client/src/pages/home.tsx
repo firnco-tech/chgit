@@ -69,7 +69,14 @@ export default function Home() {
                   {t.browseProfiles}
                 </Button>
               </Link>
-              <Link href={addLanguageToPath('/browse?featured=true', currentLanguage)}>
+              <Link href={addLanguageToPath('/browse?featured=true', currentLanguage)} onClick={() => {
+                const generatedUrl = addLanguageToPath('/browse?featured=true', currentLanguage);
+                console.log('DEBUG: Button click URL generation', {
+                  input: '/browse?featured=true', 
+                  currentLanguage,
+                  generatedUrl
+                });
+              }}>
                 <Button size="lg" className="bg-primary text-white hover:bg-primary/90 shadow-lg">
                   {t.browseFeaturedOnly}
                 </Button>
