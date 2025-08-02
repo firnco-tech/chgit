@@ -63,10 +63,15 @@ export default function Home() {
             <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto hero-text-shadow">
               {t.heroSubtitle}
             </p>
-            <div className="flex justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href={addLanguageToPath('/browse', currentLanguage)}>
                 <Button size="lg" className="bg-white text-primary hover:bg-gray-100 shadow-lg">
                   {t.browseProfiles}
+                </Button>
+              </Link>
+              <Link href={addLanguageToPath('/browse?featured=true', currentLanguage)}>
+                <Button size="lg" className="bg-primary text-white hover:bg-primary/90 shadow-lg">
+                  {t.browseFeaturedOnly}
                 </Button>
               </Link>
             </div>

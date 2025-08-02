@@ -162,7 +162,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all approved profiles with filters
   app.get("/api/profiles", async (req, res) => {
     try {
-      const { ageMin, ageMax, location, search } = req.query;
+      const { ageMin, ageMax, location, search, featured } = req.query;
       
       if (search) {
         const profiles = await storage.searchProfiles(search as string);
@@ -173,6 +173,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           ageMin: ageMin ? parseInt(ageMin as string) : undefined,
           ageMax: ageMax ? parseInt(ageMax as string) : undefined,
           location: location as string,
+          featured: featured === 'true' ? true : undefined,
         });
         res.json(profiles);
       }

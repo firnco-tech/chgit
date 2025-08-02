@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,6 +14,12 @@ import { useTranslation } from "@/hooks/useTranslation";
 
 export default function Browse() {
   const { t } = useTranslation();
+  const [location] = useLocation();
+  
+  // Check for featured parameter
+  const searchParams = new URLSearchParams(location.split('?')[1]);
+  const featuredOnly = searchParams.get('featured') === 'true';
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [locationFilter, setLocationFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,11 +43,12 @@ export default function Browse() {
   }, [searchQuery, locationFilter]);
 
   const { data: profiles, isLoading } = useQuery<Profile[]>({
-    queryKey: ['/api/profiles', { search: searchQuery, location: locationFilter }],
+    queryKey: ['/api/profiles', { search: searchQuery, location: locationFilter, featured: featuredOnly }],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (searchQuery) params.append('search', searchQuery);
       if (locationFilter && locationFilter !== 'all') params.append('location', locationFilter);
+      if (featuredOnly) params.append('featured', 'true');
       
       const response = await fetch(`/api/profiles?${params}`);
       if (!response.ok) throw new Error('Failed to fetch profiles');
@@ -68,7 +76,9 @@ export default function Browse() {
         structuredData={structuredDataSchemas.website}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">{t.browsePageTitle}</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+          {featuredOnly ? t.featuredProfiles : t.browsePageTitle}
+        </h2>
         
         {/* Desktop Horizontal Filters */}
         <div className="hidden lg:block mb-8">

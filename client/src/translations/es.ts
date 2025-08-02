@@ -13,6 +13,7 @@ export const es = {
   heroTitle: 'Encuentra tu Pareja Dominicana Perfecta',
   heroSubtitle: 'Conéctate con mujeres dominicanas auténticas y verificadas que buscan relaciones serias. Explora perfiles genuinos, descubre conexiones culturales y encuentra tu pareja perfecta hoy.',
   browseProfiles: 'Explorar Perfiles',
+  browseFeaturedOnly: 'Explorar Solo Destacadas',
   viewAllProfiles: 'Ver Todos los Perfiles',
   featuredProfiles: 'Perfiles Destacados',
   featuredProfilesSubtitle: 'Conoce a nuestras miembros verificadas más populares',

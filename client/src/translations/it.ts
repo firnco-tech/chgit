@@ -13,6 +13,7 @@ export const it = {
   heroTitle: 'Trova la Tua Anima Gemella Dominicana',
   heroSubtitle: 'Connettiti con autentiche donne dominicane verificate che cercano relazioni serie. Esplora profili genuini, scopri connessioni culturali e trova la tua partner perfetta oggi.',
   browseProfiles: 'Sfoglia Profili',
+  browseFeaturedOnly: 'Sfoglia Solo in Evidenza',
   viewAllProfiles: 'Vedi Tutti i Profili',
   featuredProfiles: 'Profili in Evidenza',
   featuredProfilesSubtitle: 'Incontra le nostre membri verificate più popolari',

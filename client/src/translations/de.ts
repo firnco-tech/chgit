@@ -13,6 +13,7 @@ export const de = {
   heroTitle: 'Finde dein perfektes dominikanisches Match',
   heroSubtitle: 'Verbinde dich mit authentischen, verifizierten dominikanischen Frauen, die ernsthafte Beziehungen suchen. Durchsuche echte Profile, entdecke kulturelle Verbindungen und finde heute dein perfektes Match.',
   browseProfiles: 'Profile durchsuchen',
+  browseFeaturedOnly: 'Nur Featured durchsuchen',
   viewAllProfiles: 'Alle Profile anzeigen',
   featuredProfiles: 'Empfohlene Profile',
   featuredProfilesSubtitle: 'Lerne unsere beliebtesten verifizierten Mitglieder kennen',

@@ -13,6 +13,7 @@ export const nl = {
   heroTitle: 'Vind Je Perfecte Dominicaanse Match',
   heroSubtitle: 'Verbind met authentieke, geverifieerde Dominicaanse vrouwen die serieuze relaties zoeken. Bekijk echte profielen, ontdek culturele verbindingen en vind vandaag je perfecte match.',
   browseProfiles: 'Profielen Bekijken',
+  browseFeaturedOnly: 'Alleen Uitgelichte Bekijken',
   viewAllProfiles: 'Alle Profielen Bekijken',
   featuredProfiles: 'Uitgelichte Profielen',
   featuredProfilesSubtitle: 'Ontmoet onze populairste geverifieerde leden',
