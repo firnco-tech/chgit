@@ -254,21 +254,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // =============================================================================
-  // PAYPAL PAYMENT API ROUTES
+  // PAYPAL PAYMENT API ROUTES - Smart Payment Buttons Integration
   // =============================================================================
 
-  // PayPal setup - Client token generation
+  // PayPal setup - Returns client configuration for Smart Payment Buttons
   app.get("/api/paypal/setup", async (req, res) => {
     await loadPaypalDefault(req, res);
   });
 
-  // PayPal order creation  
-  app.post("/api/paypal/order", async (req, res) => {
-    // Request body should contain: { intent, amount, currency }
+  // PayPal order creation for Smart Payment Buttons
+  app.post("/api/paypal/orders", async (req, res) => {
+    // Enhanced request body: { amount, currency, customerEmail, customerName, items }
     await createPaypalOrder(req, res);
   });
 
-  // PayPal order capture
+  // PayPal order capture for Smart Payment Buttons
+  app.post("/api/paypal/orders/:orderID/capture", async (req, res) => {
+    await capturePaypalOrder(req, res);
+  });
+
+  // Legacy routes for backward compatibility (will be removed in Phase 2)
+  app.post("/api/paypal/order", async (req, res) => {
+    await createPaypalOrder(req, res);
+  });
+
   app.post("/api/paypal/order/:orderID/capture", async (req, res) => {
     await capturePaypalOrder(req, res);
   });

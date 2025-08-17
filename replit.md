@@ -4,6 +4,13 @@
 HolaCupid is a full-stack dating platform connecting users with Dominican women. It features user profile browsing, a shopping cart for contact information, and secure payments via Stripe. The platform aims to provide a reliable and authentic way for users to find connections, emphasizing verified profiles and a culturally immersive experience. Its business vision includes expanding to a broader market, leveraging a robust technical architecture, and offering a seamless user experience for dating and cultural exchange.
 
 ## Recent Changes (January 2025)
+- **PayPal Smart Payment Buttons - Phase 1 Completed (Jan 17, 2025)**: Enhanced PayPal backend infrastructure for in-context checkout:
+  - Implemented PayPal Orders API v2 for Smart Payment Buttons
+  - Enhanced order creation with customer information, items, and application context
+  - Added comprehensive order capture with detailed payment information extraction
+  - Created new endpoints: `/api/paypal/orders` and `/api/paypal/orders/:orderID/capture`
+  - Backend testing confirmed: Order creation and capture working successfully in sandbox
+  - Preserved backward compatibility with legacy endpoints during transition
 - **PayPal Migration Completed (Jan 17, 2025)**: Successfully migrated from Stripe to PayPal as the primary payment processor. Completed full 4-phase migration with zero downtime:
   - Phase 1: Integrated PayPal alongside Stripe
   - Phase 2: Made PayPal the default payment method
