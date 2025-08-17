@@ -1,0 +1,41 @@
+PROMPT FOR REPLIT: Finalize Payment Processor Switch - Remove Stripe & Enhance PayPal Button
+
+Goal: Completely remove Stripe from the website and enhance the PayPal button's display to reflect all supported payment methods, ensuring a seamless user checkout experience.
+
+Replit, the initial phase of the payment transition is complete, with both Stripe and PayPal options available. We are now ready to finalize the switch by removing Stripe and enhancing the PayPal button. Please propose your approach and strategy for these changes, focusing on safety and minimal adjustments, for my review and approval before any code is modified.
+
+Replit's Strategy & Implementation Plan:
+
+PART 1: REMOVE STRIPE INTEGRATION COMPLETELY
+
+Replit: Propose the files to be modified in the backend to remove all traces of Stripe. This will likely involve:
+
+Deleting all Stripe-related API endpoints from server/routes.ts.
+
+Deleting the Stripe service integration file (e.g., server/stripe.ts).
+
+Detailing how you will ensure that the backend no longer has any Stripe-specific logic.
+
+Replit: Propose the files to be modified in the frontend to remove the Stripe UI. This will likely involve:
+
+Removing the "Credit Card" button and any associated Stripe-specific checkout forms or components from the checkout page (e.g., client/src/pages/checkout.tsx).
+
+Removing any "Powered by Stripe" text from translation files and other UI components.
+
+Replit: Propose any necessary updates to the database schema (e.g., in shared/schema.ts) to clean up any legacy Stripe-related fields, if applicable.
+
+PART 2: ENHANCE PAYPAL BUTTON DISPLAY
+
+Replit: Propose the file to be modified in the frontend to update the text/label of the PayPal button on the checkout page.
+
+Replit: Propose changing the label from "PayPal Account" to a more descriptive text that reflects its full functionality, such as "PayPal, Credit/Debit Card, Apple Pay, Google Pay."
+
+Replit: Confirm that this change will be made in all 6 language translation files for consistency.
+
+General Strategy & Safeguards:
+
+Replit: Explain how this change will be isolated to the checkout page and will not affect other parts of the website, such as user profiles, admin paths, or existing order data.
+
+Replit: Specify your testing strategy to confirm that the checkout page functions correctly, with only the enhanced PayPal button available.
+
+Replit: Present your complete approach and strategy, identifying specific file paths and detailing the proposed changes, for my review and approval before any code is modified.

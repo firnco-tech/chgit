@@ -19,61 +19,12 @@ const CheckoutForm = () => {
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'paypal'>('stripe');
+  // PayPal is now the only payment method
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsProcessing(true);
-
-    if (!customerEmail) {
-      toast({
-        title: t.emailRequired,
-        description: t.enterEmailAddress,
-        variant: "destructive",
-      });
-      setIsProcessing(false);
-      return;
-    }
-
-    try {
-      console.log('💳 Creating hosted checkout session...');
-      
-      const response = await apiRequest("/api/create-checkout-session", {
-        method: "POST",
-        body: {
-          amount: getTotal(),
-          profileIds: items.map(item => item.id),
-          customerEmail,
-          customerName: customerName || "Guest Customer",
-          profileNames: items.map(item => item.name),
-          language: currentLanguage,
-        }
-      });
-
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to create checkout session');
-      }
-
-      console.log('✅ Checkout session created, redirecting to Stripe...');
-      
-      // Redirect to Stripe's hosted checkout
-      window.location.href = data.url;
-      
-    } catch (error) {
-      console.error('Checkout error:', error);
-      toast({
-        title: t.checkoutFailed,
-        description: error instanceof Error ? error.message : "An unexpected error occurred",
-        variant: "destructive",
-      });
-      setIsProcessing(false);
-    }
-  };
+  // Stripe checkout removed - PayPal handles all payments now
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="space-y-6">
       <div className="space-y-4">
         <div>
           <Label htmlFor="email">{t.emailAddress} *</Label>
@@ -157,105 +108,40 @@ const CheckoutForm = () => {
           </div>
         </div>
 
-        {/* Payment Method Selection */}
-        <div className="space-y-6">
-          <Label className="text-base font-medium text-gray-900">Choose Payment Method</Label>
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              type="button"
-              onClick={() => setPaymentMethod('stripe')}
-              className={`p-4 border-2 rounded-lg text-center transition-all ${
-                paymentMethod === 'stripe'
-                  ? 'border-blue-500 bg-blue-50 text-blue-700'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-            >
-              <div className="font-medium">Credit Card</div>
-              <div className="text-sm text-gray-500 mt-1">Visa, Mastercard, Amex</div>
-            </button>
-            <button
-              type="button"
-              onClick={() => setPaymentMethod('paypal')}
-              className={`p-4 border-2 rounded-lg text-center transition-all ${
-                paymentMethod === 'paypal'
-                  ? 'border-blue-500 bg-blue-50 text-blue-700'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-            >
-              <div className="font-medium">PayPal</div>
-              <div className="text-sm text-gray-500 mt-1">PayPal Account</div>
-            </button>
+        {/* Enhanced PayPal Checkout - Supports Multiple Payment Methods */}
+        <div className="space-y-4">
+          <div className="text-center">
+            <Label className="text-base font-medium text-gray-900">Secure Payment</Label>
+            <p className="text-sm text-gray-600 mt-1">PayPal, Credit/Debit Card, Apple Pay, Google Pay</p>
           </div>
-        </div>
-
-        {/* Stripe Checkout */}
-        {paymentMethod === 'stripe' && (
-          <>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex items-center space-x-2">
-                <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div>
-                  <p className="text-sm font-medium text-blue-800">{t.livePaymentProcessing}</p>
-                  <p className="text-xs text-blue-600">{t.redirectToStripe}</p>
-                </div>
-              </div>
-            </div>
-
-            <Button 
-              type="submit" 
-              disabled={isProcessing} 
-              className="w-full bg-blue-600 hover:bg-blue-700"
-            >
-              {isProcessing ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  {t.redirectingToStripe}
-                </>
-              ) : (
-                <>
-                  <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          
+          {customerEmail ? (
+            <div className="space-y-4">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-center space-x-2">
+                  <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  {t.continueToSecureCheckout} - ${getTotal()}
-                </>
-              )}
-            </Button>
-          </>
-        )}
-
-        {/* PayPal Checkout */}
-        {paymentMethod === 'paypal' && (
-          <>
-            {customerEmail ? (
-              <div className="space-y-4">
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <div className="flex items-center space-x-2">
-                    <svg className="h-5 w-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <div>
-                      <p className="text-sm font-medium text-yellow-800">PayPal Payment - ${getTotal()}</p>
-                      <p className="text-xs text-yellow-600">You'll be redirected to PayPal to complete payment</p>
-                    </div>
+                  <div>
+                    <p className="text-sm font-medium text-blue-800">Secure Payment - ${getTotal()}</p>
+                    <p className="text-xs text-blue-600">Choose your preferred payment method on the next page</p>
                   </div>
                 </div>
-                <PayPalButton 
-                  amount={getTotal().toString()}
-                  currency="USD"
-                  intent="CAPTURE"
-                />
               </div>
-            ) : (
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
-                <p className="text-sm text-gray-600">Please enter your email address to continue with PayPal</p>
-              </div>
-            )}
-          </>
-        )}
+              <PayPalButton 
+                amount={getTotal().toString()}
+                currency="USD"
+                intent="CAPTURE"
+              />
+            </div>
+          ) : (
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+              <p className="text-sm text-gray-600">Please enter your email address to continue with payment</p>
+            </div>
+          )}
+        </div>
       </div>
-    </form>
+    </div>
   );
 };
 

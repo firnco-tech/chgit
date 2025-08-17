@@ -4,7 +4,7 @@ import path from "path";
 import multer from "multer";
 import { nanoid } from "nanoid";
 import { gcsUpload } from "./s3-config";
-import Stripe from "stripe";
+
 import { storage } from "./storage";
 import { requireAuth, requireAdminAuth, optionalAuth, hashPassword, verifyPassword, createUserSession } from "./auth";
 import { 
@@ -32,29 +32,7 @@ import {
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { z } from "zod";
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
-}
-
-// Verify Stripe keys are live keys for production
-console.log('🔍 STRIPE KEY VALIDATION:');
-console.log('🔍 STRIPE_SECRET_KEY starts with:', process.env.STRIPE_SECRET_KEY.substring(0, 8));
-console.log('🔍 VITE_STRIPE_PUBLIC_KEY starts with:', process.env.VITE_STRIPE_PUBLIC_KEY?.substring(0, 8));
-
-if (!process.env.STRIPE_SECRET_KEY.startsWith('sk_live_')) {
-  console.error('❌ CRITICAL: STRIPE_SECRET_KEY must be a live key (sk_live_) for production');
-  console.error('❌ Please update your Replit Secrets with live keys');
-  throw new Error('STRIPE_SECRET_KEY must be a live key (sk_live_) for production');
-}
-
-if (!process.env.VITE_STRIPE_PUBLIC_KEY?.startsWith('pk_live_')) {
-  console.error('❌ CRITICAL: VITE_STRIPE_PUBLIC_KEY must be a live key (pk_live_) for production');
-  console.error('❌ Please update your Replit Secrets with live keys');
-  throw new Error('VITE_STRIPE_PUBLIC_KEY must be a live key (pk_live_) for production');
-}
-
-console.log('✅ All Stripe keys verified as LIVE keys');
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Stripe integration removed - using PayPal as primary payment processor
 
 // Check if Google Cloud Storage is configured
 const isGCSConfigured = !!(process.env.GOOGLE_CLOUD_PROJECT_ID && 
@@ -295,226 +273,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     await capturePaypalOrder(req, res);
   });
 
-  // =============================================================================
-  // STRIPE PAYMENT API ROUTES (LEGACY - TO BE PHASED OUT)
-  // =============================================================================
-
-  // Create payment intent
-  app.post("/api/create-payment-intent", async (req, res) => {
-    try {
-      const { amount, profileIds, customerEmail } = req.body;
-      
-      if (!amount || !profileIds) {
-        return res.status(400).json({ message: "Missing required fields" });
-      }
-
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(amount * 100), // Convert to cents
-        currency: "usd",
-        metadata: {
-          customerEmail: customerEmail || "placeholder@email.com",
-          profileIds: JSON.stringify(profileIds),
-        },
-      });
-
-      // Create order with Stripe provider
-      const order = await storage.createOrder({
-        customerEmail: customerEmail || "placeholder@email.com",
-        totalAmount: amount.toString(),
-        stripePaymentIntentId: paymentIntent.id,
-        paymentProvider: "stripe",
-        status: "pending"
-      });
-
-      res.json({ 
-        clientSecret: paymentIntent.client_secret,
-        orderId: order.id 
-      });
-    } catch (error: any) {
-      res.status(500).json({ message: "Error creating payment intent: " + error.message });
-    }
-  });
-
-  // Create hosted checkout session (fallback for ad blockers)
-  app.post("/api/create-checkout-session", async (req, res) => {
-    try {
-      const { amount, profileIds, customerEmail, profileNames, language } = req.body;
-      
-      console.log('Creating hosted checkout session for:', { amount, profileIds, customerEmail });
-      
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price_data: {
-              currency: 'usd',
-              product_data: {
-                name: `Contact Information - ${profileNames.join(', ')}`,
-                description: `Access to contact details for ${profileIds.length} profile(s)`,
-              },
-              unit_amount: Math.round(amount * 100),
-            },
-            quantity: 1,
-          },
-        ],
-        mode: 'payment',
-        success_url: `${req.headers.origin}/${language || 'en'}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${req.headers.origin}/${language || 'en'}/checkout`,
-        customer_email: customerEmail,
-        metadata: {
-          profileIds: JSON.stringify(profileIds),
-          orderType: 'contact_purchase'
-        }
-      });
-
-      // Create order for hosted checkout
-      const order = await storage.createOrder({
-        customerEmail: customerEmail || "placeholder@email.com", 
-        totalAmount: amount.toString(),
-        stripePaymentIntentId: session.id, // Use session ID for hosted checkout
-        paymentProvider: "stripe",
-        status: "pending"
-      });
-      
-      res.json({ url: session.url, sessionId: session.id, orderId: order.id });
-    } catch (error: any) {
-      console.error('Error creating checkout session:', error);
-      res.status(500).json({ message: "Error creating checkout session" });
-    }
-  });
-
-  // Update payment intent with customer details
-  app.post("/api/update-payment-intent", async (req, res) => {
-    try {
-      const { customerEmail, customerName, profileIds } = req.body;
-      
-      if (!customerEmail || !profileIds) {
-        return res.status(400).json({ message: "Missing required fields" });
-      }
-
-      // Find the most recent pending order for these profile IDs
-      // This is a simplified approach - in production you might want a more sophisticated matching system
-      const orders = await storage.getOrdersForAdmin({ status: "pending", limit: 10 });
-      const recentOrder = orders.find(order => 
-        order.stripePaymentIntentId && 
-        order.status === "pending"
-      );
-
-      if (recentOrder?.stripePaymentIntentId) {
-        // Update the Stripe PaymentIntent metadata
-        await stripe.paymentIntents.update(recentOrder.stripePaymentIntentId, {
-          metadata: {
-            customerEmail,
-            customerName: customerName || "Guest Customer",
-            profileIds: JSON.stringify(profileIds),
-          },
-        });
-
-        // Update the order with correct customer email
-        await storage.updateOrder(recentOrder.id, { 
-          customerEmail,
-          customerName: customerName || "Guest Customer"
-        });
-      }
-
-      res.json({ success: true });
-    } catch (error: any) {
-      res.status(500).json({ message: "Error updating payment intent: " + error.message });
-    }
-  });
-
-  // Handle payment success and deliver contact info (Elements and Hosted Checkout)
-  app.post("/api/payment-success", async (req, res) => {
-    try {
-      const { paymentIntentId, sessionId } = req.body;
-      
-      if (!paymentIntentId && !sessionId) {
-        return res.status(400).json({ message: "Payment intent ID or session ID required" });
-      }
-
-      let paymentData;
-      let profileIds;
-
-      if (sessionId) {
-        // Handle hosted checkout session
-        const session = await stripe.checkout.sessions.retrieve(sessionId);
-        
-        console.log('🔍 STRIPE SESSION DEBUG:', {
-          sessionId: sessionId,
-          payment_status: session.payment_status,
-          status: session.status,
-          payment_intent: session.payment_intent,
-          mode: session.mode,
-          amount_total: session.amount_total
-        });
-        
-        // Check for successful payment in hosted checkout
-        if (session.payment_status !== "paid" && session.status !== "complete") {
-          console.error('❌ Payment not successful - session status:', session.payment_status, 'overall status:', session.status);
-          return res.status(400).json({ message: "Payment not successful" });
-        }
-
-        profileIds = JSON.parse(session.metadata?.profileIds || "[]");
-        paymentData = { id: sessionId, metadata: session.metadata };
-      } else {
-        // Handle payment intent (Elements)
-        const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-        
-        if (paymentIntent.status !== "succeeded") {
-          return res.status(400).json({ message: "Payment not successful" });
-        }
-
-        profileIds = JSON.parse(paymentIntent.metadata.profileIds || "[]");
-        paymentData = paymentIntent;
-      }
-
-      // Find the order
-      const order = await storage.getOrderByPaymentIntent(paymentData.id);
-      if (!order) {
-        console.error('❌ Order not found for payment ID:', paymentData.id);
-        return res.status(404).json({ message: "Order not found" });
-      }
-
-      console.log('✅ Order found:', order.id, 'current status:', order.status);
-      
-      // Update order status
-      await storage.updateOrderStatus(order.id, "completed");
-      console.log('✅ Order status updated to completed for order:', order.id);
-      
-      // Create order items with contact info
-      const orderItemsData = [];
-      for (const profileId of profileIds) {
-        const profile = await storage.getProfile(profileId);
-        if (profile) {
-          const orderItem = await storage.createOrderItem({
-            orderId: order.id,
-            profileId: profile.id,
-            price: profile.price,
-            contactInfo: profile.contactMethods || {}
-          });
-          orderItemsData.push({
-            ...orderItem,
-            profile: {
-              id: profile.id,
-              firstName: profile.firstName,
-              lastName: profile.lastName,
-              age: profile.age,
-              location: profile.location,
-              photos: profile.photos
-            }
-          });
-        }
-      }
-
-      res.json({
-        success: true,
-        order: order,
-        contactInfo: orderItemsData
-      });
-    } catch (error: any) {
-      res.status(500).json({ message: "Error processing payment success: " + error.message });
-    }
-  });
+  // All Stripe routes removed - PayPal is now the primary payment processor
 
   // User's own orders - Get current user's orders - AUTHENTICATED USER ONLY
   app.get("/api/orders/my-orders", requireAuth, async (req, res) => {
@@ -1083,7 +842,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // Lax for development
+        sameSite: process.env.NODE_ENV === 'production' ? 'strict' as const : 'lax' as const, // Lax for development
         path: '/' // Ensure cookie is available across all paths
       };
       
