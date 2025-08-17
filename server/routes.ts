@@ -29,6 +29,7 @@ import {
   registerUserSchema,
   loginUserSchema
 } from "@shared/schema";
+import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { z } from "zod";
 
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -274,6 +275,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // =============================================================================
+  // PAYPAL PAYMENT API ROUTES
+  // =============================================================================
+
+  // PayPal setup - Client token generation
+  app.get("/api/paypal/setup", async (req, res) => {
+    await loadPaypalDefault(req, res);
+  });
+
+  // PayPal order creation  
+  app.post("/api/paypal/order", async (req, res) => {
+    // Request body should contain: { intent, amount, currency }
+    await createPaypalOrder(req, res);
+  });
+
+  // PayPal order capture
+  app.post("/api/paypal/order/:orderID/capture", async (req, res) => {
+    await capturePaypalOrder(req, res);
+  });
+
+  // =============================================================================
+  // STRIPE PAYMENT API ROUTES (LEGACY - TO BE PHASED OUT)
+  // =============================================================================
+
   // Create payment intent
   app.post("/api/create-payment-intent", async (req, res) => {
     try {
@@ -292,11 +317,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         },
       });
 
-      // Create order
+      // Create order with Stripe provider
       const order = await storage.createOrder({
         customerEmail: customerEmail || "placeholder@email.com",
         totalAmount: amount.toString(),
         stripePaymentIntentId: paymentIntent.id,
+        paymentProvider: "stripe",
         status: "pending"
       });
 
@@ -346,6 +372,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         customerEmail: customerEmail || "placeholder@email.com", 
         totalAmount: amount.toString(),
         stripePaymentIntentId: session.id, // Use session ID for hosted checkout
+        paymentProvider: "stripe",
         status: "pending"
       });
       

@@ -88,7 +88,9 @@ export const orders = pgTable("orders", {
   customerEmail: text("customer_email").notNull(),
   customerName: text("customer_name"),
   totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull(),
-  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  stripePaymentIntentId: text("stripe_payment_intent_id"), // Keep for backward compatibility
+  paypalOrderId: text("paypal_order_id"), // New field for PayPal orders
+  paymentProvider: text("payment_provider").default("stripe"), // Track payment method: 'stripe' or 'paypal'
   status: text("status").notNull().default("pending"), // pending, completed, failed
   createdAt: timestamp("created_at").defaultNow(),
 });
