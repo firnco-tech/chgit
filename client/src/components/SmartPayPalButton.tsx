@@ -64,10 +64,6 @@ export default function SmartPayPalButton({
           
           script.onload = () => {
             console.log('✅ PayPal SDK loaded successfully');
-            // Add small delay to ensure DOM is ready
-            setTimeout(() => {
-              renderPayPalButtons();
-            }, 100);
           };
           
           script.onerror = () => {
@@ -76,11 +72,6 @@ export default function SmartPayPalButton({
           };
           
           document.head.appendChild(script);
-        } else {
-          // Add small delay to ensure DOM is ready
-          setTimeout(() => {
-            renderPayPalButtons();
-          }, 100);
         }
       } catch (error) {
         console.error('PayPal SDK configuration error:', error);
@@ -262,13 +253,27 @@ export default function SmartPayPalButton({
     if (customerEmail && amount && parseFloat(amount) > 0) {
       loadPayPalSDK();
     }
+  }, [amount, currency, customerEmail, customerName]);
 
-    // Cleanup function
+  // Separate effect to ensure DOM ref is available before rendering buttons
+  useEffect(() => {
+    if (window.paypal && paypalRef.current && !buttonsRendered.current && customerEmail && amount && parseFloat(amount) > 0) {
+      // Small delay to ensure everything is ready
+      const timer = setTimeout(() => {
+        renderPayPalButtons();
+      }, 300);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [customerEmail, amount, currency, customerName]);
+
+  // Cleanup function
+  useEffect(() => {
     return () => {
       buttonsRendered.current = false;
       retryAttempts.current = 0;
     };
-  }, [amount, currency, customerEmail, customerName]);
+  }, []);
 
   if (!customerEmail) {
     return (
