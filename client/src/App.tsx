@@ -29,6 +29,7 @@ import CartPage from "@/pages/cart";
 import Favorites from "@/pages/favorites";
 import OrderHistory from "@/pages/OrderHistory";
 import PaymentSuccess from "@/pages/payment-success";
+import OrderConfirmation from "@/pages/order-confirmation";
 import NotFound from "@/pages/not-found";
 
 // Admin Panel Components - Isolated from main site
@@ -82,6 +83,7 @@ function MainSiteRouter() {
           <Route path="/:lang/favorites" component={Favorites} />
           <Route path="/:lang/my-orders" component={OrderHistory} />
           <Route path="/:lang/payment-success" component={PaymentSuccess} />
+          <Route path="/:lang/order-confirmation" component={OrderConfirmation} />
           
           {/* Profile route with cleaner SEO-friendly URLs - Must be last to avoid conflicts */}
           <Route path="/:lang/:slug" component={ProfilePage} />
