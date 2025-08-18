@@ -39,6 +39,8 @@ export default function SmartPayPalButton({
   const [sdkError, setSdkError] = useState<string | null>(null);
   const paypalRef = useRef<HTMLDivElement>(null);
   const buttonsRendered = useRef(false);
+  const retryAttempts = useRef(0);
+  const maxRetries = 5;
 
   useEffect(() => {
     const loadPayPalSDK = async () => {
@@ -62,7 +64,10 @@ export default function SmartPayPalButton({
           
           script.onload = () => {
             console.log('✅ PayPal SDK loaded successfully');
-            renderPayPalButtons();
+            // Add small delay to ensure DOM is ready
+            setTimeout(() => {
+              renderPayPalButtons();
+            }, 100);
           };
           
           script.onerror = () => {
@@ -72,7 +77,10 @@ export default function SmartPayPalButton({
           
           document.head.appendChild(script);
         } else {
-          renderPayPalButtons();
+          // Add small delay to ensure DOM is ready
+          setTimeout(() => {
+            renderPayPalButtons();
+          }, 100);
         }
       } catch (error) {
         console.error('PayPal SDK configuration error:', error);
@@ -88,8 +96,20 @@ export default function SmartPayPalButton({
       }
       
       if (!paypalRef.current) {
-        console.log('❌ PayPal container ref not available');
-        return;
+        if (retryAttempts.current < maxRetries) {
+          retryAttempts.current++;
+          console.log(`❌ PayPal container ref not available, retrying... (${retryAttempts.current}/${maxRetries})`);
+          // Retry after a short delay
+          setTimeout(() => {
+            renderPayPalButtons();
+          }, 200);
+          return;
+        } else {
+          console.error('❌ PayPal container ref not available after max retries');
+          setSdkError('Failed to initialize PayPal buttons');
+          setIsLoading(false);
+          return;
+        }
       }
       
       if (buttonsRendered.current) {
@@ -246,6 +266,7 @@ export default function SmartPayPalButton({
     // Cleanup function
     return () => {
       buttonsRendered.current = false;
+      retryAttempts.current = 0;
     };
   }, [amount, currency, customerEmail, customerName]);
 
@@ -299,7 +320,11 @@ export default function SmartPayPalButton({
           <span className="ml-2 text-sm text-gray-600">Loading payment options...</span>
         </div>
       ) : (
-        <div ref={paypalRef} className="paypal-button-container" />
+        <div 
+        ref={paypalRef} 
+        className="paypal-button-container w-full min-h-[50px]"
+        id="paypal-buttons-container"
+      />
       )}
       
       <div className="text-center">
