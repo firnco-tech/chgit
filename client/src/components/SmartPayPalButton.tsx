@@ -255,16 +255,45 @@ export default function SmartPayPalButton({
     }
   }, [amount, currency, customerEmail, customerName]);
 
-  // Separate effect to ensure DOM ref is available before rendering buttons
+  // Watch for when PayPal SDK becomes available and render buttons
   useEffect(() => {
-    if (window.paypal && paypalRef.current && !buttonsRendered.current && customerEmail && amount && parseFloat(amount) > 0) {
-      // Small delay to ensure everything is ready
-      const timer = setTimeout(() => {
-        renderPayPalButtons();
-      }, 300);
+    const checkAndRender = () => {
+      console.log('🔍 Checking render conditions:', {
+        hasPayPal: !!window.paypal,
+        hasRef: !!paypalRef.current,
+        notRendered: !buttonsRendered.current,
+        hasEmail: !!customerEmail,
+        hasAmount: !!amount && parseFloat(amount) > 0
+      });
       
-      return () => clearTimeout(timer);
-    }
+      if (window.paypal && paypalRef.current && !buttonsRendered.current && customerEmail && amount && parseFloat(amount) > 0) {
+        console.log('🔄 All conditions met, rendering PayPal buttons...');
+        renderPayPalButtons();
+        return true;
+      }
+      return false;
+    };
+
+    // Try immediately
+    if (checkAndRender()) return;
+
+    // If not ready, poll until ready or timeout
+    const interval = setInterval(() => {
+      if (checkAndRender()) {
+        clearInterval(interval);
+      }
+    }, 100);
+
+    // Clear interval after 10 seconds
+    const timeout = setTimeout(() => {
+      clearInterval(interval);
+      console.log('⚠️ PayPal button rendering timeout');
+    }, 10000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
   }, [customerEmail, amount, currency, customerName]);
 
   // Cleanup function
