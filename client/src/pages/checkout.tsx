@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { apiRequest } from '@/lib/queryClient';
-import PayPalButton from '@/components/PayPalButton';
+import SmartPayPalButton from '@/components/SmartPayPalButton';
 
 const CheckoutForm = () => {
   const { toast } = useToast();
@@ -75,7 +75,7 @@ const CheckoutForm = () => {
               </svg>
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">{t.secureCheckout}</h3>
-                <p className="text-sm text-gray-600">{t.poweredByStripe}</p>
+                <p className="text-sm text-gray-600">Powered by PayPal</p>
               </div>
             </div>
             
@@ -102,7 +102,7 @@ const CheckoutForm = () => {
                 <svg className="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-gray-700">{t.allCardsAccepted}</span>
+                <span className="text-gray-700">All Cards Accepted</span>
               </div>
             </div>
           </div>
@@ -128,10 +128,34 @@ const CheckoutForm = () => {
                   </div>
                 </div>
               </div>
-              <PayPalButton 
+              <SmartPayPalButton 
                 amount={getTotal().toString()}
                 currency="USD"
-                intent="CAPTURE"
+                customerEmail={customerEmail}
+                customerName={customerName}
+                onSuccess={(details) => {
+                  console.log('Payment completed successfully:', details);
+                  toast({
+                    title: 'Payment Successful!',
+                    description: 'Thank you for your purchase. You will receive an email confirmation shortly.',
+                    variant: 'default',
+                  });
+                }}
+                onError={(error) => {
+                  console.error('Payment error:', error);
+                  toast({
+                    title: 'Payment Failed',
+                    description: 'There was an issue processing your payment. Please try again.',
+                    variant: 'destructive',
+                  });
+                }}
+                onCancel={() => {
+                  toast({
+                    title: 'Payment Cancelled',
+                    description: 'Your payment was cancelled. You can try again when ready.',
+                    variant: 'default',
+                  });
+                }}
               />
             </div>
           ) : (
