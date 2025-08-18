@@ -1,0 +1,59 @@
+🔍 Checking render conditions: 
+Object {hasPayPal: true, hasRef: true, notRendered: true, hasEmail: true, hasAmount: true}
+🔄 All conditions met, rendering PayPal buttons...
+renderPayPalButtons is not defined
+🔍 Checking render conditions: 
+Object {hasPayPal: true, hasRef: true, notRendered: true, hasEmail: true, hasAmount: true}
+🔄 All conditions met, rendering PayPal buttons...
+renderPayPalButtons is not defined
+🔍 Checking render conditions: 
+Object {hasPayPal: true, hasRef: true, notRendered: true, hasEmail: true, hasAmount: true}
+🔄 All conditions met, rendering PayPal buttons...
+renderPayPalButtons is not defined
+🔍 Checking render conditions: 
+Object {hasPayPal: true, hasRef: true, notRendered: true, hasEmail: true, hasAmount: true}
+🔄 All conditions met, rendering PayPal buttons...
+renderPayPalButtons is not defined
+🔍 Checking render conditions: 
+Object {hasPayPal: true, hasRef: true, notRendered: true, hasEmail: true, hasAmount: true}
+🔄 All conditions met, rendering PayPal buttons...
+renderPayPalButtons is not defined
+🔍 Checking render conditions: 
+Object {hasPayPal: true, hasRef: true, notRendered: true, hasEmail: true, hasAmount: true}
+🔄 All conditions met, rendering PayPal buttons...
+renderPayPalButtons is not defined
+🔍 Checking render conditions: 
+Object {hasPayPal: true, hasRef: true, notRendered: true, hasEmail: true, hasAmount: true}
+🔄 All conditions met, rendering PayPal buttons...
+renderPayPalButtons is not defined
+🔍 Checking render conditions: 
+Object {hasPayPal: true, hasRef: true, notRendered: true, hasEmail: true, hasAmount: true}
+🔄 All conditions met, rendering PayPal buttons...
+renderPayPalButtons is not defined
+🔍 Checking render conditions: 
+Object {hasPayPal: true, hasRef: true, notRendered: true, hasEmail: true, hasAmount: true}
+🔄 All conditions met, rendering PayPal buttons...
+renderPayPalButtons is not defined
+🔍 Checking render conditions: 
+Object {hasPayPal: true, hasRef: true, notRendered: true, hasEmail: true, hasAmount: true}
+🔄 All conditions met, rendering PayPal buttons...
+renderPayPalButtons is not defined
+🔍 Checking render conditions: 
+Object {hasPayPal: true, hasRef: true, notRendered: true, hasEmail: true, hasAmount: true}
+🔄 All conditions met, rendering PayPal buttons...
+renderPayPalButtons is not defined
+🔍 Checking render conditions: 
+Object {hasPayPal: true, hasRef: true, notRendered: true, hasEmail: true, hasAmount: true}
+🔄 All conditions met, rendering PayPal buttons...
+renderPayPalButtons is not defined
+🔍 Checking render conditions: 
+Object {hasPayPal: true, hasRef: true, notRendered: true, hasEmail: true, hasAmount: true}
+🔄 All conditions met, rendering PayPal buttons...
+renderPayPalButtons is not defined
+🔍 Checking render conditions: 
+Object {hasPayPal: true, hasRef: true, notRendered: true, hasEmail: true, hasAmount: true}
+🔄 All conditions met, rendering PayPal buttons...
+renderPayPalButtons is not defined
+🔍 Checking render conditions: 
+Object {hasPayPal: true, hasRef: true, notRendered: true, hasEmail: true, hasAmount: true}
+🔄 All conditions met, rendering PayPal buttons...
