@@ -348,18 +348,22 @@ export default function SmartPayPalButton({
         </div>
       </div>
       
-      {isLoading ? (
-        <div className="flex justify-center items-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <span className="ml-2 text-sm text-gray-600">Loading payment options...</span>
-        </div>
-      ) : (
+      <div className="relative">
+        {/* Always render the PayPal container */}
         <div 
-        ref={paypalRef} 
-        className="paypal-button-container w-full min-h-[50px]"
-        id="paypal-buttons-container"
-      />
-      )}
+          ref={paypalRef} 
+          className="paypal-button-container w-full min-h-[50px]"
+          id="paypal-buttons-container"
+        />
+        
+        {/* Show loading overlay when needed */}
+        {isLoading && (
+          <div className="absolute inset-0 flex justify-center items-center bg-gray-50 rounded-lg border">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <span className="ml-2 text-sm text-gray-600">Loading payment options...</span>
+          </div>
+        )}
+      </div>
       
       <div className="text-center">
         <p className="text-xs text-gray-500">
