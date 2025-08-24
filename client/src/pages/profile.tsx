@@ -415,6 +415,9 @@ export default function ProfilePage() {
                       {profile.children && (
                         <div><span className="font-medium">{t.childrenLabel}</span> {profile.children}</div>
                       )}
+                      {profile.lookingFor && profile.lookingFor.length > 0 && (
+                        <div><span className="font-medium">{t.lookingFor}:</span> {profile.lookingFor.join(', ')}</div>
+                      )}
                       {profile.smoking && (
                         <div><span className="font-medium">{t.smokingLabel}</span> {profile.smoking}</div>
                       )}
