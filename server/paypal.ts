@@ -40,7 +40,7 @@ if (isPayPalConfigured && PAYPAL_CLIENT_ID && PAYPAL_CLIENT_SECRET) {
       oAuthClientSecret: PAYPAL_CLIENT_SECRET,
     },
     timeout: 0,
-    environment: Environment.Production, // Use live PayPal environment
+    environment: Environment.Production, // Use live PayPal environment (matches frontend)
     logging: {
       logLevel: LogLevel.Info,
       logRequest: {
@@ -355,7 +355,7 @@ export async function loadPaypalDefault(req: Request, res: Response) {
     // This allows the frontend to initialize the PayPal JS SDK directly
     res.json({
       clientId: PAYPAL_CLIENT_ID,
-      environment: process.env.NODE_ENV === "production" ? "production" : "sandbox",
+      environment: "production", // Always use production since we're using live credentials
       currency: "USD",
       intent: "capture",
       components: "buttons,marks,funding-eligibility"
