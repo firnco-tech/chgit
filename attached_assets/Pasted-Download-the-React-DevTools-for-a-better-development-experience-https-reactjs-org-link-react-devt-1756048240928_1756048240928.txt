@@ -1,0 +1,39 @@
+Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+/api/orders/my-orders:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+SmartPayPalButton.tsx:256 🔍 Checking render conditions: Object
+SmartPayPalButton.tsx:256 🔍 Checking render conditions: Object
+SmartPayPalButton.tsx:231 ✅ PayPal SDK loaded successfully
+www.sandbox.paypal.com/xoplatform/logger/api/logger?disableSetCookie=true:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+SmartPayPalButton.tsx:256 🔍 Checking render conditions: Object
+SmartPayPalButton.tsx:265 🔄 All conditions met, rendering PayPal buttons...
+SmartPayPalButton.tsx:72 🔄 Starting PayPal button render...
+js?client-id=ARzW_ZZxlmA8_-BBGtpevL6a3FIFsW1lzMvh40NvJ52Fo6dotpN7T0wSB7P749iWc6jlsuIou9F5IIHm&currency=USD&intent=capture&components=buttons,marks:3 global_session_not_found Object
+b @ js?client-id=ARzW_ZZxlmA8_-BBGtpevL6a3FIFsW1lzMvh40NvJ52Fo6dotpN7T0wSB7P749iWc6jlsuIou9F5IIHm&currency=USD&intent=capture&components=buttons,marks:3
+js?client-id=ARzW_ZZxlmA8_-BBGtpevL6a3FIFsW1lzMvh40NvJ52Fo6dotpN7T0wSB7P749iWc6jlsuIou9F5IIHm&currency=USD&intent=capture&components=buttons,marks:3 global_session_not_found Object
+b @ js?client-id=ARzW_ZZxlmA8_-BBGtpevL6a3FIFsW1lzMvh40NvJ52Fo6dotpN7T0wSB7P749iWc6jlsuIou9F5IIHm&currency=USD&intent=capture&components=buttons,marks:3
+www.sandbox.paypal.com/xoplatform/logger/api/logger?disableSetCookie=true:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+SmartPayPalButton.tsx:193 ✅ PayPal Smart Payment Buttons rendered successfully
+SmartPayPalButton.tsx:89 Creating PayPal order...
+SmartPayPalButton.tsx:110 PayPal order created: 6JB58268L10623319
+SmartPayPalButton.tsx:285 ⚠️ PayPal button rendering timeout
+css-generic.js:1 uBOL: Generic cosmetic filtering stopped because no more DOM changes
+SmartPayPalButton.tsx:121 PayPal payment approved, capturing order: 6JB58268L10623319
+SmartPayPalButton.tsx:136 PayPal order captured successfully: Object
+checkout.tsx:137 Payment completed successfully: Object
+/api/orders/undefined:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+/api/orders/my-orders:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 (Internal Server Error)
