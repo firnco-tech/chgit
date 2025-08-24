@@ -230,7 +230,7 @@ export class DatabaseStorage implements IStorage {
     const result = await db
       .delete(userSessions)
       .where(eq(userSessions.id, sessionId));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 
   async cleanupExpiredSessions(): Promise<void> {
@@ -436,7 +436,6 @@ export class DatabaseStorage implements IStorage {
           ilike(profiles.firstName, `%${query}%`),
           ilike(profiles.lastName, `%${query}%`),
           ilike(profiles.location, `%${query}%`),
-          ilike(profiles.email, `%${query}%`),
           ilike(profiles.aboutMe, `%${query}%`)
         )
       )
@@ -502,7 +501,7 @@ export class DatabaseStorage implements IStorage {
       .where(eq(orderItems.orderId, orderId))
       .then(results => 
         results.map(row => ({
-          ...row.orderItems,
+          ...row.order_items,
           profile: row.profiles
         })).filter(item => item.profile !== null) as (OrderItem & { profile: Profile })[]
       );
@@ -539,7 +538,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteAdminUser(id: number): Promise<boolean> {
     const result = await db.delete(adminUsers).where(eq(adminUsers.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 
   async getAllAdminUsers(): Promise<AdminUser[]> {
@@ -726,7 +725,7 @@ export class DatabaseStorage implements IStorage {
           eq(userFavorites.profileId, profileId)
         )
       );
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 
   async getUserFavorites(userId: number): Promise<(UserFavorite & { profile: Profile })[]> {
