@@ -1,0 +1,39 @@
+ Checking render conditions: Object
+SmartPayPalButton.tsx:257 🔍 Checking render conditions: Object
+SmartPayPalButton.tsx:232 ✅ PayPal SDK loaded successfully
+www.paypal.com/xoplatform/logger/api/logger?disableSetCookie=true:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+SmartPayPalButton.tsx:257 🔍 Checking render conditions: Object
+SmartPayPalButton.tsx:266 🔄 All conditions met, rendering PayPal buttons...
+SmartPayPalButton.tsx:72 🔄 Starting PayPal button render...
+js?client-id=AdKXSo52vPXGgOHxu5v1WoMt1deyDMNzTTmpboY5OntQtFAwTg65ydlmx5LgBiPlw9Bl0K7yY1-ewfqy&currency=USD&intent=capture&components=buttons,marks:3 global_session_not_found Object
+b @ js?client-id=AdKXSo52vPXGgOHxu5v1WoMt1deyDMNzTTmpboY5OntQtFAwTg65ydlmx5LgBiPlw9Bl0K7yY1-ewfqy&currency=USD&intent=capture&components=buttons,marks:3
+js?client-id=AdKXSo52vPXGgOHxu5v1WoMt1deyDMNzTTmpboY5OntQtFAwTg65ydlmx5LgBiPlw9Bl0K7yY1-ewfqy&currency=USD&intent=capture&components=buttons,marks:3 global_session_not_found Object
+b @ js?client-id=AdKXSo52vPXGgOHxu5v1WoMt1deyDMNzTTmpboY5OntQtFAwTg65ydlmx5LgBiPlw9Bl0K7yY1-ewfqy&currency=USD&intent=capture&components=buttons,marks:3
+www.paypal.com/xoplatform/logger/api/logger?disableSetCookie=true:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+SmartPayPalButton.tsx:194 ✅ PayPal Smart Payment Buttons rendered successfully
+SmartPayPalButton.tsx:89 Creating PayPal order...
+SmartPayPalButton.tsx:114 Error creating PayPal order: ReferenceError: items is not defined
+    at Object.createOrder (SmartPayPalButton.tsx:101:28)
+    at js?client-id=AdKXSo52vPXGgOHxu5v1WoMt1deyDMNzTTmpboY5OntQtFAwTg65ydlmx5LgBiPlw9Bl0K7yY1-ewfqy&currency=USD&intent=capture&components=buttons,marks:3:82194
+    at n.dispatch (js?client-id=AdKXSo52vPXGgOHxu5v1WoMt1deyDMNzTTmpboY5OntQtFAwTg65ydlmx5LgBiPlw9Bl0K7yY1-ewfqy&currency=USD&intent=capture&components=buttons,marks:3:14561)
+    at n.then (js?client-id=AdKXSo52vPXGgOHxu5v1WoMt1deyDMNzTTmpboY5OntQtFAwTg65ydlmx5LgBiPlw9Bl0K7yY1-ewfqy&currency=USD&intent=capture&components=buttons,marks:3:15324)
+    at Object.handler (js?client-id=AdKXSo52vPXGgOHxu5v1WoMt1deyDMNzTTmpboY5OntQtFAwTg65ydlmx5LgBiPlw9Bl0K7yY1-ewfqy&currency=USD&intent=capture&components=buttons,marks:3:82168)
+    at js?client-id=AdKXSo52vPXGgOHxu5v1WoMt1deyDMNzTTmpboY5OntQtFAwTg65ydlmx5LgBiPlw9Bl0K7yY1-ewfqy&currency=USD&intent=capture&components=buttons,marks:3:87090
+    at n.try (js?client-id=AdKXSo52vPXGgOHxu5v1WoMt1deyDMNzTTmpboY5OntQtFAwTg65ydlmx5LgBiPlw9Bl0K7yY1-ewfqy&currency=USD&intent=capture&components=buttons,marks:3:17166)
+    at wo (js?client-id=AdKXSo52vPXGgOHxu5v1WoMt1deyDMNzTTmpboY5OntQtFAwTg65ydlmx5LgBiPlw9Bl0K7yY1-ewfqy&currency=USD&intent=capture&components=buttons,marks:3:86906)
+    at To (js?client-id=AdKXSo52vPXGgOHxu5v1WoMt1deyDMNzTTmpboY5OntQtFAwTg65ydlmx5LgBiPlw9Bl0K7yY1-ewfqy&currency=USD&intent=capture&components=buttons,marks:3:88926)
+    at js?client-id=AdKXSo52vPXGgOHxu5v1WoMt1deyDMNzTTmpboY5OntQtFAwTg65ydlmx5LgBiPlw9Bl0K7yY1-ewfqy&currency=USD&intent=capture&components=buttons,marks:3:95013
+createOrder @ SmartPayPalButton.tsx:114
+
+                
+          
+          
+          
+         Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.
+SmartPayPalButton.tsx:286 ⚠️ PayPal button rendering timeout

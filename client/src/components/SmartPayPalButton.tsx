@@ -30,7 +30,7 @@ export default function SmartPayPalButton({
   onCancel,
 }: SmartPayPalButtonProps) {
   const { toast } = useToast();
-  const { clearCart } = useCart();
+  const { clearCart, items } = useCart();
   const [, setLocation] = useLocation();
   const { currentLanguage } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
