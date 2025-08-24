@@ -98,6 +98,7 @@ export default function SmartPayPalButton({
                 currency,
                 customerEmail,
                 customerName,
+                cartItems: items, // Include cart items for database order creation
               }),
             });
 

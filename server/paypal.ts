@@ -14,6 +14,7 @@ import {
   OrdersController,
 } from "@paypal/paypal-server-sdk";
 import { Request, Response } from "express";
+import { storage } from "./storage";
 
 /* PayPal Controllers Setup */
 
@@ -80,6 +81,16 @@ export async function getClientToken() {
 
 /*  Process transactions */
 
+// In-memory storage for cart data during PayPal processing
+const paypalOrderStorage = new Map<string, {
+  cartItems: any[];
+  userId: number;
+  customerEmail: string;
+  customerName: string;
+  amount: string;
+  currency: string;
+}>();
+
 export async function createPaypalOrder(req: Request, res: Response) {
   if (!isPayPalConfigured || !ordersController) {
     return res.status(503).json({ 
@@ -88,7 +99,7 @@ export async function createPaypalOrder(req: Request, res: Response) {
   }
 
   try {
-    const { amount, currency = 'USD', intent = 'CAPTURE', items } = req.body;
+    const { amount, currency = 'USD', intent = 'CAPTURE', cartItems = [] } = req.body;
     
     // Use authenticated user information instead of client-provided data
     const authenticatedUser = (req as any).user;
@@ -120,7 +131,7 @@ export async function createPaypalOrder(req: Request, res: Response) {
           cancelUrl: `${req.protocol}://${req.get('host')}/checkout/cancel`,
           brandName: "HolaCupid",
           locale: "en-US",
-          shippingPreference: "NO_SHIPPING" as const,
+          shippingPreference: "NO_SHIPPING",
           userAction: "PAY_NOW"
         },
         purchaseUnits: [
@@ -139,7 +150,16 @@ export async function createPaypalOrder(req: Request, res: Response) {
                 }
               }
             },
-            items: items || [
+            items: cartItems.length > 0 ? cartItems.map(item => ({
+              name: `Contact Info - ${item.name}`,
+              description: "Access to verified contact information",
+              unitAmount: {
+                currencyCode: currency,
+                value: item.price.toString()
+              },
+              quantity: "1",
+              category: "DIGITAL_GOODS"
+            })) : [
               {
                 name: "Contact Information Access",
                 description: "Access to verified contact information",
@@ -172,6 +192,19 @@ export async function createPaypalOrder(req: Request, res: Response) {
 
     if (httpStatusCode === 201) {
       console.log('✅ PayPal order created successfully:', jsonResponse.id);
+      
+      // Store cart data for later retrieval during capture
+      paypalOrderStorage.set(jsonResponse.id, {
+        cartItems,
+        userId,
+        customerEmail,
+        customerName,
+        amount,
+        currency
+      });
+      
+      console.log(`💾 Stored cart data for PayPal order ${jsonResponse.id}:`, cartItems);
+      
       res.status(httpStatusCode).json(jsonResponse);
     } else {
       console.error('❌ PayPal order creation failed:', httpStatusCode, jsonResponse);
@@ -198,6 +231,15 @@ export async function capturePaypalOrder(req: Request, res: Response) {
     }
 
     console.log('Capturing PayPal order:', orderID);
+
+    // Retrieve stored cart data
+    const storedData = paypalOrderStorage.get(orderID);
+    if (!storedData) {
+      console.error(`❌ No stored cart data found for PayPal order: ${orderID}`);
+      return res.status(400).json({ error: "Order data not found - please try again" });
+    }
+
+    console.log(`🔍 Retrieved cart data for order ${orderID}:`, storedData);
 
     const collect = {
       id: orderID,
@@ -226,12 +268,67 @@ export async function capturePaypalOrder(req: Request, res: Response) {
 
       console.log('Payment capture details:', captureDetails);
 
-      res.status(httpStatusCode).json({
-        ...jsonResponse,
-        captureDetails
-      });
+      // 🚀 CREATE DATABASE ORDER - The missing piece!
+      try {
+        console.log('💾 Creating database order from captured PayPal payment...');
+        
+        const databaseOrder = await storage.createOrder({
+          customerEmail: storedData.customerEmail,
+          customerName: storedData.customerName,
+          totalAmount: storedData.amount,
+          currency: storedData.currency,
+          paymentProvider: 'paypal',
+          paymentStatus: 'completed',
+          paypalOrderId: orderID,
+          paypalCaptureId: captureDetails.captureId,
+          paypalPayerId: captureDetails.payerId,
+          paymentMethod: 'paypal',
+          paymentDetails: captureDetails,
+          status: 'completed'
+        });
+        
+        console.log('✅ Database order created:', databaseOrder.id);
+        
+        // Create order items from cart data
+        for (const cartItem of storedData.cartItems) {
+          await storage.createOrderItem({
+            orderId: databaseOrder.id,
+            profileId: cartItem.id,
+            price: cartItem.price.toString(),
+            contactInfo: {
+              profileName: cartItem.name,
+              purchaseDate: new Date().toISOString()
+            }
+          });
+          console.log(`✅ Created order item for profile ${cartItem.id}`);
+        }
+        
+        // Clean up stored data
+        paypalOrderStorage.delete(orderID);
+        console.log(`🗑️ Cleaned up stored data for order ${orderID}`);
+        
+        res.status(httpStatusCode).json({
+          ...jsonResponse,
+          captureDetails,
+          databaseOrderId: databaseOrder.id, // Return database order ID for frontend redirect
+          orderId: databaseOrder.id // Legacy compatibility
+        });
+        
+      } catch (dbError) {
+        console.error('❌ Failed to create database order:', dbError);
+        // PayPal payment succeeded, but database failed - critical issue
+        // Still return success to user but log the error for admin attention
+        res.status(httpStatusCode).json({
+          ...jsonResponse,
+          captureDetails,
+          orderId: orderID, // Fallback to PayPal order ID
+          warning: 'Payment processed but order not saved - contact support'
+        });
+      }
     } else {
       console.error('❌ PayPal order capture failed:', httpStatusCode, jsonResponse);
+      // Clean up stored data on failure
+      paypalOrderStorage.delete(orderID);
       res.status(httpStatusCode).json(jsonResponse);
     }
   } catch (error) {
