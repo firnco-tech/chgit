@@ -502,9 +502,9 @@ export class DatabaseStorage implements IStorage {
       .where(eq(orderItems.orderId, orderId))
       .then(results => 
         results.map(row => ({
-          ...row.order_items,
-          profile: row.profiles!
-        }))
+          ...row.orderItems,
+          profile: row.profiles
+        })).filter(item => item.profile !== null) as (OrderItem & { profile: Profile })[]
       );
   }
 
