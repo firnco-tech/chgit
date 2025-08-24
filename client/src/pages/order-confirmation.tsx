@@ -173,7 +173,7 @@ export default function OrderConfirmation() {
                   <span>Continue Browsing</span>
                 </Button>
                 <Button 
-                  onClick={() => setLocation(`/${currentLanguage}/favorites`)}
+                  onClick={() => setLocation(`/${currentLanguage}/my-orders`)}
                   className="flex items-center space-x-2"
                 >
                   <span>View Your Purchases</span>
