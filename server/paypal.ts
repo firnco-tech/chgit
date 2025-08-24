@@ -295,18 +295,45 @@ export async function capturePaypalOrder(req: Request, res: Response) {
         
         console.log('✅ Database order created:', databaseOrder.id);
         
-        // Create order items from cart data
+        // Create order items from cart data with full contact information
         for (const cartItem of storedData.cartItems) {
+          // Fetch full profile data to get contact information
+          const fullProfile = await storage.getProfile(cartItem.id);
+          
+          if (!fullProfile) {
+            console.error(`❌ Profile ${cartItem.id} not found when creating order item`);
+            continue;
+          }
+          
+          // Extract contact information from the profile
+          const contactMethods = fullProfile.contactMethods as any;
+          const contactInfo = {
+            profileName: cartItem.name,
+            purchaseDate: new Date().toISOString(),
+            whatsapp: contactMethods?.whatsapp || null,
+            instagram: contactMethods?.instagram || null,
+            email: contactMethods?.email || null,
+            profileData: {
+              id: fullProfile.id,
+              firstName: fullProfile.firstName,
+              age: fullProfile.age,
+              location: fullProfile.location,
+              primaryPhoto: fullProfile.primaryPhoto
+            }
+          };
+          
           await storage.createOrderItem({
             orderId: databaseOrder.id,
             profileId: cartItem.id,
             price: cartItem.price.toString(),
-            contactInfo: {
-              profileName: cartItem.name,
-              purchaseDate: new Date().toISOString()
-            }
+            contactInfo: contactInfo
           });
-          console.log(`✅ Created order item for profile ${cartItem.id}`);
+          
+          console.log(`✅ Created order item for profile ${cartItem.id} with contact info:`, {
+            whatsapp: contactInfo.whatsapp ? 'PROVIDED' : 'NULL',
+            instagram: contactInfo.instagram ? 'PROVIDED' : 'NULL',
+            email: contactInfo.email ? 'PROVIDED' : 'NULL'
+          });
         }
         
         // Clean up stored data
