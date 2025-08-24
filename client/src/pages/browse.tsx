@@ -39,13 +39,11 @@ export default function Browse() {
       if (pageFromUrl) {
         const page = Math.max(1, parseInt(pageFromUrl, 10));
         setCurrentPage(page);
-      } else {
-        // If no page parameter, reset to page 1
-        setCurrentPage(1);
       }
+      // Note: Don't reset to page 1 if no page parameter - preserve existing state
     } else {
       setFeaturedOnly(false);
-      setCurrentPage(1);
+      // Note: Don't reset to page 1 - preserve existing pagination state
     }
   }, [location]);
 
