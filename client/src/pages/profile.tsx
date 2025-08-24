@@ -418,6 +418,12 @@ export default function ProfilePage() {
                       {profile.lookingFor && profile.lookingFor.length > 0 && (
                         <div><span className="font-medium">{t.lookingFor}:</span> {profile.lookingFor.join(', ')}</div>
                       )}
+                      {profile.bodyType && (
+                        <div><span className="font-medium">{t.bodyType}:</span> {profile.bodyType}</div>
+                      )}
+                      {profile.appearance && (
+                        <div><span className="font-medium">{t.appearance}:</span> {profile.appearance}</div>
+                      )}
                       {profile.smoking && (
                         <div><span className="font-medium">{t.smokingLabel}</span> {profile.smoking}</div>
                       )}
