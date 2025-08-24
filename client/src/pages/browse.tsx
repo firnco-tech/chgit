@@ -39,11 +39,32 @@ export default function Browse() {
       if (pageFromUrl) {
         const page = Math.max(1, parseInt(pageFromUrl, 10));
         setCurrentPage(page);
+      } else {
+        // If no page parameter, reset to page 1
+        setCurrentPage(1);
       }
     } else {
       setFeaturedOnly(false);
+      setCurrentPage(1);
     }
   }, [location]);
+
+  // Handle browser back/forward button navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      // Re-read URL parameters when user uses browser back/forward
+      const urlParams = new URLSearchParams(window.location.search);
+      const pageFromUrl = urlParams.get('page');
+      const page = pageFromUrl ? Math.max(1, parseInt(pageFromUrl, 10)) : 1;
+      setCurrentPage(page);
+      
+      const isFeatured = urlParams.get('featured') === 'true';
+      setFeaturedOnly(isFeatured);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
   
   // Responsive items per page: 20 desktop, 12 mobile
   const [itemsPerPage, setItemsPerPage] = useState(20);
@@ -66,10 +87,13 @@ export default function Browse() {
   
 
 
-  // Reset to page 1 when filters change
+  // Reset to page 1 only when user actively changes filters (not navigation)
   useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, locationFilter, urlFeaturedOnly]);
+    // Don't reset page if we're just loading the component or navigating back
+    if (searchQuery || locationFilter !== 'all') {
+      setCurrentPage(1);
+    }
+  }, [searchQuery, locationFilter]);
 
   const { data: profiles, isLoading } = useQuery<Profile[]>({
     queryKey: ['/api/profiles', { search: searchQuery, location: locationFilter, featured: urlFeaturedOnly }],
@@ -106,8 +130,8 @@ export default function Browse() {
       currentUrl.searchParams.delete('page');
     }
     
-    // Use pushState to create proper browser history entries
-    window.history.pushState({}, '', currentUrl.toString());
+    // Use replaceState for pagination to avoid cluttering browser history
+    window.history.replaceState({}, '', currentUrl.toString());
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
