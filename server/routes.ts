@@ -262,23 +262,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     await loadPaypalDefault(req, res);
   });
 
-  // PayPal order creation for Smart Payment Buttons
-  app.post("/api/paypal/orders", async (req, res) => {
+  // PayPal order creation for Smart Payment Buttons - REQUIRES AUTHENTICATION
+  app.post("/api/paypal/orders", requireAuth, async (req, res) => {
     // Enhanced request body: { amount, currency, customerEmail, customerName, items }
+    // User must be authenticated to create PayPal orders
     await createPaypalOrder(req, res);
   });
 
-  // PayPal order capture for Smart Payment Buttons
-  app.post("/api/paypal/orders/:orderID/capture", async (req, res) => {
+  // PayPal order capture for Smart Payment Buttons - REQUIRES AUTHENTICATION
+  app.post("/api/paypal/orders/:orderID/capture", requireAuth, async (req, res) => {
+    // User must be authenticated to capture PayPal payments
     await capturePaypalOrder(req, res);
   });
 
   // Legacy routes for backward compatibility (will be removed in Phase 2)
-  app.post("/api/paypal/order", async (req, res) => {
+  // These also now require authentication for security consistency
+  app.post("/api/paypal/order", requireAuth, async (req, res) => {
     await createPaypalOrder(req, res);
   });
 
-  app.post("/api/paypal/order/:orderID/capture", async (req, res) => {
+  app.post("/api/paypal/order/:orderID/capture", requireAuth, async (req, res) => {
     await capturePaypalOrder(req, res);
   });
 

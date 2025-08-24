@@ -91,13 +91,28 @@ export async function createPaypalOrder(req: Request, res: Response) {
   }
 
   try {
-    const { amount, currency = 'USD', intent = 'CAPTURE', customerEmail, customerName, items } = req.body;
+    const { amount, currency = 'USD', intent = 'CAPTURE', items } = req.body;
+    
+    // Use authenticated user information instead of client-provided data
+    const authenticatedUser = (req as any).user;
+    const customerEmail = authenticatedUser?.email;
+    const customerName = authenticatedUser?.username || '';
+    const userId = authenticatedUser?.id;
+
+    if (!authenticatedUser || !customerEmail || !userId) {
+      return res.status(401).json({
+        error: "Authentication required - user information missing.",
+        requiresLogin: true
+      });
+    }
 
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
       return res.status(400).json({
         error: "Invalid amount. Amount must be a positive number.",
       });
     }
+
+    console.log(`🔐 Creating PayPal order for authenticated user: ${customerEmail} (ID: ${userId})`);
 
     // Enhanced order creation for Smart Payment Buttons
     const collect = {
@@ -108,8 +123,7 @@ export async function createPaypalOrder(req: Request, res: Response) {
           cancelUrl: `${req.protocol}://${req.get('host')}/checkout/cancel`,
           brandName: "HolaCupid",
           locale: "en-US",
-          landingPage: "BILLING" as const,
-          shippingPreference: "NO_SHIPPING",
+          shippingPreference: "NO_SHIPPING" as const,
           userAction: "PAY_NOW"
         },
         purchaseUnits: [
