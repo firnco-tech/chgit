@@ -18,7 +18,12 @@ export default function Browse() {
   
   const [searchQuery, setSearchQuery] = useState("");
   const [locationFilter, setLocationFilter] = useState("all");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(() => {
+    // Initialize page from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const pageFromUrl = urlParams.get('page');
+    return pageFromUrl ? Math.max(1, parseInt(pageFromUrl, 10)) : 1;
+  });
   const [featuredOnly, setFeaturedOnly] = useState(false);
   
   // Check for featured parameter reactively
@@ -28,6 +33,13 @@ export default function Browse() {
       const searchParams = new URLSearchParams(queryString);
       const isFeatured = searchParams.get('featured') === 'true';
       setFeaturedOnly(isFeatured);
+      
+      // Also check for page parameter
+      const pageFromUrl = searchParams.get('page');
+      if (pageFromUrl) {
+        const page = Math.max(1, parseInt(pageFromUrl, 10));
+        setCurrentPage(page);
+      }
     } else {
       setFeaturedOnly(false);
     }
@@ -85,7 +97,49 @@ export default function Browse() {
   
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    
+    // Update URL with page parameter
+    const currentUrl = new URL(window.location.href);
+    if (page > 1) {
+      currentUrl.searchParams.set('page', page.toString());
+    } else {
+      currentUrl.searchParams.delete('page');
+    }
+    
+    // Update browser history without triggering navigation
+    window.history.replaceState({}, '', currentUrl.toString());
+    
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Generate smart pagination array for responsive display
+  const getVisiblePages = () => {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const maxVisible = isMobile ? 5 : 10; // Show fewer pages on mobile
+    
+    if (totalPages <= maxVisible) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    
+    const half = Math.floor(maxVisible / 2);
+    let start = Math.max(1, currentPage - half);
+    let end = Math.min(totalPages, currentPage + half);
+    
+    // Adjust if we're near the beginning or end
+    if (end - start + 1 < maxVisible) {
+      if (start === 1) {
+        end = Math.min(totalPages, start + maxVisible - 1);
+      } else {
+        start = Math.max(1, end - maxVisible + 1);
+      }
+    }
+    
+    const pages = [];
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    
+    return pages;
   };
 
   return (
@@ -230,26 +284,27 @@ export default function Browse() {
             
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-8">
+              <div className="flex justify-center items-center gap-1 md:gap-2 mt-8 px-4">
                 <Button
                   variant="outline"
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                   size="sm"
+                  className="shrink-0"
                 >
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
+                  <ChevronLeft className="h-4 w-4 md:mr-1" />
+                  <span className="hidden md:inline">Previous</span>
                 </Button>
                 
-                {/* Page Numbers */}
-                <div className="flex gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                {/* Page Numbers - Responsive */}
+                <div className="flex gap-1 overflow-hidden">
+                  {getVisiblePages().map((page) => (
                     <Button
                       key={page}
                       variant={currentPage === page ? "default" : "outline"}
                       onClick={() => handlePageChange(page)}
                       size="sm"
-                      className="min-w-[40px]"
+                      className="min-w-[36px] md:min-w-[40px] shrink-0"
                     >
                       {page}
                     </Button>
@@ -261,9 +316,10 @@ export default function Browse() {
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
                   size="sm"
+                  className="shrink-0"
                 >
-                  Next
-                  <ChevronRight className="h-4 w-4 ml-1" />
+                  <span className="hidden md:inline">Next</span>
+                  <ChevronRight className="h-4 w-4 md:ml-1" />
                 </Button>
               </div>
             )}

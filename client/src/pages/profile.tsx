@@ -75,6 +75,37 @@ export default function ProfilePage() {
     return undefined;
   };
 
+  // Preserve browsing context for back navigation
+  const getBrowseBackUrl = () => {
+    // Check if there's pagination context in browser history
+    const referrer = document.referrer;
+    
+    // Check if we have referrer context and it contains pagination
+    if (referrer && referrer.includes('/browse')) {
+      try {
+        const referrerUrl = new URL(referrer);
+        const referrerParams = referrerUrl.searchParams;
+        
+        // Preserve featured and page parameters
+        const browseUrl = new URL(addLanguageToPath('/browse', currentLanguage), window.location.origin);
+        if (referrerParams.get('featured')) {
+          browseUrl.searchParams.set('featured', referrerParams.get('featured')!);
+        }
+        if (referrerParams.get('page')) {
+          browseUrl.searchParams.set('page', referrerParams.get('page')!);
+        }
+        
+        return browseUrl.toString().replace(window.location.origin, '');
+      } catch (error) {
+        // If there's any error parsing URLs, fall back to simple browse
+        console.log('Error parsing referrer URL:', error);
+      }
+    }
+    
+    // Fallback to simple browse page
+    return addLanguageToPath('/browse', currentLanguage);
+  };
+
   // Determine if the slug is actually a numeric ID (for backward compatibility)
   const isNumericId = slug && /^\d+$/.test(slug);
   const apiEndpoint = isNumericId 
@@ -118,7 +149,7 @@ export default function ProfilePage() {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">{t.profileNotFound}</h1>
           <p className="text-gray-600 mb-4">{t.profileNotFoundDesc}</p>
-          <Link href={addLanguageToPath('/browse', currentLanguage)}>
+          <Link href={getBrowseBackUrl()}>
             <Button>{t.backToBrowse}</Button>
           </Link>
         </div>
@@ -152,7 +183,7 @@ export default function ProfilePage() {
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
-          <Link href={addLanguageToPath('/browse', currentLanguage)}>
+          <Link href={getBrowseBackUrl()}>
             <Button variant="ghost" className="text-primary hover:text-primary/80">
               <ArrowLeft className="h-4 w-4 mr-2" />
               {t.backToBrowse}
