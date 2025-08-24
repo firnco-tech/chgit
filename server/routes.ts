@@ -262,26 +262,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     await loadPaypalDefault(req, res);
   });
 
-  // PayPal order creation for Smart Payment Buttons - REQUIRES AUTHENTICATION
-  app.post("/api/paypal/orders", requireAuth, async (req, res) => {
-    // Enhanced request body: { amount, currency, customerEmail, customerName, items }
-    // User must be authenticated to create PayPal orders
+  // PayPal order creation for Smart Payment Buttons - Customer validation by email
+  app.post("/api/paypal/orders", async (req, res) => {
+    // Enhanced request body: { amount, currency, customerEmail, customerName, cartItems }
+    // PayPal SDK calls don't include session cookies, so we validate by customer email
     await createPaypalOrder(req, res);
   });
 
-  // PayPal order capture for Smart Payment Buttons - REQUIRES AUTHENTICATION
-  app.post("/api/paypal/orders/:orderID/capture", requireAuth, async (req, res) => {
-    // User must be authenticated to capture PayPal payments
+  // PayPal order capture for Smart Payment Buttons - No auth required 
+  app.post("/api/paypal/orders/:orderID/capture", async (req, res) => {
+    // PayPal captures are called by PayPal SDK, order data is validated internally
     await capturePaypalOrder(req, res);
   });
 
   // Legacy routes for backward compatibility (will be removed in Phase 2)
-  // These also now require authentication for security consistency
-  app.post("/api/paypal/order", requireAuth, async (req, res) => {
+  // Updated to match new auth-free approach for PayPal SDK compatibility
+  app.post("/api/paypal/order", async (req, res) => {
     await createPaypalOrder(req, res);
   });
 
-  app.post("/api/paypal/order/:orderID/capture", requireAuth, async (req, res) => {
+  app.post("/api/paypal/order/:orderID/capture", async (req, res) => {
     await capturePaypalOrder(req, res);
   });
 

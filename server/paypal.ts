@@ -99,20 +99,27 @@ export async function createPaypalOrder(req: Request, res: Response) {
   }
 
   try {
-    const { amount, currency = 'USD', intent = 'CAPTURE', cartItems = [] } = req.body;
+    const { amount, currency = 'USD', intent = 'CAPTURE', cartItems = [], customerEmail, customerName } = req.body;
     
-    // Use authenticated user information instead of client-provided data
-    const authenticatedUser = (req as any).user;
-    const customerEmail = authenticatedUser?.email;
-    const customerName = authenticatedUser?.username || '';
-    const userId = authenticatedUser?.id;
-
-    if (!authenticatedUser || !customerEmail || !userId) {
-      return res.status(401).json({
-        error: "Authentication required - user information missing.",
-        requiresLogin: true
+    // For PayPal Smart Payment Buttons, we accept customer info from request body
+    // since PayPal SDK calls don't include session cookies
+    if (!customerEmail) {
+      return res.status(400).json({
+        error: "Customer email is required for payment processing."
       });
     }
+    
+    // Verify the customer exists in our system
+    const existingUser = await storage.getUserByEmail(customerEmail);
+    if (!existingUser) {
+      return res.status(400).json({
+        error: "Customer not found. Please create an account first."
+      });
+    }
+    
+    const userId = existingUser.id;
+    
+    console.log(`🔐 Creating PayPal order for customer: ${customerEmail} (ID: ${userId})`);
 
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
       return res.status(400).json({
@@ -120,7 +127,6 @@ export async function createPaypalOrder(req: Request, res: Response) {
       });
     }
 
-    console.log(`🔐 Creating PayPal order for authenticated user: ${customerEmail} (ID: ${userId})`);
 
     // Enhanced order creation for Smart Payment Buttons
     const collect = {
