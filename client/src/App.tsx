@@ -40,12 +40,14 @@ import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminUserDetails from "@/pages/admin/AdminUserDetails";
 import AdminManagement from "@/pages/admin/AdminManagement";
 import AdminProfiles from "@/pages/admin/AdminProfiles";
+import AdminOrders from "@/pages/admin/AdminOrders";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 
 // Admin Route Wrapper - No main site layout for admin routes
 function AdminRoutes() {
   return (
     <Switch>
+      <Route path="/admin/orders" component={AdminOrders} />
       <Route path="/admin/profiles" component={AdminProfiles} />
       <Route path="/admin/users/:userId/details" component={AdminUserDetails} />
       <Route path="/admin/users" component={AdminUsers} />
@@ -121,6 +123,7 @@ function Router() {
       {/* Admin login route - no layout */}
       <Route path="/admin/login" component={AdminLogin} />
       {/* Admin routes - all use consistent layout */}
+      <Route path="/admin/orders" component={AdminOrders} />
       <Route path="/admin/profiles" component={AdminProfiles} />
       <Route path="/admin/users/:userId/details" component={AdminUserDetails} />
       <Route path="/admin/users" component={AdminUsers} />

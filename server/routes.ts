@@ -436,7 +436,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin recent orders - ADMIN ONLY
-  app.get("/api/admin/recent-orders", requireAdminAuth, async (req, res) => {
+  app.get("/api/admin/recent-orders", requireAdmin, async (req, res) => {
     try {
       const orders = await storage.getOrdersForAdmin({
         limit: 10
@@ -508,7 +508,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin orders management - ADMIN ONLY
-  app.get("/api/admin/orders", requireAdminAuth, async (req, res) => {
+  app.get("/api/admin/orders", requireAdmin, async (req, res) => {
     try {
       const { status, limit = 50, offset = 0 } = req.query;
       
@@ -589,7 +589,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin get user favorites - ADMIN ONLY
-  app.get("/api/admin/user-favorites/:userId", requireAdminAuth, async (req, res) => {
+  app.get("/api/admin/user-favorites/:userId", requireAdmin, async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
       const favorites = await storage.getUserFavorites(userId);
@@ -600,7 +600,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin get user orders - ADMIN ONLY
-  app.get("/api/admin/user-orders/:userId", requireAdminAuth, async (req, res) => {
+  app.get("/api/admin/user-orders/:userId", requireAdmin, async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
       const orders = await storage.getUserOrdersWithItems(userId);
