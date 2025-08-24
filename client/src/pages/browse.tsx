@@ -106,8 +106,8 @@ export default function Browse() {
       currentUrl.searchParams.delete('page');
     }
     
-    // Update browser history without triggering navigation
-    window.history.replaceState({}, '', currentUrl.toString());
+    // Use pushState to create proper browser history entries
+    window.history.pushState({}, '', currentUrl.toString());
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

@@ -77,10 +77,27 @@ export default function ProfilePage() {
 
   // Preserve browsing context for back navigation
   const getBrowseBackUrl = () => {
-    // Check if there's pagination context in browser history
-    const referrer = document.referrer;
+    // First, try to get stored browse URL from localStorage (most reliable)
+    try {
+      const storedUrl = localStorage.getItem('holacupid-browse-back-url');
+      const storedTimestamp = localStorage.getItem('holacupid-browse-back-timestamp');
+      
+      // Check if the stored URL is recent (within last 30 minutes) and valid
+      if (storedUrl && storedTimestamp) {
+        const timestamp = parseInt(storedTimestamp);
+        const isRecent = Date.now() - timestamp < 30 * 60 * 1000; // 30 minutes
+        
+        if (isRecent && storedUrl.includes('/browse')) {
+          const storedUrlObj = new URL(storedUrl);
+          return storedUrlObj.pathname + storedUrlObj.search;
+        }
+      }
+    } catch (error) {
+      console.log('Error reading stored browse URL:', error);
+    }
     
-    // Check if we have referrer context and it contains pagination
+    // Fallback: Check referrer for pagination context
+    const referrer = document.referrer;
     if (referrer && referrer.includes('/browse')) {
       try {
         const referrerUrl = new URL(referrer);
@@ -97,12 +114,11 @@ export default function ProfilePage() {
         
         return browseUrl.toString().replace(window.location.origin, '');
       } catch (error) {
-        // If there's any error parsing URLs, fall back to simple browse
         console.log('Error parsing referrer URL:', error);
       }
     }
     
-    // Fallback to simple browse page
+    // Final fallback to simple browse page
     return addLanguageToPath('/browse', currentLanguage);
   };
 

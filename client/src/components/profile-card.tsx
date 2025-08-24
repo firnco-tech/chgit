@@ -39,6 +39,16 @@ export function ProfileCard({ profile }: ProfileCardProps) {
 
   const profileSlug = getProfileSlug();
 
+  // Store current browse state for back navigation
+  const handleProfileClick = () => {
+    // Store current browse page state for "Back to Browse" functionality
+    const currentUrl = window.location.href;
+    if (currentUrl.includes('/browse')) {
+      localStorage.setItem('holacupid-browse-back-url', currentUrl);
+      localStorage.setItem('holacupid-browse-back-timestamp', Date.now().toString());
+    }
+  };
+
   const handleAddToCart = () => {
     if (isInCart) {
       return; // Don't add if already in cart
@@ -66,7 +76,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-        <Link href={addLanguageToPath(`/${profileSlug}`, currentLanguage)}>
+        <Link href={addLanguageToPath(`/${profileSlug}`, currentLanguage)} onClick={handleProfileClick}>
           <div className="aspect-[3/4] overflow-hidden relative bg-gray-100">
             <img 
               src={imageUrl || `data:image/svg+xml;base64,${btoa(`
