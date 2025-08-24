@@ -305,14 +305,22 @@ export async function capturePaypalOrder(req: Request, res: Response) {
             continue;
           }
           
-          // Extract contact information from the profile
+          // Extract contact information from the profile - capture ALL contact methods
           const contactMethods = fullProfile.contactMethods as any;
           const contactInfo = {
             profileName: cartItem.name,
             purchaseDate: new Date().toISOString(),
+            // Dynamically extract ALL contact methods that exist in the profile
             whatsapp: contactMethods?.whatsapp || null,
             instagram: contactMethods?.instagram || null,
             email: contactMethods?.email || null,
+            phone: contactMethods?.phone || null,
+            telegram: contactMethods?.telegram || null,
+            facebook: contactMethods?.facebook || null,
+            tiktok: contactMethods?.tiktok || null,
+            snapchat: contactMethods?.snapchat || null,
+            twitter: contactMethods?.twitter || null,
+            linkedin: contactMethods?.linkedin || null,
             profileData: {
               id: fullProfile.id,
               firstName: fullProfile.firstName,
@@ -332,7 +340,14 @@ export async function capturePaypalOrder(req: Request, res: Response) {
           console.log(`✅ Created order item for profile ${cartItem.id} with contact info:`, {
             whatsapp: contactInfo.whatsapp ? 'PROVIDED' : 'NULL',
             instagram: contactInfo.instagram ? 'PROVIDED' : 'NULL',
-            email: contactInfo.email ? 'PROVIDED' : 'NULL'
+            email: contactInfo.email ? 'PROVIDED' : 'NULL',
+            phone: contactInfo.phone ? 'PROVIDED' : 'NULL',
+            telegram: contactInfo.telegram ? 'PROVIDED' : 'NULL',
+            facebook: contactInfo.facebook ? 'PROVIDED' : 'NULL',
+            tiktok: contactInfo.tiktok ? 'PROVIDED' : 'NULL',
+            snapchat: contactInfo.snapchat ? 'PROVIDED' : 'NULL',
+            twitter: contactInfo.twitter ? 'PROVIDED' : 'NULL',
+            linkedin: contactInfo.linkedin ? 'PROVIDED' : 'NULL'
           });
         }
         
